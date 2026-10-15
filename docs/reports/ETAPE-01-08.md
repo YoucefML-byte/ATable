@@ -11,18 +11,18 @@ les commerces et invite les patrons depuis la console. Rien n'est encore en lign
 
 ## Ce qui a été livré
 
-| Identifiants | Fonction | Tests qui le prouvent |
-| --- | --- | --- |
-| CLI-01 à CLI-10 | Site client : arrivée QR/NFC, carte selon l'heure, fiche produit, allergènes, panier, envoi, « Mes commandes », mentions légales, thème | `tests/e2e/customer.spec.ts`, `supabase/tests/02_orders.test.sql`, `src/features/orders/cart.test.ts` |
-| AUTH-01 à AUTH-04 | Patron avec double authentification, appareils enrôlés, connexion de l'équipe par PIN, permissions | `tests/e2e/smoke.spec.ts`, `tests/e2e/service-flow.spec.ts`, `supabase/tests/03_staff.test.sql`, `src/server/staff/pin.test.ts` |
-| SAL, CUI, STK | Salle et cuisine en temps réel, disponibilités, vue des tables, clôture | `tests/e2e/service-flow.spec.ts` (E9, E12, E15) |
-| CAT-01 à CAT-04 | Carte, options, allergènes, photos, cartes et horaires avec simulateur | `tests/e2e/owner-pages.spec.ts` |
-| TAB-01 à TAB-03 | Tables, QR codes (SVG, PNG, planches A4), régénération, guide NFC | `tests/e2e/owner-pages.spec.ts` (TAB-02) |
-| REG-01, REG-02 | Réglages, thème avec aperçu et blocage du contraste | `tests/e2e/owner-pages.spec.ts`, `src/features/theming/theme.test.ts` |
-| DSH-01, DSH-02 | Tableau de bord et alertes | `tests/e2e/owner-pages.spec.ts`, `src/features/analytics/period.test.ts`, `supabase/tests/04_analytics_console.test.sql` |
-| HIS | Historique et export CSV | `src/lib/csv.test.ts` |
-| CON-01 à CON-06 | Console : commerces, création et invitation, domaines, facturation, assistance, journal, export | `tests/e2e/console.spec.ts`, `supabase/tests/04_analytics_console.test.sql` |
-| Isolation | Aucun commerce ne voit les données d'un autre | `supabase/tests/01_isolation.test.sql` |
+| Identifiants      | Fonction                                                                                                                                | Tests qui le prouvent                                                                                                           |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| CLI-01 à CLI-10   | Site client : arrivée QR/NFC, carte selon l'heure, fiche produit, allergènes, panier, envoi, « Mes commandes », mentions légales, thème | `tests/e2e/customer.spec.ts`, `supabase/tests/02_orders.test.sql`, `src/features/orders/cart.test.ts`                           |
+| AUTH-01 à AUTH-04 | Patron avec double authentification, appareils enrôlés, connexion de l'équipe par PIN, permissions                                      | `tests/e2e/smoke.spec.ts`, `tests/e2e/service-flow.spec.ts`, `supabase/tests/03_staff.test.sql`, `src/server/staff/pin.test.ts` |
+| SAL, CUI, STK     | Salle et cuisine en temps réel, disponibilités, vue des tables, clôture                                                                 | `tests/e2e/service-flow.spec.ts` (E9, E12, E15)                                                                                 |
+| CAT-01 à CAT-04   | Carte, options, allergènes, photos, cartes et horaires avec simulateur                                                                  | `tests/e2e/owner-pages.spec.ts`                                                                                                 |
+| TAB-01 à TAB-03   | Tables, QR codes (SVG, PNG, planches A4), régénération, guide NFC                                                                       | `tests/e2e/owner-pages.spec.ts` (TAB-02)                                                                                        |
+| REG-01, REG-02    | Réglages, thème avec aperçu et blocage du contraste                                                                                     | `tests/e2e/owner-pages.spec.ts`, `src/features/theming/theme.test.ts`                                                           |
+| DSH-01, DSH-02    | Tableau de bord et alertes                                                                                                              | `tests/e2e/owner-pages.spec.ts`, `src/features/analytics/period.test.ts`, `supabase/tests/04_analytics_console.test.sql`        |
+| HIS               | Historique et export CSV                                                                                                                | `src/lib/csv.test.ts`                                                                                                           |
+| CON-01 à CON-06   | Console : commerces, création et invitation, domaines, facturation, assistance, journal, export                                         | `tests/e2e/console.spec.ts`, `supabase/tests/04_analytics_console.test.sql`                                                     |
+| Isolation         | Aucun commerce ne voit les données d'un autre                                                                                           | `supabase/tests/01_isolation.test.sql`                                                                                          |
 
 ## Écarts par rapport à la bible
 
@@ -40,13 +40,13 @@ actions), ADR-011 (connexion par PIN, jeton temps réel, agents en lecture seule
 
 ## Tests
 
-| Commande | Résultat |
-| --- | --- |
-| `pnpm lint` | 0 erreur |
-| `pnpm typecheck` | OK |
-| `pnpm test` | 76 tests, 9 fichiers, OK |
-| `pnpm db:reset && pnpm db:test` | 122 tests pgTAP, 4 fichiers, OK |
-| `pnpm build` puis Playwright (4 projets) | 15 scénarios, OK (44 s) |
+| Commande                                 | Résultat                        |
+| ---------------------------------------- | ------------------------------- |
+| `pnpm lint`                              | 0 erreur                        |
+| `pnpm typecheck`                         | OK                              |
+| `pnpm test`                              | 76 tests, 9 fichiers, OK        |
+| `pnpm db:reset && pnpm db:test`          | 122 tests pgTAP, 4 fichiers, OK |
+| `pnpm build` puis Playwright (4 projets) | 15 scénarios, OK (44 s)         |
 
 Le délai « commande envoyée → visible en salle » mesuré par le test E12 est inférieur à 3 secondes.
 

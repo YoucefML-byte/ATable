@@ -18,6 +18,11 @@ versionnée : copiez-la dans `docs/bible/` sur votre machine (dossier ignoré pa
 
 En production : `<commerce>.atable.fr` ou le domaine du commerce, `pro.atable.fr`, `console.atable.fr`.
 
+## Essayer en ligne
+
+Une version de test gratuite (Supabase + Vercel, adresses en `vercel.app`) s'installe en suivant
+[`docs/RECETTE.md`](docs/RECETTE.md), sans ordinateur de développement.
+
 ## Démarrer en local
 
 Prérequis : Node.js 22, pnpm 10, Docker.

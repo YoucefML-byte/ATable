@@ -4,6 +4,10 @@ Ce que Claude Code ne peut pas (ou ne doit pas) faire seul. Cochez chaque case u
 
 ## Étapes 01 à 08 — application complète (2026-10-15)
 
+### Version de test en ligne (recette)
+
+- [ ] Suivre `docs/RECETTE.md` (Supabase, Vercel, paramètres GitHub, bouton « Recette — installer la base »).
+
 ### Avant la première mise en ligne
 
 - [ ] **Rendre le dépôt GitHub privé** — il est public et contiendra la configuration de production.

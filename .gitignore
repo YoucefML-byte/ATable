@@ -57,3 +57,6 @@ supabase/.branches
 # Bible du projet : confidentielle, jamais versionnée (dépôt public)
 docs/bible/
 *.pdf
+
+# Staging seed generated with secrets (scripts/recette-seed.mjs)
+supabase/recette/.generated/

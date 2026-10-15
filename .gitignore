@@ -52,3 +52,8 @@ supabase/.branches
 /test-results
 /blob-report
 /playwright/.cache
+.demo-qr/
+
+# Bible du projet : confidentielle, jamais versionnée (dépôt public)
+docs/bible/
+*.pdf

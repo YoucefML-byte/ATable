@@ -1,0 +1,121 @@
+{
+  "youAreAt": "Vous êtes à : {table}",
+  "home": {
+    "seeMenu": "Voir la carte",
+    "scanToOrder": "Scannez le QR code de votre table pour commander.",
+    "hours": "Horaires",
+    "address": "Adresse",
+    "phone": "Téléphone",
+    "noPublicMenu": "Scannez le QR code de votre table pour voir la carte et commander."
+  },
+  "status": {
+    "comingSoon": "Bientôt disponible",
+    "comingSoonText": "Ce site ouvre très prochainement.",
+    "unavailable": "Service momentanément indisponible",
+    "unavailableText": "Le service de commande est momentanément indisponible. Adressez-vous à l'équipe."
+  },
+  "qrInvalid": {
+    "title": "Ce QR code n'est plus valide",
+    "text": "Demandez à l'équipe de vous aider.",
+    "seeMenu": "Consulter la carte"
+  },
+  "menu": {
+    "title": "La carte",
+    "categories": "Catégories",
+    "unavailable": "La carte n'est pas disponible pour le moment",
+    "backAt": "Retour à {time}",
+    "ordersClosed": "Les commandes sont fermées pour le moment",
+    "from": "à partir de {price}",
+    "add": "Ajouter",
+    "addNamed": "Ajouter {name}",
+    "decrease": "Retirer un {name}",
+    "increase": "Ajouter un {name}",
+    "allergensLink": "Allergènes",
+    "allergensOf": "Allergènes de {name}",
+    "contains": "Contient : {list}.",
+    "mayContain": "Peut contenir des traces de : {list}.",
+    "noAllergen": "Aucun des 14 allergènes réglementaires.",
+    "askTeam": "Informations allergènes : demandez à l'équipe",
+    "origin": "Origine : {origin}",
+    "welcomeHide": "Masquer le message d'accueil",
+    "consultOnly": "Scannez le QR code de votre table pour commander."
+  },
+  "product": {
+    "close": "Fermer la fiche",
+    "mandatory": "obligatoire",
+    "optional": "facultatif",
+    "upTo": "jusqu'à {max}",
+    "chosen": "{count}/{max} choisies",
+    "chosenNoMax": "{count} choisie(s)",
+    "soldOut": "épuisé",
+    "addWithPrice": "Ajouter · {price}",
+    "incomplete": "Complétez les choix obligatoires",
+    "quantity": "Quantité",
+    "priceUpdated": "Nouveau prix : {price}"
+  },
+  "cart": {
+    "seeCart": "Voir mon panier · {count} · {total}",
+    "title": "Mon panier",
+    "empty": "Votre panier est vide.",
+    "note": "Une précision pour l'équipe ?",
+    "noteHelp": "Par exemple : sans oignon, allergie…",
+    "total": "Total",
+    "payAtCounter": "Le paiement se fait au comptoir.",
+    "send": "Envoyer ma commande",
+    "remove": "Supprimer",
+    "removeLine": "Retirer « {name} »",
+    "noLongerAvailable": "N'est plus disponible",
+    "confirmTitle": "Envoyer ma commande à l'équipe ?",
+    "confirmSend": "Oui, envoyer",
+    "sending": "Envoi…",
+    "added": "{name} ajouté au panier",
+    "continue": "Continuer mes achats"
+  },
+  "confirmation": {
+    "title": "Commande envoyée ✓",
+    "number": "N° {number}",
+    "willValidate": "Un membre de l'équipe va la valider.",
+    "seeOrders": "Voir mes commandes",
+    "orderMore": "Commander autre chose"
+  },
+  "orders": {
+    "title": "Mes commandes",
+    "link": "Mes commandes",
+    "empty": "Vous n'avez pas encore passé de commande à cette table.",
+    "sent": "Envoyée",
+    "withdrawn": "Retirée — un membre de l'équipe va venir vous voir.",
+    "indicativeTotal": "Total indicatif",
+    "indicativeNote": "Montant indicatif — le montant à régler vous sera indiqué au comptoir.",
+    "numberAt": "N° {number} · {time}",
+    "noTable": "Scannez le QR code de votre table pour retrouver vos commandes."
+  },
+  "footer": {
+    "legal": "Mentions légales",
+    "privacy": "Confidentialité"
+  },
+  "legal": {
+    "title": "Mentions légales",
+    "publisher": "Éditeur du site",
+    "company": "Raison sociale",
+    "form": "Forme juridique",
+    "siret": "SIRET",
+    "address": "Siège",
+    "director": "Responsable de la publication",
+    "hosts": "Hébergement",
+    "hostsText": "Application hébergée par Vercel Inc. (région Paris) ; données hébergées par Supabase (région Paris, Union européenne).",
+    "notProvided": "Non renseigné",
+    "reviewNotice": "Modèle de texte à faire relire par un professionnel."
+  },
+  "privacy": {
+    "title": "Confidentialité",
+    "intro": "Ce site vous permet de consulter la carte et de commander depuis votre table. Il ne collecte aucune donnée personnelle vous concernant : ni nom, ni e-mail, ni téléphone.",
+    "cookiesTitle": "Cookies",
+    "cookiesText": "Deux cookies strictement nécessaires au service sont utilisés. Ils sont exemptés de consentement et expirent au bout de 12 heures :",
+    "cookieTable": "atable_table : identifie la table depuis laquelle vous commandez.",
+    "cookieClient": "atable_client : identifiant aléatoire qui permet de vous montrer vos propres commandes. Il n'est relié à aucune information personnelle et est effacé de nos serveurs après 48 heures.",
+    "noTracking": "Aucun outil de mesure d'audience, aucun traceur publicitaire, aucune police ou script provenant d'un service tiers.",
+    "rightsTitle": "Vos droits",
+    "rightsText": "Aucune donnée permettant de vous identifier n'étant collectée, il n'y a pas de données à consulter ou à supprimer. Pour toute question, adressez-vous à l'établissement.",
+    "reviewNotice": "Modèle de texte à faire relire par un professionnel."
+  }
+}

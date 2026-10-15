@@ -198,7 +198,25 @@
     "note": "Précision du client",
     "previous": "Précédent",
     "next": "Suivant",
-    "page": "Page {page}"
+    "page": "Page {page}",
+    "csv": {
+      "businessDay": "Journée",
+      "number": "N°",
+      "date": "Date",
+      "table": "Table",
+      "status": "Statut",
+      "source": "Source",
+      "items": "Articles",
+      "amount": "Montant commandé (€)",
+      "note": "Précision",
+      "reason": "Motif interne",
+      "category": "Catégorie",
+      "product": "Produit",
+      "options": "Options",
+      "quantity": "Quantité",
+      "unitPrice": "Prix unitaire (€)",
+      "lineTotal": "Total ligne (€)"
+    }
   },
   "catalog": {
     "title": "Carte",
@@ -426,13 +444,28 @@
     "accent": "Couleur d'accent",
     "fonts": "Typographies",
     "radius": "Arrondis",
-    "radiusOptions": { "carre": "Carré", "doux": "Doux", "arrondi": "Arrondi" },
+    "radiusOptions": {
+      "carre": "Carré",
+      "doux": "Doux",
+      "arrondi": "Arrondi"
+    },
     "density": "Densité",
-    "densityOptions": { "compacte": "Compacte", "aeree": "Aérée" },
+    "densityOptions": {
+      "compacte": "Compacte",
+      "aeree": "Aérée"
+    },
     "layout": "Mise en page de la carte",
-    "layoutOptions": { "liste": "Liste", "grille": "Grille avec photos", "minimaliste": "Minimaliste" },
+    "layoutOptions": {
+      "liste": "Liste",
+      "grille": "Grille avec photos",
+      "minimaliste": "Minimaliste"
+    },
     "scheme": "Mode",
-    "schemeOptions": { "clair": "Clair", "sombre": "Sombre", "auto": "Automatique (suit le téléphone)" },
+    "schemeOptions": {
+      "clair": "Clair",
+      "sombre": "Sombre",
+      "auto": "Automatique (suit le téléphone)"
+    },
     "preview": "Aperçu",
     "reset": "Annuler les modifications",
     "backToPreset": "Revenir au préréglage",

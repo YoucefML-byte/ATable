@@ -781,6 +781,15 @@ isOneToOne: false
 "analytics_unsold_products":
 { Args: { "p_from": string,"p_shop_id": string,"p_to": string }; Returns: Json
                            },
+"auth_mfa_wait_seconds":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
+"auth_register_mfa_failure":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
+"auth_reset_mfa_failures":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
 "console_anomalies":
 { Args: Record<PropertyKey, never>; Returns: {
               "name": string,"open_tables_old": number,"pin_failures_1h": number,"refusal_rate_today": number,"shop_id": string
@@ -806,8 +815,14 @@ isOneToOne: false
               "active_devices": number,"billing_status": Database["public"]['Enums']["billing_status"],"created_at": string,"last_order_at": string,"name": string,"next_due_on": string,"orders_7d": number,"primary_host": string,"shop_id": string,"slug": string,"status": Database["public"]['Enums']["shop_status"]
             }[]
                            },
+"owner_create_tables":
+{ Args: { "p_shop_id": string,"p_tables": Json }; Returns: number
+                           },
 "owner_duplicate_product":
 { Args: { "p_product_id": string }; Returns: string
+                           },
+"owner_enroll_device":
+{ Args: { "p_name": string,"p_secret_hash": string,"p_shop_id": string }; Returns: string
                            },
 "owner_reorder":
 { Args: { "p_entity": string,"p_ids": (string)[] }; Returns: undefined

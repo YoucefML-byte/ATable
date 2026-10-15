@@ -6,11 +6,11 @@ import { buildCsp, generateNonce, securityHeaders, type Space } from '@/server/s
 // routes. Authorisations are checked in pages, server actions and above all in the database.
 //
 // Internal prefixes (reachable only through a rewrite, ADR-010):
-//   pro.<platform>      → /_pro/...
-//   console.<platform>  → /_console/...
-//   any other host      → /_site/<host>/...
+//   pro.<platform>      → /int-pro/...
+//   console.<platform>  → /int-console/...
+//   any other host      → /int-site/<host>/...
 
-const INTERNAL_PREFIX = /^\/(?:_|%5F)(?:site|pro|console)(?:\/|$)/i;
+const INTERNAL_PREFIX = /^\/(?:int-(?:site|pro|console)|(?:_|%5F)(?:site|pro|console))(?:\/|$)/i;
 
 function normalizeHost(raw: string | null): string {
   return (raw ?? '').trim().toLowerCase().replace(/:\d+$/, '').replace(/\.$/, '');
@@ -79,10 +79,10 @@ export async function proxy(request: NextRequest) {
     const target = request.nextUrl.clone();
     target.pathname =
       space === 'pro'
-        ? `/_pro${pathname}`
+        ? `/int-pro${pathname}`
         : space === 'console'
-          ? `/_console${pathname}`
-          : `/_site/${encodeURIComponent(host)}${pathname === '/' ? '' : pathname}`;
+          ? `/int-console${pathname}`
+          : `/int-site/${encodeURIComponent(host)}${pathname === '/' ? '' : pathname}`;
     target.search = search;
     response = NextResponse.rewrite(target, { request: { headers: requestHeaders } });
   }
@@ -123,7 +123,7 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     {
-      source: '/((?!_next/static|_next/image|favicon.ico|sounds/|icons/|robots.txt|manifest.webmanifest).*)',
+      source: '/((?!_next/|__nextjs|favicon.ico|icons/|robots.txt|manifest.webmanifest).*)',
     },
   ],
 };

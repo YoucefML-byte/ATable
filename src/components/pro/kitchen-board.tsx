@@ -34,12 +34,20 @@ export function KitchenBoard({
   const t = useTranslations('pro.kitchen');
   const tp = useTranslations('common.prepStation');
   const te = useTranslations('errors');
-  const { orders, reload, status, serverNow, thresholds } = useActiveOrders({ shopId: shop.id, shopSlug: shop.slug, supabaseUrl, publishableKey, initial });
+  const { orders, reload, status, serverNow, thresholds } = useActiveOrders({
+    shopId: shop.id,
+    shopSlug: shop.slug,
+    supabaseUrl,
+    publishableKey,
+    initial,
+  });
   useTick(1000);
   const [filter, setFilter] = useState<Filter>('all');
   const [started, setStarted] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
-  const [pendingReady, setPendingReady] = useState<Record<string, { number: number; timer: ReturnType<typeof setTimeout> }>>({});
+  const [pendingReady, setPendingReady] = useState<
+    Record<string, { number: number; timer: ReturnType<typeof setTimeout> }>
+  >({});
   const [error, setError] = useState<string | null>(null);
   const lateNotified = useRef(new Set<string>());
 
@@ -47,13 +55,22 @@ export function KitchenBoard({
     () =>
       orders
         .filter((o) => o.status === 'accepted' && !pendingReady[o.id])
-        .sort((a, b) => new Date(a.accepted_at ?? a.created_at).getTime() - new Date(b.accepted_at ?? b.created_at).getTime()),
+        .sort(
+          (a, b) =>
+            new Date(a.accepted_at ?? a.created_at).getTime() -
+            new Date(b.accepted_at ?? b.created_at).getTime(),
+        ),
     [orders, pendingReady],
   );
 
   const now = serverNow();
   const elapsed = (o: StaffOrder) => now - new Date(o.accepted_at ?? o.created_at).getTime();
-  const level = (ms: number) => (ms >= thresholds.critical * 60_000 ? 'critical' : ms >= thresholds.warning * 60_000 ? 'warning' : 'normal');
+  const level = (ms: number) =>
+    ms >= thresholds.critical * 60_000
+      ? 'critical'
+      : ms >= thresholds.warning * 60_000
+        ? 'warning'
+        : 'normal';
 
   // Distinct sound played once per order when it turns red.
   useEffect(() => {
@@ -68,7 +85,12 @@ export function KitchenBoard({
   function markReady(order: StaffOrder) {
     setError(null);
     const timer = setTimeout(async () => {
-      const res = await transitionOrderAction({ shopSlug: shop.slug, orderId: order.id, to: 'ready', reason: null });
+      const res = await transitionOrderAction({
+        shopSlug: shop.slug,
+        orderId: order.id,
+        to: 'ready',
+        reason: null,
+      });
       setPendingReady((p) => {
         const next = { ...p };
         delete next[order.id];
@@ -97,13 +119,13 @@ export function KitchenBoard({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-[1.75rem] font-semibold">{t('title')}</h1>
-          <p className="text-lg text-muted">
+          <p className="text-muted text-lg">
             {t('count', { count: queue.length })}
             {queue.length > 0 && ` · ${t('oldest', { minutes: oldestMinutes })}`}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <div role="radiogroup" className="flex gap-1 rounded-lg bg-brand-soft p-1">
+          <div role="radiogroup" className="bg-brand-soft flex gap-1 rounded-lg p-1">
             {(['all', 'kitchen', 'bar'] as Filter[]).map((f) => (
               <button
                 key={f}
@@ -111,55 +133,98 @@ export function KitchenBoard({
                 role="radio"
                 aria-checked={filter === f}
                 onClick={() => setFilter(f)}
-                className={cn('min-h-12 rounded-md px-4 font-semibold', filter === f ? 'bg-surface shadow' : '')}
+                className={cn(
+                  'min-h-12 rounded-md px-4 font-semibold',
+                  filter === f ? 'bg-surface shadow' : '',
+                )}
               >
-                {f === 'all' ? t('filterAll') : f === 'kitchen' ? t('filterKitchen') : t('filterBar')}
+                {f === 'all'
+                  ? t('filterAll')
+                  : f === 'kitchen'
+                    ? t('filterKitchen')
+                    : t('filterBar')}
               </button>
             ))}
           </div>
-          <ServiceBar started={started} onStart={() => setStarted(true)} soundOn={soundOn} onToggleSound={() => setSoundOn((s) => !s)} status={status} />
+          <ServiceBar
+            started={started}
+            onStart={() => setStarted(true)}
+            soundOn={soundOn}
+            onToggleSound={() => setSoundOn((s) => !s)}
+            status={status}
+          />
         </div>
       </div>
       {error && (
-        <p role="alert" className="rounded-lg bg-st-danger-soft p-3 font-medium">
+        <p role="alert" className="bg-st-danger-soft rounded-lg p-3 font-medium">
           {error}
         </p>
       )}
 
       {Object.entries(pendingReady).map(([id, p]) => (
-        <div key={id} role="status" className="flex items-center justify-between gap-3 rounded-xl bg-st-ready-soft p-3 text-lg font-semibold">
+        <div
+          key={id}
+          role="status"
+          className="bg-st-ready-soft flex items-center justify-between gap-3 rounded-xl p-3 text-lg font-semibold"
+        >
           <span>{t('markedReady', { number: String(p.number).padStart(3, '0') })}</span>
-          <button type="button" onClick={() => undo(id)} className="min-h-12 rounded-lg border-2 border-fg px-5 font-bold">
+          <button
+            type="button"
+            onClick={() => undo(id)}
+            className="border-fg min-h-12 rounded-lg border-2 px-5 font-bold"
+          >
             {t('undo')}
           </button>
         </div>
       ))}
 
-      {queue.length === 0 && <p className="rounded-xl border border-dashed border-line p-10 text-center text-xl text-muted">{t('empty')}</p>}
+      {queue.length === 0 && (
+        <p className="border-line text-muted rounded-xl border border-dashed p-10 text-center text-xl">
+          {t('empty')}
+        </p>
+      )}
 
       <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {queue.map((order) => {
           const ms = elapsed(order);
           const lvl = level(ms);
-          const items = filter === 'all' ? order.items : order.items.filter((i) => i.prep_station === filter);
-          const others = filter === 'all' ? [] : order.items.filter((i) => i.prep_station !== filter && i.prep_station !== 'none');
+          const items =
+            filter === 'all' ? order.items : order.items.filter((i) => i.prep_station === filter);
+          const others =
+            filter === 'all'
+              ? []
+              : order.items.filter((i) => i.prep_station !== filter && i.prep_station !== 'none');
           if (filter !== 'all' && items.length === 0) return null;
           const otherStation = filter === 'kitchen' ? 'bar' : 'kitchen';
           return (
             <li key={order.id}>
               <article
                 className={cn(
-                  'flex h-full flex-col gap-3 rounded-xl border-4 bg-surface p-4',
-                  lvl === 'critical' ? 'pulse-critical border-st-danger' : lvl === 'warning' ? 'border-st-warning' : 'border-line',
+                  'bg-surface flex h-full flex-col gap-3 rounded-xl border-4 p-4',
+                  lvl === 'critical'
+                    ? 'pulse-critical border-st-danger'
+                    : lvl === 'warning'
+                      ? 'border-st-warning'
+                      : 'border-line',
                 )}
               >
                 <header className="flex items-start justify-between gap-2">
                   <p className="text-xl font-bold">
-                    <span className="tabular">#{String(order.number).padStart(3, '0')}</span> <span className="text-[1.625rem]">{order.table_label}</span>
+                    <span className="tabular">#{String(order.number).padStart(3, '0')}</span>{' '}
+                    <span className="text-[1.625rem]">{order.table_label}</span>
                   </p>
                   <p
-                    className={cn('tabular rounded-lg px-2 text-[2.5rem] leading-none font-bold', lvl === 'critical' ? 'text-st-danger' : lvl === 'warning' ? 'text-st-warning' : '')}
-                    aria-label={lvl === 'critical' ? `${t('late')} ${formatTimer(ms)}` : formatTimer(ms)}
+                    className={cn(
+                      'tabular rounded-lg px-2 text-[2.5rem] leading-none font-bold',
+                      lvl === 'critical'
+                        ? 'text-st-danger'
+                        : lvl === 'warning'
+                          ? 'text-st-warning'
+                          : '',
+                    )}
+                    aria-label={
+                      lvl === 'critical' ? `${t('late')} ${formatTimer(ms)}` : formatTimer(ms)
+                    }
                   >
                     {formatTimer(ms)}
                   </p>
@@ -167,11 +232,20 @@ export function KitchenBoard({
                 <div className="flex-1">
                   <OrderLines items={items} large />
                   {others.length > 0 && (
-                    <p className="mt-2 text-lg text-muted">{t('otherStation', { count: others.reduce((a, i) => a + i.quantity, 0), station: tp(otherStation).toLowerCase() })}</p>
+                    <p className="text-muted mt-2 text-lg">
+                      {t('otherStation', {
+                        count: others.reduce((a, i) => a + i.quantity, 0),
+                        station: tp(otherStation).toLowerCase(),
+                      })}
+                    </p>
                   )}
                 </div>
                 <OrderNote note={order.note} large />
-                <button type="button" onClick={() => markReady(order)} className="min-h-16 w-full rounded-xl bg-st-ready text-2xl font-bold text-bg">
+                <button
+                  type="button"
+                  onClick={() => markReady(order)}
+                  className="bg-st-ready text-bg min-h-16 w-full rounded-xl text-2xl font-bold"
+                >
                   {t('ready').toUpperCase()}
                 </button>
               </article>

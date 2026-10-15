@@ -8,7 +8,12 @@ export function generateNonce(): string {
   return Buffer.from(bytes).toString('base64');
 }
 
-export function buildCsp(opts: { nonce: string; supabaseUrl: string; storageUrl: string; isDev: boolean }): string {
+export function buildCsp(opts: {
+  nonce: string;
+  supabaseUrl: string;
+  storageUrl: string;
+  isDev: boolean;
+}): string {
   const supabase = new URL(opts.supabaseUrl);
   const storage = new URL(opts.storageUrl);
   const wss = `${supabase.protocol === 'https:' ? 'wss' : 'ws'}://${supabase.host}`;

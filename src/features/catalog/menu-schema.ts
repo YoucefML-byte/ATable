@@ -82,5 +82,13 @@ export const ALLERGEN_CODES = [
 ] as const;
 export type AllergenCode = (typeof ALLERGEN_CODES)[number];
 
-export const PRODUCT_TAGS = ['vegetarian', 'vegan', 'spicy', 'homemade', 'new', 'signature', 'gluten_free'] as const;
+export const PRODUCT_TAGS = [
+  'vegetarian',
+  'vegan',
+  'spicy',
+  'homemade',
+  'new',
+  'signature',
+  'gluten_free',
+] as const;
 export type ProductTag = (typeof PRODUCT_TAGS)[number];

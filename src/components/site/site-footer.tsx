@@ -5,7 +5,7 @@ import { getTranslations } from 'next-intl/server';
 export async function SiteFooter({ priceNotice }: { priceNotice: string }) {
   const t = await getTranslations('site.footer');
   return (
-    <footer className="mt-auto border-t border-line px-4 py-6 pb-28 text-center text-sm text-muted">
+    <footer className="border-line text-muted mt-auto border-t px-4 py-6 pb-28 text-center text-sm">
       {priceNotice && <p>{priceNotice}</p>}
       <p className="mt-2 flex justify-center gap-4">
         <Link href="/mentions-legales" className="underline underline-offset-2">

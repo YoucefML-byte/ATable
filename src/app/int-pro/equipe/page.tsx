@@ -9,7 +9,11 @@ import { Card } from '@/components/ui/primitives';
 export const metadata: Metadata = { title: 'Connexion de l’équipe' };
 
 // Staff login screen: only on an enrolled device (AUTH-03).
-export default async function StaffLoginPage({ searchParams }: { searchParams: Promise<{ m?: string }> }) {
+export default async function StaffLoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ m?: string }>;
+}) {
   const sp = await searchParams;
   const device = await getCurrentDevice();
   const t = await getTranslations('pro.staffLogin');
@@ -29,5 +33,12 @@ export default async function StaffLoginPage({ searchParams }: { searchParams: P
     createAdminClient().from('shops').select('name').eq('id', device.shop_id).single(),
     listStaffForDevice(device.shop_id),
   ]);
-  return <StaffLogin shopName={shop?.name ?? ''} deviceName={device.name} staff={staff} {...(sp.m ? { preselect: sp.m } : {})} />;
+  return (
+    <StaffLogin
+      shopName={shop?.name ?? ''}
+      deviceName={device.name}
+      staff={staff}
+      {...(sp.m ? { preselect: sp.m } : {})}
+    />
+  );
 }

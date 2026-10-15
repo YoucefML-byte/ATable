@@ -30,7 +30,8 @@ export default async function MenuPage({ params }: { params: Promise<{ host: str
 
   const menu = await getPublicMenu(shop.shop_id);
   const empty = !menu || menu.categories.length === 0;
-  const nextOpening = empty && menu?.next_change_at ? formatHourFr(menu.next_change_at, shop.timezone) : null;
+  const nextOpening =
+    empty && menu?.next_change_at ? formatHourFr(menu.next_change_at, shop.timezone) : null;
 
   return (
     <>
@@ -39,7 +40,9 @@ export default async function MenuPage({ params }: { params: Promise<{ host: str
         <h1 className="sr-only">{t('menu.title')}</h1>
         {shop.welcome_message && !empty && (
           <details open className="mx-auto max-w-3xl px-4 pt-3">
-            <summary className="cursor-pointer text-sm text-muted marker:text-muted">{t('menu.welcomeHide')}</summary>
+            <summary className="text-muted marker:text-muted cursor-pointer text-sm">
+              {t('menu.welcomeHide')}
+            </summary>
             <p className="mt-1">{shop.welcome_message}</p>
           </details>
         )}

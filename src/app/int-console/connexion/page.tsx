@@ -3,7 +3,11 @@ import { LoginPage } from '@/components/auth/auth-pages';
 
 export const metadata: Metadata = { title: 'Connexion' };
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ refus?: string; lien?: string }> }) {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ refus?: string; lien?: string }>;
+}) {
   const sp = await searchParams;
   return <LoginPage space="console" refused={sp.refus === '1'} expired={sp.lien === 'expire'} />;
 }

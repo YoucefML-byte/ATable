@@ -1,11 +1,21 @@
 import { describe, expect, it } from 'vitest';
 import { contrastRatio, hexToOklch, oklchToHex } from './color';
-import { PRESETS, onColorPairs, textColorsFor, themeCss, validateThemeContrast, type ThemeSettings } from './theme';
+import {
+  PRESETS,
+  onColorPairs,
+  textColorsFor,
+  themeCss,
+  validateThemeContrast,
+  type ThemeSettings,
+} from './theme';
 
 function randomHex(seed: number): string {
   let x = seed * 9301 + 49297;
-  const next = () => ((x = (x * 9301 + 49297) % 233280) / 233280);
-  const c = () => Math.floor(next() * 256).toString(16).padStart(2, '0');
+  const next = () => (x = (x * 9301 + 49297) % 233280) / 233280;
+  const c = () =>
+    Math.floor(next() * 256)
+      .toString(16)
+      .padStart(2, '0');
   return `#${c()}${c()}${c()}`;
 }
 
@@ -34,14 +44,20 @@ describe('theme guards (CLI-09, vol. 07 §3.4, ADR-009)', () => {
       };
       for (const mode of ['clair', 'sombre'] as const) {
         const { bg, surfaces, colors, muted } = textColorsFor(theme, mode);
-        for (const color of colors) for (const s of surfaces) expect(contrastRatio(color, s)).toBeGreaterThanOrEqual(4.5);
+        for (const color of colors)
+          for (const s of surfaces) expect(contrastRatio(color, s)).toBeGreaterThanOrEqual(4.5);
         expect(contrastRatio(muted, bg)).toBeGreaterThanOrEqual(4.5);
-        for (const [fg, fill] of onColorPairs(theme, mode)) expect(contrastRatio(fg, fill)).toBeGreaterThanOrEqual(4.5);
+        for (const [fg, fill] of onColorPairs(theme, mode))
+          expect(contrastRatio(fg, fill)).toBeGreaterThanOrEqual(4.5);
       }
     }
   });
   it('blocks a main colour invisible on the page, with a corrected shade', () => {
-    const issues = validateThemeContrast({ ...base, primary_color: '#F4F4F4', color_scheme: 'clair' });
+    const issues = validateThemeContrast({
+      ...base,
+      primary_color: '#F4F4F4',
+      color_scheme: 'clair',
+    });
     expect(issues).toHaveLength(1);
     expect(issues[0]!.suggestion).not.toBeNull();
     expect(contrastRatio(issues[0]!.suggestion!, '#FFFFFF')).toBeGreaterThanOrEqual(3);

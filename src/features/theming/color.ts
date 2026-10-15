@@ -11,7 +11,10 @@ export function hexToRgb(hex: string): Rgb {
 }
 
 export function rgbToHex({ r, g, b }: Rgb): string {
-  const to = (v: number) => Math.round(Math.min(255, Math.max(0, v))).toString(16).padStart(2, '0');
+  const to = (v: number) =>
+    Math.round(Math.min(255, Math.max(0, v)))
+      .toString(16)
+      .padStart(2, '0');
   return `#${to(r)}${to(g)}${to(b)}`.toUpperCase();
 }
 
@@ -41,7 +44,9 @@ export function contrastRatio(a: string, b: string): number {
 
 /** Black or white, whichever reads best on the background. */
 export function readableOn(background: string): '#000000' | '#FFFFFF' {
-  return contrastRatio(background, '#000000') >= contrastRatio(background, '#FFFFFF') ? '#000000' : '#FFFFFF';
+  return contrastRatio(background, '#000000') >= contrastRatio(background, '#FFFFFF')
+    ? '#000000'
+    : '#FFFFFF';
 }
 
 export function hexToOklch(hex: string): Oklch {
@@ -71,7 +76,11 @@ export function oklchToHex({ l, c, h }: Oklch): string {
   const r = 4.0767416621 * l_ - 3.3077115913 * m_ + 0.2309699292 * s_;
   const g = -1.2684380046 * l_ + 2.6097574011 * m_ - 0.3413193965 * s_;
   const b = -0.0041960863 * l_ - 0.7034186147 * m_ + 1.707614701 * s_;
-  return rgbToHex({ r: linearToSrgb(Math.max(0, Math.min(1, r))), g: linearToSrgb(Math.max(0, Math.min(1, g))), b: linearToSrgb(Math.max(0, Math.min(1, b))) });
+  return rgbToHex({
+    r: linearToSrgb(Math.max(0, Math.min(1, r))),
+    g: linearToSrgb(Math.max(0, Math.min(1, g))),
+    b: linearToSrgb(Math.max(0, Math.min(1, b))),
+  });
 }
 
 /** Same hue and chroma, another lightness (clamped). */
@@ -84,7 +93,11 @@ export function withLightness(hex: string, l: number): string {
  * Darkens (or lightens) a colour along OKLCH lightness until it reaches the target contrast
  * against the given background. Returns null if impossible.
  */
-export function adjustForContrast(color: string, background: string, target: number): string | null {
+export function adjustForContrast(
+  color: string,
+  background: string,
+  target: number,
+): string | null {
   if (contrastRatio(color, background) >= target) return color.toUpperCase();
   const o = hexToOklch(color);
   const bgIsLight = luminance(background) > 0.18;

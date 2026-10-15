@@ -50,20 +50,25 @@ export function CartSheet({
       aria-labelledby={titleId}
       onClose={onClose}
       onCancel={onClose}
-      className="m-0 mt-auto max-h-[92dvh] w-full max-w-none rounded-t-theme bg-bg p-0 text-fg backdrop:bg-black/50 sm:mx-auto sm:mb-auto sm:max-w-lg sm:rounded-theme"
+      className="rounded-t-theme bg-bg text-fg sm:rounded-theme m-0 mt-auto max-h-[92dvh] w-full max-w-none p-0 backdrop:bg-black/50 sm:mx-auto sm:mb-auto sm:max-w-lg"
     >
       <div className="flex max-h-[92dvh] flex-col">
-        <div className="flex items-center justify-between border-b border-line p-4">
+        <div className="border-line flex items-center justify-between border-b p-4">
           <h2 id={titleId} className="font-display text-xl font-semibold">
             {confirming ? t('confirmTitle') : t('title')}
           </h2>
-          <button type="button" onClick={onClose} className="inline-flex h-11 w-11 items-center justify-center rounded-full" aria-label={tp('close')}>
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full"
+            aria-label={tp('close')}
+          >
             <X aria-hidden className="h-5 w-5" />
           </button>
         </div>
         <div className="flex-1 space-y-4 overflow-y-auto p-4">
           {cart.lines.length === 0 && <p className="text-muted">{t('empty')}</p>}
-          <ul className="divide-y divide-line">
+          <ul className="divide-line divide-y">
             {cart.lines.map((line) => (
               <li key={line.key} className={`py-3 ${line.unavailable ? 'text-st-danger' : ''}`}>
                 <div className="flex items-start justify-between gap-2">
@@ -72,22 +77,44 @@ export function CartSheet({
                       {line.quantity} × {line.name}
                     </p>
                     {line.options.length > 0 && (
-                      <p className="text-sm text-muted">{line.options.map((o) => (o.quantity > 1 ? `${o.name} ×${o.quantity}` : o.name)).join(', ')}</p>
+                      <p className="text-muted text-sm">
+                        {line.options
+                          .map((o) => (o.quantity > 1 ? `${o.name} ×${o.quantity}` : o.name))
+                          .join(', ')}
+                      </p>
                     )}
-                    {line.unavailable && <p className="text-sm font-semibold">{t('noLongerAvailable')}</p>}
+                    {line.unavailable && (
+                      <p className="text-sm font-semibold">{t('noLongerAvailable')}</p>
+                    )}
                   </div>
                   <span className="tabular shrink-0">{formatPrice(linePriceCents(line))}</span>
                 </div>
                 {!confirming && (
                   <div className="mt-2 flex items-center gap-1">
-                    <button type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line" aria-label={`− ${line.name}`} onClick={() => onQuantity(line.key, line.quantity - 1)}>
+                    <button
+                      type="button"
+                      className="border-line inline-flex h-11 w-11 items-center justify-center rounded-full border"
+                      aria-label={`− ${line.name}`}
+                      onClick={() => onQuantity(line.key, line.quantity - 1)}
+                    >
                       <Minus aria-hidden className="h-4 w-4" />
                     </button>
                     <span className="tabular w-6 text-center">{line.quantity}</span>
-                    <button type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line disabled:opacity-40" disabled={line.quantity >= 20} aria-label={`+ ${line.name}`} onClick={() => onQuantity(line.key, line.quantity + 1)}>
+                    <button
+                      type="button"
+                      className="border-line inline-flex h-11 w-11 items-center justify-center rounded-full border disabled:opacity-40"
+                      disabled={line.quantity >= 20}
+                      aria-label={`+ ${line.name}`}
+                      onClick={() => onQuantity(line.key, line.quantity + 1)}
+                    >
                       <Plus aria-hidden className="h-4 w-4" />
                     </button>
-                    <button type="button" className="ml-auto inline-flex min-h-11 items-center gap-1 rounded-button px-3 text-sm" aria-label={t('removeLine', { name: line.name })} onClick={() => onQuantity(line.key, 0)}>
+                    <button
+                      type="button"
+                      className="rounded-button ml-auto inline-flex min-h-11 items-center gap-1 px-3 text-sm"
+                      aria-label={t('removeLine', { name: line.name })}
+                      onClick={() => onQuantity(line.key, 0)}
+                    >
                       <Trash2 aria-hidden className="h-4 w-4" />
                       {t('remove')}
                     </button>
@@ -109,22 +136,25 @@ export function CartSheet({
                 rows={2}
                 onChange={(e) => onNote(e.target.value)}
                 placeholder={t('noteHelp')}
-                className="mt-1 w-full rounded-theme border border-line bg-surface p-3"
+                className="rounded-theme border-line bg-surface mt-1 w-full border p-3"
               />
-              <p className="text-right text-xs text-muted">
+              <p className="text-muted text-right text-xs">
                 {cart.note.length}/{MAX_NOTE_LENGTH}
               </p>
             </div>
           )}
         </div>
-        <div className="space-y-2 border-t border-line p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="border-line space-y-2 border-t p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <p className="flex justify-between text-lg font-semibold">
             <span>{t('total')}</span>
             <span className="tabular">{formatPrice(total)}</span>
           </p>
-          <p className="text-sm text-muted">{t('payAtCounter')}</p>
+          <p className="text-muted text-sm">{t('payAtCounter')}</p>
           {error && (
-            <p role="alert" className="rounded-theme bg-st-danger-soft p-3 text-sm font-medium text-fg">
+            <p
+              role="alert"
+              className="rounded-theme bg-st-danger-soft text-fg p-3 text-sm font-medium"
+            >
               {error}
             </p>
           )}
@@ -133,14 +163,19 @@ export function CartSheet({
               type="button"
               disabled={hasUnavailable}
               onClick={() => setConfirming(true)}
-              className="min-h-12 w-full rounded-button bg-brand font-semibold text-brand-fg hover:bg-brand-hover disabled:opacity-50"
+              className="rounded-button bg-brand text-brand-fg hover:bg-brand-hover min-h-12 w-full font-semibold disabled:opacity-50"
             >
               {t('send')}
             </button>
           )}
           {confirming && (
             <div className="grid grid-cols-2 gap-2">
-              <button type="button" disabled={sending} onClick={() => setConfirming(false)} className="min-h-12 rounded-button border border-line font-semibold">
+              <button
+                type="button"
+                disabled={sending}
+                onClick={() => setConfirming(false)}
+                className="rounded-button border-line min-h-12 border font-semibold"
+              >
                 {t('continue')}
               </button>
               <button
@@ -150,7 +185,7 @@ export function CartSheet({
                   onSend();
                   setConfirming(false);
                 }}
-                className="min-h-12 rounded-button bg-brand font-semibold text-brand-fg hover:bg-brand-hover disabled:opacity-60"
+                className="rounded-button bg-brand text-brand-fg hover:bg-brand-hover min-h-12 font-semibold disabled:opacity-60"
               >
                 {sending ? t('sending') : t('confirmSend')}
               </button>

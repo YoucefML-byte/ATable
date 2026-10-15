@@ -15,7 +15,13 @@ export function unlockAudio(): boolean {
   }
 }
 
-function tone(frequency: number, start: number, duration: number, volume: number, type: OscillatorType = 'sine') {
+function tone(
+  frequency: number,
+  start: number,
+  duration: number,
+  volume: number,
+  type: OscillatorType = 'sine',
+) {
   if (!context) return;
   const osc = context.createOscillator();
   const gain = context.createGain();
@@ -45,7 +51,9 @@ let wakeLock: { release: () => Promise<void> } | null = null;
 /** Keeps the screen on during the service (Screen Wake Lock API). */
 export async function keepScreenOn(): Promise<void> {
   try {
-    const nav = navigator as Navigator & { wakeLock?: { request: (t: 'screen') => Promise<{ release: () => Promise<void> }> } };
+    const nav = navigator as Navigator & {
+      wakeLock?: { request: (t: 'screen') => Promise<{ release: () => Promise<void> }> };
+    };
     wakeLock = (await nav.wakeLock?.request('screen')) ?? null;
   } catch {
     wakeLock = null;

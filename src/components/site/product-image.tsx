@@ -19,7 +19,9 @@ export function ProductImage({
     <img
       src={size === 'small' ? small : large}
       srcSet={`${small} 400w, ${large} 1200w`}
-      sizes={size === 'small' ? '(min-width: 640px) 200px, 33vw' : '(min-width: 640px) 512px, 100vw'}
+      sizes={
+        size === 'small' ? '(min-width: 640px) 200px, 33vw' : '(min-width: 640px) 512px, 100vw'
+      }
       width={size === 'small' ? 400 : 1200}
       height={size === 'small' ? 400 : 900}
       loading="lazy"

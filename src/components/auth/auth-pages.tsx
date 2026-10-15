@@ -4,7 +4,13 @@ import { getSessionClaims } from '@/server/auth/session';
 import { isStaffEmail } from '@/server/auth/guards';
 import { createUserClient } from '@/server/supabase/user';
 import { Alert, Button, Card } from '@/components/ui/primitives';
-import { ForgotPasswordForm, LoginForm, MfaEnrollForm, MfaVerifyForm, NewPasswordForm } from './forms';
+import {
+  ForgotPasswordForm,
+  LoginForm,
+  MfaEnrollForm,
+  MfaVerifyForm,
+  NewPasswordForm,
+} from './forms';
 
 // Authentication pages shared by the pro space and the console (vol. 02 AUTH-01).
 
@@ -19,7 +25,15 @@ function Shell({ title, children }: { title: string; children: React.ReactNode }
   );
 }
 
-export async function LoginPage({ space, refused, expired }: { space: 'pro' | 'console'; refused?: boolean; expired?: boolean }) {
+export async function LoginPage({
+  space,
+  refused,
+  expired,
+}: {
+  space: 'pro' | 'console';
+  refused?: boolean;
+  expired?: boolean;
+}) {
   const claims = await getSessionClaims();
   if (claims && claims.aal === 'aal2' && !refused) redirect('/');
   const t = await getTranslations('pro');

@@ -14,24 +14,113 @@ export type FontPair = keyof typeof FONT_PAIRS;
 
 export type ThemeSettings = Pick<
   ShopTheme,
-  'preset' | 'primary_color' | 'accent_color' | 'font_pair' | 'radius' | 'density' | 'menu_layout' | 'color_scheme'
+  | 'preset'
+  | 'primary_color'
+  | 'accent_color'
+  | 'font_pair'
+  | 'radius'
+  | 'density'
+  | 'menu_layout'
+  | 'color_scheme'
 >;
 
 export const PRESETS: Record<string, ThemeSettings & { label: string }> = {
-  classique: { label: 'Classique', preset: 'classique', primary_color: '#1F4D3A', accent_color: '#E0A33A', font_pair: 'classique', radius: 'doux', density: 'aeree', menu_layout: 'liste', color_scheme: 'clair' },
-  brasserie: { label: 'Brasserie', preset: 'brasserie', primary_color: '#7A2E1F', accent_color: '#D9A441', font_pair: 'bistrot', radius: 'doux', density: 'aeree', menu_layout: 'liste', color_scheme: 'clair' },
-  'street-food': { label: 'Street food', preset: 'street-food', primary_color: '#111111', accent_color: '#F5C400', font_pair: 'street', radius: 'carre', density: 'compacte', menu_layout: 'grille', color_scheme: 'clair' },
-  lounge: { label: 'Lounge', preset: 'lounge', primary_color: '#3B1F5C', accent_color: '#E3B04B', font_pair: 'elegant', radius: 'arrondi', density: 'aeree', menu_layout: 'grille', color_scheme: 'sombre' },
-  cafe: { label: 'Café', preset: 'cafe', primary_color: '#5B3A29', accent_color: '#C98B4F', font_pair: 'moderne', radius: 'doux', density: 'compacte', menu_layout: 'minimaliste', color_scheme: 'auto' },
-  'salon-de-the': { label: 'Salon de thé', preset: 'salon-de-the', primary_color: '#9C4A6B', accent_color: '#E8B4B8', font_pair: 'doux', radius: 'arrondi', density: 'aeree', menu_layout: 'grille', color_scheme: 'clair' },
-  'bistrot-nature': { label: 'Bistrot nature', preset: 'bistrot-nature', primary_color: '#3F5E3A', accent_color: '#C7B37A', font_pair: 'bistrot', radius: 'doux', density: 'aeree', menu_layout: 'liste', color_scheme: 'clair' },
+  classique: {
+    label: 'Classique',
+    preset: 'classique',
+    primary_color: '#1F4D3A',
+    accent_color: '#E0A33A',
+    font_pair: 'classique',
+    radius: 'doux',
+    density: 'aeree',
+    menu_layout: 'liste',
+    color_scheme: 'clair',
+  },
+  brasserie: {
+    label: 'Brasserie',
+    preset: 'brasserie',
+    primary_color: '#7A2E1F',
+    accent_color: '#D9A441',
+    font_pair: 'bistrot',
+    radius: 'doux',
+    density: 'aeree',
+    menu_layout: 'liste',
+    color_scheme: 'clair',
+  },
+  'street-food': {
+    label: 'Street food',
+    preset: 'street-food',
+    primary_color: '#111111',
+    accent_color: '#F5C400',
+    font_pair: 'street',
+    radius: 'carre',
+    density: 'compacte',
+    menu_layout: 'grille',
+    color_scheme: 'clair',
+  },
+  lounge: {
+    label: 'Lounge',
+    preset: 'lounge',
+    primary_color: '#3B1F5C',
+    accent_color: '#E3B04B',
+    font_pair: 'elegant',
+    radius: 'arrondi',
+    density: 'aeree',
+    menu_layout: 'grille',
+    color_scheme: 'sombre',
+  },
+  cafe: {
+    label: 'Café',
+    preset: 'cafe',
+    primary_color: '#5B3A29',
+    accent_color: '#C98B4F',
+    font_pair: 'moderne',
+    radius: 'doux',
+    density: 'compacte',
+    menu_layout: 'minimaliste',
+    color_scheme: 'auto',
+  },
+  'salon-de-the': {
+    label: 'Salon de thé',
+    preset: 'salon-de-the',
+    primary_color: '#9C4A6B',
+    accent_color: '#E8B4B8',
+    font_pair: 'doux',
+    radius: 'arrondi',
+    density: 'aeree',
+    menu_layout: 'grille',
+    color_scheme: 'clair',
+  },
+  'bistrot-nature': {
+    label: 'Bistrot nature',
+    preset: 'bistrot-nature',
+    primary_color: '#3F5E3A',
+    accent_color: '#C7B37A',
+    font_pair: 'bistrot',
+    radius: 'doux',
+    density: 'aeree',
+    menu_layout: 'liste',
+    color_scheme: 'clair',
+  },
 };
 
 const RADIUS = { carre: '4px', doux: '10px', arrondi: '18px' } as const;
 const BUTTON_RADIUS = { carre: '4px', doux: '10px', arrondi: '999px' } as const;
 
-const LIGHT = { bg: '#FFFFFF', surface: '#F7F5F2', fg: '#1A1A1A', muted: '#5C5C5C', border: '#E3E0DA' };
-const DARK = { bg: '#121212', surface: '#1E1E1E', fg: '#F2F2F2', muted: '#B3B3B3', border: '#333333' };
+const LIGHT = {
+  bg: '#FFFFFF',
+  surface: '#F7F5F2',
+  fg: '#1A1A1A',
+  muted: '#5C5C5C',
+  border: '#E3E0DA',
+};
+const DARK = {
+  bg: '#121212',
+  surface: '#1E1E1E',
+  fg: '#F2F2F2',
+  muted: '#B3B3B3',
+  border: '#333333',
+};
 
 function palette(theme: ThemeSettings, dark: boolean): Record<string, string> {
   const base = dark ? DARK : LIGHT;
@@ -145,7 +234,10 @@ export function textColorsFor(
   };
 }
 
-export function onColorPairs(theme: ThemeSettings, mode: 'clair' | 'sombre'): Array<[string, string]> {
+export function onColorPairs(
+  theme: ThemeSettings,
+  mode: 'clair' | 'sombre',
+): Array<[string, string]> {
   const p = palette(theme, mode === 'sombre');
   return [
     [p['--brand-foreground']!, p['--brand']!],

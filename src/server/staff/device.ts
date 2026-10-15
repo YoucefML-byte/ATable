@@ -64,6 +64,7 @@ export async function listStaffForDevice(shopId: string): Promise<StaffTile[]> {
     id: m.id,
     display_name: m.display_name,
     color: m.color,
-    locked: m.pin_hard_locked || (!!m.pin_locked_until && new Date(m.pin_locked_until).getTime() > now),
+    locked:
+      m.pin_hard_locked || (!!m.pin_locked_until && new Date(m.pin_locked_until).getTime() > now),
   }));
 }

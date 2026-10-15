@@ -4,13 +4,20 @@ import { ERROR_CODES, httpStatusFor, mapDbError, parseTransitionDetail } from '.
 
 describe('errors', () => {
   it('maps P0001 business errors', () => {
-    expect(mapDbError({ code: 'P0001', message: 'ORDERS_CLOSED' })).toEqual({ code: 'ORDERS_CLOSED', detail: null });
-    expect(mapDbError({ code: 'P0001', message: 'PRODUCT_UNAVAILABLE', details: 'abc' }).detail).toBe('abc');
+    expect(mapDbError({ code: 'P0001', message: 'ORDERS_CLOSED' })).toEqual({
+      code: 'ORDERS_CLOSED',
+      detail: null,
+    });
+    expect(
+      mapDbError({ code: 'P0001', message: 'PRODUCT_UNAVAILABLE', details: 'abc' }).detail,
+    ).toBe('abc');
   });
   it('never leaks unknown errors', () => {
     expect(mapDbError({ code: 'XX000', message: 'relation does not exist' }).code).toBe('INTERNAL');
     expect(mapDbError({ code: 'P0001', message: 'SOMETHING_ELSE' }).code).toBe('INTERNAL');
-    expect(mapDbError({ code: '22P02', message: 'invalid input syntax for type uuid' }).code).toBe('BAD_REQUEST');
+    expect(mapDbError({ code: '22P02', message: 'invalid input syntax for type uuid' }).code).toBe(
+      'BAD_REQUEST',
+    );
   });
   it('gives an HTTP status for every code', () => {
     expect(httpStatusFor('RATE_LIMITED')).toBe(429);

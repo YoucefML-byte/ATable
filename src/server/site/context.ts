@@ -15,12 +15,21 @@ export const getSiteShop = cache(async (hostParam: string): Promise<ResolvedShop
   return shop;
 });
 
-export type SiteTable = { token: string; source: 'qr' | 'nfc'; id: string; label: string; zone: string | null };
+export type SiteTable = {
+  token: string;
+  source: 'qr' | 'nfc';
+  id: string;
+  label: string;
+  zone: string | null;
+};
 
 const openTable = (shopId: string, token: string) =>
   unstable_cache(
     async () => {
-      const { data, error } = await createPublicClient().rpc('public_open_table', { p_shop_id: shopId, p_token: token });
+      const { data, error } = await createPublicClient().rpc('public_open_table', {
+        p_shop_id: shopId,
+        p_token: token,
+      });
       if (error || !data) return null;
       return data as { table_id: string; table_label: string; zone: string | null };
     },

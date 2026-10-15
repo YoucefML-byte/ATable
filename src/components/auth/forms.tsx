@@ -36,7 +36,13 @@ export function LoginForm({ showStaffLink }: { showStaffLink: boolean }) {
         <Input id={emailId} name="email" type="email" autoComplete="username" required />
       </Field>
       <Field label={t('password')} htmlFor={passwordId}>
-        <Input id={passwordId} name="password" type="password" autoComplete="current-password" required />
+        <Input
+          id={passwordId}
+          name="password"
+          type="password"
+          autoComplete="current-password"
+          required
+        />
       </Field>
       <Button type="submit" className="w-full" disabled={pending}>
         {pending ? t('submitting') : t('submit')}
@@ -62,7 +68,17 @@ function CodeField({ factorId }: { factorId?: string }) {
     <>
       {factorId && <input type="hidden" name="factorId" value={factorId} />}
       <Field label={t('code')} htmlFor={id}>
-        <Input id={id} name="code" inputMode="numeric" autoComplete="one-time-code" pattern="\d{6}" maxLength={6} required className="tabular text-center text-2xl tracking-[0.4em]" autoFocus />
+        <Input
+          id={id}
+          name="code"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          pattern="\d{6}"
+          maxLength={6}
+          required
+          className="tabular text-center text-2xl tracking-[0.4em]"
+          autoFocus
+        />
       </Field>
     </>
   );
@@ -71,7 +87,11 @@ function CodeField({ factorId }: { factorId?: string }) {
 function MfaError({ state }: { state: FormState }) {
   const t = useTranslations('pro.mfa');
   if (!state.error) return null;
-  return <Alert tone="danger">{state.error === 'WAIT' ? t('wait', { seconds: state.waitSeconds ?? 0 }) : t('badCode')}</Alert>;
+  return (
+    <Alert tone="danger">
+      {state.error === 'WAIT' ? t('wait', { seconds: state.waitSeconds ?? 0 }) : t('badCode')}
+    </Alert>
+  );
 }
 
 export function MfaVerifyForm() {
@@ -93,7 +113,9 @@ export function MfaVerifyForm() {
 export function MfaEnrollForm() {
   const t = useTranslations('pro.mfa');
   const te = useTranslations('errors');
-  const [enroll, setEnroll] = useState<{ factorId: string; qr: string; secret: string } | null>(null);
+  const [enroll, setEnroll] = useState<{ factorId: string; qr: string; secret: string } | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [state, action, pending] = useActionState(verifyMfaAction, initial);
   useRedirect(state);
@@ -117,8 +139,16 @@ export function MfaEnrollForm() {
       {enroll ? (
         <div className="flex flex-col items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element -- QR code returned by Supabase as an SVG data URI */}
-          <img src={enroll.qr} alt="QR code" width={200} height={200} className="h-52 w-52 rounded-lg bg-white p-2" />
-          <p className="text-center text-sm break-all text-muted">{t('secret', { secret: enroll.secret })}</p>
+          <img
+            src={enroll.qr}
+            alt="QR code"
+            width={200}
+            height={200}
+            className="h-52 w-52 rounded-lg bg-white p-2"
+          />
+          <p className="text-muted text-center text-sm break-all">
+            {t('secret', { secret: enroll.secret })}
+          </p>
         </div>
       ) : (
         <div className="skeleton mx-auto h-52 w-52" aria-hidden />
@@ -128,7 +158,7 @@ export function MfaEnrollForm() {
       <Button type="submit" className="w-full" disabled={pending || !enroll}>
         {t('verify')}
       </Button>
-      <p className="text-sm text-muted">{t('secondDevice')}</p>
+      <p className="text-muted text-sm">{t('secondDevice')}</p>
     </form>
   );
 }
@@ -169,10 +199,24 @@ export function NewPasswordForm() {
       <p>{t('newIntro')}</p>
       {state.error && <Alert tone="danger">{messages[state.error] ?? t('weak')}</Alert>}
       <Field label={t('new')} htmlFor={a}>
-        <Input id={a} name="password" type="password" autoComplete="new-password" minLength={12} required />
+        <Input
+          id={a}
+          name="password"
+          type="password"
+          autoComplete="new-password"
+          minLength={12}
+          required
+        />
       </Field>
       <Field label={t('confirm')} htmlFor={b}>
-        <Input id={b} name="confirm" type="password" autoComplete="new-password" minLength={12} required />
+        <Input
+          id={b}
+          name="confirm"
+          type="password"
+          autoComplete="new-password"
+          minLength={12}
+          required
+        />
       </Field>
       <Button type="submit" className="w-full" disabled={pending}>
         {t('submit')}

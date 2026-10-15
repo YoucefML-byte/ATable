@@ -1,7 +1,12 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { resolveShopByHost, normalizeHost } from '@/server/tenancy/resolve';
 import { createPublicClient } from '@/server/supabase/public';
-import { CLIENT_COOKIE, TABLE_COOKIE, decodeTableCookie, isValidClientKey } from '@/server/site/cookies';
+import {
+  CLIENT_COOKIE,
+  TABLE_COOKIE,
+  decodeTableCookie,
+  isValidClientKey,
+} from '@/server/site/cookies';
 import { isAllowedOrigin } from '@/server/security/headers';
 import { placeOrderInputSchema, placeOrderResultSchema } from '@/features/orders/schemas';
 import { httpStatusFor, mapDbError, type ErrorCode } from '@/lib/errors';
@@ -12,14 +17,18 @@ import { logger } from '@/lib/logger';
 const MAX_BODY_BYTES = 32 * 1024;
 
 function fail(code: ErrorCode, detail?: string | null) {
-  return NextResponse.json({ ok: false, code, detail: detail ?? null }, { status: httpStatusFor(code), headers: { 'Cache-Control': 'no-store' } });
+  return NextResponse.json(
+    { ok: false, code, detail: detail ?? null },
+    { status: httpStatusFor(code), headers: { 'Cache-Control': 'no-store' } },
+  );
 }
 
 export async function POST(request: NextRequest) {
   const hostHeader = request.headers.get('host') ?? '';
   // 1. Origin: the request must come from the shop's own site (vol. 05 M10).
   if (!isAllowedOrigin(request.headers.get('origin'), hostHeader)) return fail('BAD_ORIGIN');
-  if (!(request.headers.get('content-type') ?? '').startsWith('application/json')) return fail('BAD_REQUEST');
+  if (!(request.headers.get('content-type') ?? '').startsWith('application/json'))
+    return fail('BAD_REQUEST');
 
   // 2. Body size.
   const raw = await request.text();
@@ -58,18 +67,34 @@ export async function POST(request: NextRequest) {
     if (mapped.code === 'INTERNAL') {
       logger.error({ event: 'order.place_failed', shopId: shop.shop_id, code: error.code });
     }
-    const detail = mapped.code === 'PRODUCT_UNAVAILABLE' || mapped.code === 'OPTIONS_INVALID' ? mapped.detail : null;
+    const detail =
+      mapped.code === 'PRODUCT_UNAVAILABLE' || mapped.code === 'OPTIONS_INVALID'
+        ? mapped.detail
+        : null;
     return fail(mapped.code, detail);
   }
   const result = placeOrderResultSchema.safeParse(data);
   if (!result.success) return fail('INTERNAL');
-  logger.info({ event: 'order.placed', shopId: shop.shop_id, orderId: result.data.order_id, duplicate: result.data.duplicate });
+  logger.info({
+    event: 'order.placed',
+    shopId: shop.shop_id,
+    orderId: result.data.order_id,
+    duplicate: result.data.duplicate,
+  });
   return NextResponse.json(
-    { ok: true, number: result.data.number, subtotal_cents: result.data.subtotal_cents, duplicate: result.data.duplicate },
+    {
+      ok: true,
+      number: result.data.number,
+      subtotal_cents: result.data.subtotal_cents,
+      duplicate: result.data.duplicate,
+    },
     { status: 200, headers: { 'Cache-Control': 'no-store' } },
   );
 }
 
 export function GET() {
-  return NextResponse.json({ ok: false, code: 'BAD_REQUEST' }, { status: 405, headers: { Allow: 'POST' } });
+  return NextResponse.json(
+    { ok: false, code: 'BAD_REQUEST' },
+    { status: 405, headers: { Allow: 'POST' } },
+  );
 }

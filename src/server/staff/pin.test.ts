@@ -2,12 +2,20 @@ import { describe, expect, it } from 'vitest';
 import { generatePin, hashPin, isWeakPin, verifyPin } from './pin';
 
 describe('PIN rules (EQP-01)', () => {
-  it.each(['123456', '000000', '111111', '654321', '112233', '121212', '123123', '890123', '12345', 'abcdef'])(
-    'refuses the trivial PIN %s',
-    (pin) => {
-      expect(isWeakPin(pin)).toBe(true);
-    },
-  );
+  it.each([
+    '123456',
+    '000000',
+    '111111',
+    '654321',
+    '112233',
+    '121212',
+    '123123',
+    '890123',
+    '12345',
+    'abcdef',
+  ])('refuses the trivial PIN %s', (pin) => {
+    expect(isWeakPin(pin)).toBe(true);
+  });
   it.each(['241608', '739215', '518374'])('accepts %s', (pin) => {
     expect(isWeakPin(pin)).toBe(false);
   });

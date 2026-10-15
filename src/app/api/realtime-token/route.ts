@@ -7,10 +7,18 @@ import { createUserClient } from '@/server/supabase/user';
 export async function GET() {
   const supabase = await createUserClient();
   const { data: claims } = await supabase.auth.getClaims();
-  if (!claims?.claims?.sub) return NextResponse.json({ ok: false }, { status: 401, headers: { 'Cache-Control': 'no-store' } });
+  if (!claims?.claims?.sub)
+    return NextResponse.json(
+      { ok: false },
+      { status: 401, headers: { 'Cache-Control': 'no-store' } },
+    );
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
-  if (!token) return NextResponse.json({ ok: false }, { status: 401, headers: { 'Cache-Control': 'no-store' } });
+  if (!token)
+    return NextResponse.json(
+      { ok: false },
+      { status: 401, headers: { 'Cache-Control': 'no-store' } },
+    );
   return NextResponse.json(
     { ok: true, token, expiresAt: data.session?.expires_at ?? null, serverNow: Date.now() },
     { headers: { 'Cache-Control': 'no-store' } },

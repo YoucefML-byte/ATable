@@ -26,6 +26,10 @@ export const ERROR_CODES = {
   LAST_MENU: 409,
   CROSS_SHOP_LINK: 400,
   SLUG_TAKEN: 409,
+  LABEL_TAKEN: 409,
+  DOMAIN_TAKEN: 409,
+  EMAIL_TAKEN: 409,
+  CONTRAST_TOO_LOW: 400,
   // Application
   BAD_REQUEST: 400,
   VALIDATION: 400,
@@ -58,7 +62,11 @@ export function messageKeyFor(code: ErrorCode): `errors.${ErrorCode}` {
   return `errors.${code}`;
 }
 
-export type DbErrorLike = { code?: string | null; message?: string | null; details?: string | null };
+export type DbErrorLike = {
+  code?: string | null;
+  message?: string | null;
+  details?: string | null;
+};
 
 export type MappedDbError = { code: ErrorCode; detail: string | null };
 
@@ -78,7 +86,10 @@ export function mapDbError(error: DbErrorLike): MappedDbError {
 }
 
 /** INVALID_TRANSITION carries "currentStatus|actorName" (ADR-009). */
-export function parseTransitionDetail(detail: string | null): { status: string; actor: string | null } {
+export function parseTransitionDetail(detail: string | null): {
+  status: string;
+  actor: string | null;
+} {
   const [status = '', actor = ''] = (detail ?? '').split('|');
   return { status, actor: actor.length > 0 ? actor : null };
 }

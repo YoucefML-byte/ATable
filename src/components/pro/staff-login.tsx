@@ -10,11 +10,23 @@ import { cn } from '@/lib/cn';
 import { readableOn } from '@/features/theming/color';
 
 /** Staff login grid + numeric keypad (AUTH-03, vol. 07 §5.2). The PIN is checked at the 6th digit. */
-export function StaffLogin({ shopName, deviceName, staff, preselect }: { shopName: string; deviceName: string; staff: StaffTile[]; preselect?: string }) {
+export function StaffLogin({
+  shopName,
+  deviceName,
+  staff,
+  preselect,
+}: {
+  shopName: string;
+  deviceName: string;
+  staff: StaffTile[];
+  preselect?: string;
+}) {
   const t = useTranslations('pro.staffLogin');
   const te = useTranslations('errors');
   const router = useRouter();
-  const [selected, setSelected] = useState<StaffTile | null>(() => staff.find((s) => s.id === preselect) ?? null);
+  const [selected, setSelected] = useState<StaffTile | null>(
+    () => staff.find((s) => s.id === preselect) ?? null,
+  );
   const [pin, setPin] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [shake, setShake] = useState(false);
@@ -31,14 +43,26 @@ export function StaffLogin({ shopName, deviceName, staff, preselect }: { shopNam
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ memberId: selected.id, pin: value }),
         });
-        const body = (await res.json().catch(() => null)) as { ok: boolean; code?: string; redirect?: string } | null;
+        const body = (await res.json().catch(() => null)) as {
+          ok: boolean;
+          code?: string;
+          redirect?: string;
+        } | null;
         if (body?.ok && body.redirect) {
           router.replace(body.redirect);
           router.refresh();
           return;
         }
         const code = body?.code ?? 'INTERNAL';
-        setError(code === 'BAD_PIN' ? t('badPin') : code === 'MEMBER_LOCKED' ? t('locked') : code === 'DEVICE_LOCKED' ? t('deviceLocked') : te(code as 'INTERNAL'));
+        setError(
+          code === 'BAD_PIN'
+            ? t('badPin')
+            : code === 'MEMBER_LOCKED'
+              ? t('locked')
+              : code === 'DEVICE_LOCKED'
+                ? t('deviceLocked')
+                : te(code as 'INTERNAL'),
+        );
         setShake(true);
         setTimeout(() => setShake(false), 400);
         setPin('');
@@ -82,7 +106,7 @@ export function StaffLogin({ shopName, deviceName, staff, preselect }: { shopNam
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-2xl flex-col gap-6 p-6">
-      <p className="text-sm text-muted">
+      <p className="text-muted text-sm">
         {shopName} · {deviceName}
       </p>
       {!selected ? (
@@ -98,11 +122,19 @@ export function StaffLogin({ shopName, deviceName, staff, preselect }: { shopNam
                     setSelected(m);
                     setError(null);
                   }}
-                  className="flex w-full flex-col items-center gap-2 rounded-xl p-3 hover:bg-brand-soft"
+                  className="hover:bg-brand-soft flex w-full flex-col items-center gap-2 rounded-xl p-3"
                 >
-                  <span className="relative flex h-20 w-20 items-center justify-center rounded-full text-2xl font-bold" style={{ backgroundColor: m.color, color: readableOn(m.color) }}>
+                  <span
+                    className="relative flex h-20 w-20 items-center justify-center rounded-full text-2xl font-bold"
+                    style={{ backgroundColor: m.color, color: readableOn(m.color) }}
+                  >
                     {m.display_name.slice(0, 2).toUpperCase()}
-                    {m.locked && <Lock aria-hidden className="absolute -right-1 -bottom-1 h-6 w-6 rounded-full bg-surface p-1 text-fg" />}
+                    {m.locked && (
+                      <Lock
+                        aria-hidden
+                        className="bg-surface text-fg absolute -right-1 -bottom-1 h-6 w-6 rounded-full p-1"
+                      />
+                    )}
                   </span>
                   <span className="text-lg font-medium">{m.display_name}</span>
                 </button>
@@ -112,27 +144,52 @@ export function StaffLogin({ shopName, deviceName, staff, preselect }: { shopNam
         </>
       ) : (
         <div className="mx-auto flex w-full max-w-sm flex-col items-center gap-5">
-          <h1 className="text-center text-2xl font-semibold">{t('pin', { name: selected.display_name })}</h1>
-          <div className={cn('flex gap-3', shake && 'animate-pulse')} aria-live="polite" aria-label={`${pin.length}/6`}>
+          <h1 className="text-center text-2xl font-semibold">
+            {t('pin', { name: selected.display_name })}
+          </h1>
+          <div
+            className={cn('flex gap-3', shake && 'animate-pulse')}
+            aria-live="polite"
+            aria-label={`${pin.length}/6`}
+          >
             {Array.from({ length: 6 }, (_, i) => (
-              <span key={i} className={cn('h-5 w-5 rounded-full border-2 border-fg', i < pin.length && 'bg-fg')} />
+              <span
+                key={i}
+                className={cn('border-fg h-5 w-5 rounded-full border-2', i < pin.length && 'bg-fg')}
+              />
             ))}
           </div>
           {error && (
-            <p role="alert" className="text-center font-medium text-st-danger">
+            <p role="alert" className="text-st-danger text-center font-medium">
               {error}
             </p>
           )}
           <div className="grid w-full grid-cols-3 gap-3">
             {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((d) => (
-              <button key={d} type="button" disabled={busy} onClick={() => press(d)} className="h-[72px] rounded-xl border border-line bg-surface text-3xl font-semibold hover:bg-brand-soft">
+              <button
+                key={d}
+                type="button"
+                disabled={busy}
+                onClick={() => press(d)}
+                className="border-line bg-surface hover:bg-brand-soft h-[72px] rounded-xl border text-3xl font-semibold"
+              >
                 {d}
               </button>
             ))}
-            <button type="button" onClick={() => setPin((p) => p.slice(0, -1))} aria-label={t('erase')} className="flex h-[72px] items-center justify-center rounded-xl border border-line bg-surface hover:bg-brand-soft">
+            <button
+              type="button"
+              onClick={() => setPin((p) => p.slice(0, -1))}
+              aria-label={t('erase')}
+              className="border-line bg-surface hover:bg-brand-soft flex h-[72px] items-center justify-center rounded-xl border"
+            >
               <Delete aria-hidden className="h-7 w-7" />
             </button>
-            <button type="button" disabled={busy} onClick={() => press('0')} className="h-[72px] rounded-xl border border-line bg-surface text-3xl font-semibold hover:bg-brand-soft">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => press('0')}
+              className="border-line bg-surface hover:bg-brand-soft h-[72px] rounded-xl border text-3xl font-semibold"
+            >
               0
             </button>
             <button
@@ -142,7 +199,7 @@ export function StaffLogin({ shopName, deviceName, staff, preselect }: { shopNam
                 setPin('');
                 setError(null);
               }}
-              className="h-[72px] rounded-xl text-sm font-medium hover:bg-brand-soft"
+              className="hover:bg-brand-soft h-[72px] rounded-xl text-sm font-medium"
             >
               {t('back')}
             </button>

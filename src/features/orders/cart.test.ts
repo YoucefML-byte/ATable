@@ -33,33 +33,132 @@ const tacos: MenuProduct = {
   allergens: [{ code: 'gluten', presence: 'contains' }],
   option_groups: [
     {
-      id: uuid(10), name: 'Viandes', min: 2, max: 2, allow_quantity: false, max_per_option: 1,
+      id: uuid(10),
+      name: 'Viandes',
+      min: 2,
+      max: 2,
+      allow_quantity: false,
+      max_per_option: 1,
       options: [
-        { id: uuid(11), name: 'Poulet', price_delta_cents: 0, is_default: false, is_sold_out: false, allergens: [] },
-        { id: uuid(12), name: 'Kebab', price_delta_cents: 0, is_default: false, is_sold_out: false, allergens: [] },
-        { id: uuid(13), name: 'Cordon bleu', price_delta_cents: 0, is_default: false, is_sold_out: false, allergens: [{ code: 'milk', presence: 'contains' }] },
+        {
+          id: uuid(11),
+          name: 'Poulet',
+          price_delta_cents: 0,
+          is_default: false,
+          is_sold_out: false,
+          allergens: [],
+        },
+        {
+          id: uuid(12),
+          name: 'Kebab',
+          price_delta_cents: 0,
+          is_default: false,
+          is_sold_out: false,
+          allergens: [],
+        },
+        {
+          id: uuid(13),
+          name: 'Cordon bleu',
+          price_delta_cents: 0,
+          is_default: false,
+          is_sold_out: false,
+          allergens: [{ code: 'milk', presence: 'contains' }],
+        },
       ],
     },
     {
-      id: uuid(20), name: 'Sauces', min: 0, max: 3, allow_quantity: false, max_per_option: 1,
+      id: uuid(20),
+      name: 'Sauces',
+      min: 0,
+      max: 3,
+      allow_quantity: false,
+      max_per_option: 1,
       options: [
-        { id: uuid(21), name: 'Algérienne', price_delta_cents: 0, is_default: false, is_sold_out: false, allergens: [{ code: 'eggs', presence: 'may_contain' }] },
-        { id: uuid(22), name: 'Samouraï', price_delta_cents: 0, is_default: false, is_sold_out: false, allergens: [] },
-        { id: uuid(23), name: 'Blanche', price_delta_cents: 0, is_default: false, is_sold_out: false, allergens: [] },
-        { id: uuid(24), name: 'Harissa', price_delta_cents: 0, is_default: false, is_sold_out: true, allergens: [] },
-        { id: uuid(25), name: 'Ketchup', price_delta_cents: 0, is_default: false, is_sold_out: false, allergens: [] },
+        {
+          id: uuid(21),
+          name: 'Algérienne',
+          price_delta_cents: 0,
+          is_default: false,
+          is_sold_out: false,
+          allergens: [{ code: 'eggs', presence: 'may_contain' }],
+        },
+        {
+          id: uuid(22),
+          name: 'Samouraï',
+          price_delta_cents: 0,
+          is_default: false,
+          is_sold_out: false,
+          allergens: [],
+        },
+        {
+          id: uuid(23),
+          name: 'Blanche',
+          price_delta_cents: 0,
+          is_default: false,
+          is_sold_out: false,
+          allergens: [],
+        },
+        {
+          id: uuid(24),
+          name: 'Harissa',
+          price_delta_cents: 0,
+          is_default: false,
+          is_sold_out: true,
+          allergens: [],
+        },
+        {
+          id: uuid(25),
+          name: 'Ketchup',
+          price_delta_cents: 0,
+          is_default: false,
+          is_sold_out: false,
+          allergens: [],
+        },
       ],
     },
     {
-      id: uuid(30), name: 'Taille', min: 1, max: 1, allow_quantity: false, max_per_option: 1,
+      id: uuid(30),
+      name: 'Taille',
+      min: 1,
+      max: 1,
+      allow_quantity: false,
+      max_per_option: 1,
       options: [
-        { id: uuid(31), name: 'M', price_delta_cents: 0, is_default: true, is_sold_out: false, allergens: [] },
-        { id: uuid(32), name: 'L', price_delta_cents: 150, is_default: false, is_sold_out: false, allergens: [] },
+        {
+          id: uuid(31),
+          name: 'M',
+          price_delta_cents: 0,
+          is_default: true,
+          is_sold_out: false,
+          allergens: [],
+        },
+        {
+          id: uuid(32),
+          name: 'L',
+          price_delta_cents: 150,
+          is_default: false,
+          is_sold_out: false,
+          allergens: [],
+        },
       ],
     },
     {
-      id: uuid(40), name: 'Suppléments', min: 0, max: null, allow_quantity: true, max_per_option: 2,
-      options: [{ id: uuid(41), name: 'Fromage', price_delta_cents: 100, is_default: false, is_sold_out: false, allergens: [] }],
+      id: uuid(40),
+      name: 'Suppléments',
+      min: 0,
+      max: null,
+      allow_quantity: true,
+      max_per_option: 2,
+      options: [
+        {
+          id: uuid(41),
+          name: 'Fromage',
+          price_delta_cents: 100,
+          is_default: false,
+          is_sold_out: false,
+          allergens: [],
+        },
+      ],
     },
   ],
 };
@@ -108,13 +207,22 @@ describe('product sheet rules (CLI-03)', () => {
     let s = defaultSelections(tacos);
     s = selectOption(tacos, s, uuid(10), uuid(13), 1);
     s = selectOption(tacos, s, uuid(20), uuid(21), 1);
-    expect(combinedAllergens(tacos, s)).toEqual({ contains: ['gluten', 'milk'], mayContain: ['eggs'] });
+    expect(combinedAllergens(tacos, s)).toEqual({
+      contains: ['gluten', 'milk'],
+      mayContain: ['eggs'],
+    });
   });
 });
 
 describe('cart (CLI-04)', () => {
   it('merges identical lines and removes at quantity 0', () => {
-    const s = selectOption(tacos, selectOption(tacos, defaultSelections(tacos), uuid(10), uuid(11), 1), uuid(10), uuid(12), 1);
+    const s = selectOption(
+      tacos,
+      selectOption(tacos, defaultSelections(tacos), uuid(10), uuid(11), 1),
+      uuid(10),
+      uuid(12),
+      1,
+    );
     let cart = addLine(emptyCart('shop', 't'), buildLine(tacos, s, 1));
     cart = addLine(cart, buildLine(tacos, s, 2));
     expect(cart.lines).toHaveLength(1);
@@ -124,7 +232,10 @@ describe('cart (CLI-04)', () => {
   });
   it('CA1 — a stored cart is restored; CA2 — emptied after 2 hours; another table empties it', () => {
     const now = 1_000_000_000;
-    const stored = { ...emptyCart('shop', 't', now), lines: [buildLine(tacos, defaultSelections(tacos), 1)] };
+    const stored = {
+      ...emptyCart('shop', 't', now),
+      lines: [buildLine(tacos, defaultSelections(tacos), 1)],
+    };
     expect(restoreCart(stored, 'shop', 't', now + 1000).lines).toHaveLength(1);
     expect(restoreCart(stored, 'shop', 't', now + CART_TTL_MS + 1).lines).toHaveLength(0);
     expect(restoreCart(stored, 'shop', 'other', now + 1000).lines).toHaveLength(0);

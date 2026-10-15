@@ -8,10 +8,14 @@ import { env } from '@/server/env';
  * functions: anon has no table privilege and no policy (vol. 03 §5.2).
  */
 export function createPublicClient() {
-  return createClient<Database>(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
-    global: { headers: { 'x-client-info': 'atable-site' } },
-  });
+  return createClient<Database>(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    {
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+      global: { headers: { 'x-client-info': 'atable-site' } },
+    },
+  );
 }
 
 export type PublicClient = ReturnType<typeof createPublicClient>;

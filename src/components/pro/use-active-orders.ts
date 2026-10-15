@@ -18,7 +18,10 @@ export function useActiveOrders(opts: {
 }) {
   const [orders, setOrders] = useState<StaffOrder[]>(opts.initial.orders);
   const [acceptingOrders, setAcceptingOrders] = useState(opts.initial.acceptingOrders);
-  const [thresholds, setThresholds] = useState({ warning: opts.initial.kitchenWarningMinutes, critical: opts.initial.kitchenCriticalMinutes });
+  const [thresholds, setThresholds] = useState({
+    warning: opts.initial.kitchenWarningMinutes,
+    critical: opts.initial.kitchenCriticalMinutes,
+  });
   const clockOffset = useRef(opts.initial.serverNow - Date.now());
   const inflight = useRef<Promise<void> | null>(null);
   const [lastNew, setLastNew] = useState<StaffOrder | null>(null);
@@ -32,12 +35,17 @@ export function useActiveOrders(opts: {
       if (!res.ok) return;
       const latency = (Date.now() - started) / 2;
       clockOffset.current = res.value.serverNow + latency - Date.now();
-      const fresh = res.value.orders.filter((o) => o.status === 'submitted' && !known.current.has(o.id));
+      const fresh = res.value.orders.filter(
+        (o) => o.status === 'submitted' && !known.current.has(o.id),
+      );
       for (const o of res.value.orders) known.current.add(o.id);
       if (fresh.length > 0) setLastNew(fresh[fresh.length - 1]!);
       setOrders(res.value.orders);
       setAcceptingOrders(res.value.acceptingOrders);
-      setThresholds({ warning: res.value.kitchenWarningMinutes, critical: res.value.kitchenCriticalMinutes });
+      setThresholds({
+        warning: res.value.kitchenWarningMinutes,
+        critical: res.value.kitchenCriticalMinutes,
+      });
     })().finally(() => {
       inflight.current = null;
     });

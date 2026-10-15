@@ -54,7 +54,14 @@ export const myOrderSchema = z.object({
 });
 export type MyOrder = z.infer<typeof myOrderSchema>;
 
-export const ORDER_STATUSES = ['submitted', 'accepted', 'ready', 'served', 'rejected', 'cancelled'] as const;
+export const ORDER_STATUSES = [
+  'submitted',
+  'accepted',
+  'ready',
+  'served',
+  'rejected',
+  'cancelled',
+] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
 export const REJECT_REASONS = ['nobody', 'duplicate', 'unavailable', 'other'] as const;

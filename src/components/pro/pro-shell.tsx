@@ -91,11 +91,14 @@ export function ProShell({
   const isKitchen = pathname?.endsWith('/cuisine');
 
   return (
-    <div data-theme={isKitchen ? 'dark' : 'light'} className="flex min-h-dvh flex-col bg-bg text-fg lg:flex-row">
-      <aside className="hidden w-60 shrink-0 border-r border-line bg-surface lg:flex lg:flex-col">
-        <div className="border-b border-line p-4">
+    <div
+      data-theme={isKitchen ? 'dark' : 'light'}
+      className="bg-bg text-fg flex min-h-dvh flex-col lg:flex-row"
+    >
+      <aside className="border-line bg-surface hidden w-60 shrink-0 border-r lg:flex lg:flex-col print:!hidden">
+        <div className="border-line border-b p-4">
           <p className="truncate text-lg font-semibold">{shop.name}</p>
-          <p className="text-sm text-muted">{t('nav.connectedAs', { name: member.name })}</p>
+          <p className="text-muted text-sm">{t('nav.connectedAs', { name: member.name })}</p>
         </div>
         <nav aria-label={t('nav.label')} className="flex-1 overflow-y-auto p-2">
           <ul className="space-y-1">
@@ -107,7 +110,10 @@ export function ProShell({
                   <Link
                     href={item.href}
                     aria-current={active ? 'page' : undefined}
-                    className={cn('flex min-h-12 items-center gap-3 rounded-lg px-3 font-medium', active ? 'bg-brand text-brand-fg' : 'hover:bg-brand-soft')}
+                    className={cn(
+                      'flex min-h-12 items-center gap-3 rounded-lg px-3 font-medium',
+                      active ? 'bg-brand text-brand-fg' : 'hover:bg-brand-soft',
+                    )}
                   >
                     <Icon aria-hidden className="h-5 w-5" />
                     {item.label}
@@ -117,15 +123,22 @@ export function ProShell({
             })}
           </ul>
         </nav>
-        <div className="border-t border-line p-2">
+        <div className="border-line border-t p-2">
           {member.isStaff ? (
-            <button type="button" onClick={switchUser} className="flex min-h-12 w-full items-center gap-3 rounded-lg px-3 font-medium hover:bg-brand-soft">
+            <button
+              type="button"
+              onClick={switchUser}
+              className="hover:bg-brand-soft flex min-h-12 w-full items-center gap-3 rounded-lg px-3 font-medium"
+            >
               <UserRoundCog aria-hidden className="h-5 w-5" />
               {t('nav.switchUser')}
             </button>
           ) : (
             <form method="post" action="/api/auth/logout">
-              <button type="submit" className="flex min-h-12 w-full items-center gap-3 rounded-lg px-3 font-medium hover:bg-brand-soft">
+              <button
+                type="submit"
+                className="hover:bg-brand-soft flex min-h-12 w-full items-center gap-3 rounded-lg px-3 font-medium"
+              >
                 <LogOut aria-hidden className="h-5 w-5" />
                 {t('nav.logout')}
               </button>
@@ -135,7 +148,7 @@ export function ProShell({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex flex-wrap items-center gap-3 border-b border-line bg-surface px-4 py-2">
+        <header className="border-line bg-surface flex flex-wrap items-center gap-3 border-b px-4 py-2 print:hidden">
           <p className="truncate font-semibold lg:hidden">{shop.name}</p>
           <div className="ml-auto flex items-center gap-3">
             {canToggleOrders && (
@@ -154,19 +167,30 @@ export function ProShell({
                 }}
               />
             )}
-            <span className="hidden text-sm text-muted sm:inline lg:hidden">{member.name}</span>
+            <span className="text-muted hidden text-sm sm:inline lg:hidden">{member.name}</span>
             {member.isStaff && (
-              <button type="button" onClick={switchUser} className="inline-flex min-h-12 items-center gap-2 rounded-lg border border-line px-3 text-sm font-medium lg:hidden">
+              <button
+                type="button"
+                onClick={switchUser}
+                className="border-line inline-flex min-h-12 items-center gap-2 rounded-lg border px-3 text-sm font-medium lg:hidden"
+              >
                 <UserRoundCog aria-hidden className="h-5 w-5" />
                 {t('nav.switchUser')}
               </button>
             )}
           </div>
         </header>
-        {readOnly && <p className="bg-st-warning-soft px-4 py-2 text-sm font-medium">{t('nav.readOnly')}</p>}
-        <main className="min-w-0 flex-1 pb-20 lg:pb-0">{children}</main>
+        {readOnly && (
+          <p className="bg-st-warning-soft px-4 py-2 text-sm font-medium print:hidden">
+            {t('nav.readOnly')}
+          </p>
+        )}
+        <main className="min-w-0 flex-1 pb-20 lg:pb-0 print:pb-0">{children}</main>
         {/* Bottom bar on tablets in portrait */}
-        <nav aria-label={t('nav.label')} className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface lg:hidden">
+        <nav
+          aria-label={t('nav.label')}
+          className="border-line bg-surface fixed inset-x-0 bottom-0 z-30 border-t lg:hidden print:hidden"
+        >
           <ul className="flex overflow-x-auto">
             {items.map((item) => {
               const Icon = ICONS[item.icon];
@@ -176,7 +200,10 @@ export function ProShell({
                   <Link
                     href={item.href}
                     aria-current={active ? 'page' : undefined}
-                    className={cn('flex min-h-16 flex-col items-center justify-center gap-1 px-2 text-xs font-medium', active ? 'text-brand-text' : 'text-muted')}
+                    className={cn(
+                      'flex min-h-16 flex-col items-center justify-center gap-1 px-2 text-xs font-medium',
+                      active ? 'text-brand-text' : 'text-muted',
+                    )}
                   >
                     <Icon aria-hidden className={cn('h-6 w-6', active && 'text-fg')} />
                     {item.label}
@@ -187,7 +214,10 @@ export function ProShell({
             {!member.isStaff && (
               <li className="min-w-20 flex-1">
                 <form method="post" action="/api/auth/logout">
-                  <button type="submit" className="flex min-h-16 w-full flex-col items-center justify-center gap-1 px-2 text-xs font-medium text-muted">
+                  <button
+                    type="submit"
+                    className="text-muted flex min-h-16 w-full flex-col items-center justify-center gap-1 px-2 text-xs font-medium"
+                  >
                     <LogOut aria-hidden className="h-6 w-6" />
                     {t('nav.logout')}
                   </button>

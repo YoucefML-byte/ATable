@@ -45,7 +45,8 @@ export function parsePriceInput(input: string): number | null {
   if (!match) return null;
   const euros = Number(match[1]);
   const decimals = match[2] ?? '';
-  const cents = decimals.length === 0 ? 0 : decimals.length === 1 ? Number(decimals) * 10 : Number(decimals);
+  const cents =
+    decimals.length === 0 ? 0 : decimals.length === 1 ? Number(decimals) * 10 : Number(decimals);
   return euros * 100 + cents;
 }
 

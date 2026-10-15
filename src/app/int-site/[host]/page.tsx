@@ -22,9 +22,15 @@ export default async function SiteHome({ params }: { params: Promise<{ host: str
         <div className="relative">
           {cover ? (
             // eslint-disable-next-line @next/next/no-img-element -- storage CDN
-            <img src={cover} alt="" width={1200} height={600} className="aspect-[2/1] w-full object-cover" />
+            <img
+              src={cover}
+              alt=""
+              width={1200}
+              height={600}
+              className="aspect-[2/1] w-full object-cover"
+            />
           ) : (
-            <div className="hatched aspect-[3/1] w-full bg-brand" aria-hidden />
+            <div className="hatched bg-brand aspect-[3/1] w-full" aria-hidden />
           )}
         </div>
         <div className="space-y-5 p-4">
@@ -32,8 +38,13 @@ export default async function SiteHome({ params }: { params: Promise<{ host: str
           {shop.welcome_message && <p className="text-lg">{shop.welcome_message}</p>}
           {shop.public_menu_enabled ? (
             <>
-              <p className="rounded-theme bg-brand-soft p-3 text-sm font-medium">{t('scanToOrder')}</p>
-              <Link href="/carte" className="flex min-h-12 items-center justify-center rounded-button bg-brand font-semibold text-brand-fg hover:bg-brand-hover">
+              <p className="rounded-theme bg-brand-soft p-3 text-sm font-medium">
+                {t('scanToOrder')}
+              </p>
+              <Link
+                href="/carte"
+                className="rounded-button bg-brand text-brand-fg hover:bg-brand-hover flex min-h-12 items-center justify-center font-semibold"
+              >
                 {t('seeMenu')}
               </Link>
             </>
@@ -44,20 +55,23 @@ export default async function SiteHome({ params }: { params: Promise<{ host: str
             {shop.opening_hours_text && (
               <div>
                 <dt className="font-semibold">{t('hours')}</dt>
-                <dd className="whitespace-pre-line text-muted">{shop.opening_hours_text}</dd>
+                <dd className="text-muted whitespace-pre-line">{shop.opening_hours_text}</dd>
               </div>
             )}
             {shop.address_text && (
               <div>
                 <dt className="font-semibold">{t('address')}</dt>
-                <dd className="whitespace-pre-line text-muted">{shop.address_text}</dd>
+                <dd className="text-muted whitespace-pre-line">{shop.address_text}</dd>
               </div>
             )}
             {shop.phone && (
               <div>
                 <dt className="font-semibold">{t('phone')}</dt>
                 <dd>
-                  <a className="text-brand-text underline" href={`tel:${shop.phone.replace(/\s/g, '')}`}>
+                  <a
+                    className="text-brand-text underline"
+                    href={`tel:${shop.phone.replace(/\s/g, '')}`}
+                  >
                     {shop.phone}
                   </a>
                 </dd>

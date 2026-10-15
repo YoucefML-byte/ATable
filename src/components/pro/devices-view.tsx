@@ -3,13 +3,33 @@
 import { useId, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { enrollDeviceAction, revokeDeviceAction, unlockDeviceAction } from '@/features/staff/actions';
+import {
+  enrollDeviceAction,
+  revokeDeviceAction,
+  unlockDeviceAction,
+} from '@/features/staff/actions';
 import { Alert, Button, Card, Field, Input } from '@/components/ui/primitives';
 
-export type DeviceRow = { id: string; name: string; enrolled_at: string; enrolledLabel: string; lastSeenLabel: string | null; locked: boolean; revoked: boolean };
+export type DeviceRow = {
+  id: string;
+  name: string;
+  enrolled_at: string;
+  enrolledLabel: string;
+  lastSeenLabel: string | null;
+  locked: boolean;
+  revoked: boolean;
+};
 
 /** Devices (AUTH-02): enrol this device, list, revoke (immediate), unlock. */
-export function DevicesView({ shopSlug, devices, currentDeviceId }: { shopSlug: string; devices: DeviceRow[]; currentDeviceId: string | null }) {
+export function DevicesView({
+  shopSlug,
+  devices,
+  currentDeviceId,
+}: {
+  shopSlug: string;
+  devices: DeviceRow[];
+  currentDeviceId: string | null;
+}) {
   const t = useTranslations('pro.devices');
   const te = useTranslations('errors');
   const router = useRouter();
@@ -43,7 +63,14 @@ export function DevicesView({ shopSlug, devices, currentDeviceId }: { shopSlug: 
           >
             <div className="min-w-60 flex-1">
               <Field label={t('name')} htmlFor={id}>
-                <Input id={id} value={name} onChange={(e) => setName(e.target.value)} maxLength={40} placeholder={t('namePlaceholder')} required />
+                <Input
+                  id={id}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  maxLength={40}
+                  placeholder={t('namePlaceholder')}
+                  required
+                />
               </Field>
             </div>
             <Button type="submit" disabled={pending || name.trim().length === 0}>
@@ -55,19 +82,26 @@ export function DevicesView({ shopSlug, devices, currentDeviceId }: { shopSlug: 
       {devices.length === 0 ? (
         <p className="text-muted">{t('none')}</p>
       ) : (
-        <ul className="divide-y divide-line rounded-xl border border-line bg-surface">
+        <ul className="divide-line border-line bg-surface divide-y rounded-xl border">
           {devices.map((d) => (
             <li key={d.id} className="flex flex-wrap items-center gap-3 p-3">
               <div className="min-w-0 flex-1">
                 <p className="font-semibold">
                   {d.name}
-                  {d.id === currentDeviceId && <span className="ml-2 rounded bg-brand-soft px-2 py-0.5 text-xs">{t('thisDevice')}</span>}
+                  {d.id === currentDeviceId && (
+                    <span className="bg-brand-soft ml-2 rounded px-2 py-0.5 text-xs">
+                      {t('thisDevice')}
+                    </span>
+                  )}
                 </p>
-                <p className="text-sm text-muted">
-                  {t('enrolledAt', { date: d.enrolledLabel })} · {t('lastSeen', { date: d.lastSeenLabel ?? t('never') })}
+                <p className="text-muted text-sm">
+                  {t('enrolledAt', { date: d.enrolledLabel })} ·{' '}
+                  {t('lastSeen', { date: d.lastSeenLabel ?? t('never') })}
                 </p>
-                {d.revoked && <p className="text-sm font-medium text-st-danger">{t('revoked')}</p>}
-                {d.locked && !d.revoked && <p className="text-sm font-medium text-st-warning">{t('locked')}</p>}
+                {d.revoked && <p className="text-st-danger text-sm font-medium">{t('revoked')}</p>}
+                {d.locked && !d.revoked && (
+                  <p className="text-st-warning text-sm font-medium">{t('locked')}</p>
+                )}
               </div>
               {!d.revoked && d.locked && (
                 <Button

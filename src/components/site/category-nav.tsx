@@ -3,7 +3,13 @@
 import { useEffect, useRef, useState } from 'react';
 
 /** Sticky horizontal category bar; the current category is highlighted while scrolling (CLI-02). */
-export function CategoryNav({ categories, label }: { categories: Array<{ id: string; name: string }>; label: string }) {
+export function CategoryNav({
+  categories,
+  label,
+}: {
+  categories: Array<{ id: string; name: string }>;
+  label: string;
+}) {
   const [current, setCurrent] = useState<string | null>(categories[0]?.id ?? null);
   const listRef = useRef<HTMLUListElement>(null);
 
@@ -13,7 +19,9 @@ export function CategoryNav({ categories, label }: { categories: Array<{ id: str
       .filter((el): el is HTMLElement => el !== null);
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
         const first = visible[0];
         if (first) setCurrent(first.target.id.replace(/^cat-/, ''));
       },
@@ -29,8 +37,14 @@ export function CategoryNav({ categories, label }: { categories: Array<{ id: str
   }, [current]);
 
   return (
-    <nav aria-label={label} className="sticky top-14 z-10 border-b border-line bg-bg/95 backdrop-blur">
-      <ul ref={listRef} className="mx-auto flex max-w-3xl gap-1 overflow-x-auto px-3 py-2 [scrollbar-width:none]">
+    <nav
+      aria-label={label}
+      className="border-line bg-bg/95 sticky top-14 z-10 border-b backdrop-blur"
+    >
+      <ul
+        ref={listRef}
+        className="mx-auto flex max-w-3xl [scrollbar-width:none] gap-1 overflow-x-auto px-3 py-2"
+      >
         {categories.map((c) => (
           <li key={c.id} className="shrink-0">
             <a

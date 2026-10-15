@@ -52,7 +52,10 @@ export async function proxy(request: NextRequest) {
 
   // 3. <shop domain>/admin → pro space
   if (space === 'site' && (pathname === '/admin' || pathname.startsWith('/admin/'))) {
-    return NextResponse.redirect(`${isHttps ? 'https' : 'http'}://${process.env.PLATFORM_PRO_HOST}/`, 307);
+    return NextResponse.redirect(
+      `${isHttps ? 'https' : 'http'}://${process.env.PLATFORM_PRO_HOST}/`,
+      307,
+    );
   }
 
   const nonce = generateNonce();
@@ -62,7 +65,10 @@ export async function proxy(request: NextRequest) {
     storageUrl: process.env.STORAGE_PUBLIC_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!,
     isDev,
   });
-  const cspHeader = process.env.CSP_REPORT_ONLY === 'true' ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
+  const cspHeader =
+    process.env.CSP_REPORT_ONLY === 'true'
+      ? 'Content-Security-Policy-Report-Only'
+      : 'Content-Security-Policy';
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-nonce', nonce);
@@ -88,7 +94,11 @@ export async function proxy(request: NextRequest) {
   }
 
   // 4. Refresh the Supabase session (cookies) for the pro space and the console only.
-  if (space === 'pro' || space === 'console' || (space === 'api' && (host === proHost || host === consoleHost))) {
+  if (
+    space === 'pro' ||
+    space === 'console' ||
+    (space === 'api' && (host === proHost || host === consoleHost))
+  ) {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -101,7 +111,12 @@ export async function proxy(request: NextRequest) {
           setAll(cookiesToSet) {
             for (const { name, value } of cookiesToSet) request.cookies.set(name, value);
             for (const { name, value, options } of cookiesToSet) {
-              response.cookies.set(name, value, { ...options, httpOnly: true, secure: isHttps, sameSite: 'lax' });
+              response.cookies.set(name, value, {
+                ...options,
+                httpOnly: true,
+                secure: isHttps,
+                sameSite: 'lax',
+              });
             }
           },
         },

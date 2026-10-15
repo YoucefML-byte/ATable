@@ -35,5 +35,9 @@
   "PAYLOAD_TOO_LARGE": "Fichier ou requête trop volumineux.",
   "UNSUPPORTED_FILE": "Format de fichier non pris en charge (JPEG, PNG, WebP ou HEIC).",
   "INTERNAL": "Une erreur est survenue. Réessayez dans un instant.",
-  "NETWORK": "Connexion instable. Votre commande n'a peut-être pas été envoyée : vérifiez dans « Mes commandes » avant de réessayer."
+  "NETWORK": "Connexion instable. Votre commande n'a peut-être pas été envoyée : vérifiez dans « Mes commandes » avant de réessayer.",
+  "LABEL_TAKEN": "Une table porte déjà ce nom.",
+  "DOMAIN_TAKEN": "Ce domaine est déjà utilisé.",
+  "EMAIL_TAKEN": "Un compte existe déjà avec cette adresse.",
+  "CONTRAST_TOO_LOW": "La couleur principale est trop proche du fond : choisissez une couleur plus contrastée."
 }

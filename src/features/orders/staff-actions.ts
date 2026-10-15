@@ -55,13 +55,19 @@ function toDto(row: Row): StaffOrder {
         name: i.product_name,
         quantity: i.quantity,
         prep_station: i.prep_station,
-        options: i.order_item_options.map((o) => ({ name: o.option_name, group: o.group_name, quantity: o.quantity })),
+        options: i.order_item_options.map((o) => ({
+          name: o.option_name,
+          group: o.group_name,
+          quantity: o.quantity,
+        })),
       })),
   };
 }
 
 /** Active orders (submitted, accepted, ready) — reloaded on every realtime message and every 20 s. */
-export async function listActiveOrdersAction(shopSlug: string): Promise<ActionResult<ActiveOrdersSnapshot>> {
+export async function listActiveOrdersAction(
+  shopSlug: string,
+): Promise<ActionResult<ActiveOrdersSnapshot>> {
   const res = await requireShopAction(z.string().max(40).parse(shopSlug));
   if (!res.ok) return res;
   const ctx = res.value;
@@ -74,7 +80,11 @@ export async function listActiveOrdersAction(shopSlug: string): Promise<ActionRe
       .in('status', ['submitted', 'accepted', 'ready'])
       .order('created_at', { ascending: true })
       .limit(300),
-    ctx.db.from('shops').select('accepting_orders, kitchen_warning_minutes, kitchen_critical_minutes').eq('id', ctx.shop.id).single(),
+    ctx.db
+      .from('shops')
+      .select('accepting_orders, kitchen_warning_minutes, kitchen_critical_minutes')
+      .eq('id', ctx.shop.id)
+      .single(),
   ]);
   if (error) {
     logger.error({ event: 'orders.list_failed', shopId: ctx.shop.id, code: error.code });
@@ -92,13 +102,18 @@ export async function listActiveOrdersAction(shopSlug: string): Promise<ActionRe
 export type TransitionResult = { status: string } | { alreadyHandledBy: string | null };
 
 /** Applies a status change; the state machine and permissions are enforced by the database. */
-export async function transitionOrderAction(input: z.input<typeof transitionInputSchema>): Promise<ActionResult<TransitionResult>> {
+export async function transitionOrderAction(
+  input: z.input<typeof transitionInputSchema>,
+): Promise<ActionResult<TransitionResult>> {
   const parsed = transitionInputSchema.safeParse(input);
   if (!parsed.success) return err('VALIDATION', 'VALIDATION');
   const perm = parsed.data.to === 'ready' ? null : 'floor';
-  const res = perm ? await requireStaffPermission(parsed.data.shopSlug, perm) : await requireShopAction(parsed.data.shopSlug);
+  const res = perm
+    ? await requireStaffPermission(parsed.data.shopSlug, perm)
+    : await requireShopAction(parsed.data.shopSlug);
   if (!res.ok) return res;
-  if (!perm && !res.value.can('floor') && !res.value.can('kitchen')) return err('FORBIDDEN', 'FORBIDDEN');
+  if (!perm && !res.value.can('floor') && !res.value.can('kitchen'))
+    return err('FORBIDDEN', 'FORBIDDEN');
   const { data, error } = await res.value.db.rpc('staff_transition_order', {
     p_order_id: parsed.data.orderId,
     p_to: parsed.data.to,
@@ -115,10 +130,16 @@ export async function transitionOrderAction(input: z.input<typeof transitionInpu
 }
 
 /** Opens or closes the orders of the shop (SAL-05), logged. */
-export async function setAcceptingOrdersAction(shopSlug: string, value: boolean): Promise<ActionResult<boolean>> {
+export async function setAcceptingOrdersAction(
+  shopSlug: string,
+  value: boolean,
+): Promise<ActionResult<boolean>> {
   const res = await requireStaffPermission(z.string().max(40).parse(shopSlug), 'floor');
   if (!res.ok) return res;
-  const { error } = await res.value.db.rpc('staff_set_accepting_orders', { p_shop_id: res.value.shop.id, p_value: z.boolean().parse(value) });
+  const { error } = await res.value.db.rpc('staff_set_accepting_orders', {
+    p_shop_id: res.value.shop.id,
+    p_value: z.boolean().parse(value),
+  });
   if (error) return err(mapDbError(error).code, 'ERROR');
   await revalidateHostsOfShop(res.value.db, res.value.shop.id);
   return ok(value);
@@ -130,7 +151,13 @@ export async function listTablesAction(shopSlug: string): Promise<ActionResult<T
   if (!res.ok) return res;
   const ctx = res.value;
   const [{ data: tables }, { data: sessions }] = await Promise.all([
-    ctx.db.from('dining_tables').select('id, label, zone, position').eq('shop_id', ctx.shop.id).is('deleted_at', null).eq('is_active', true).order('position'),
+    ctx.db
+      .from('dining_tables')
+      .select('id, label, zone, position')
+      .eq('shop_id', ctx.shop.id)
+      .is('deleted_at', null)
+      .eq('is_active', true)
+      .order('position'),
     ctx.db
       .from('table_sessions')
       .select('id, table_id, opened_at, orders(status, subtotal_cents)')
@@ -147,16 +174,28 @@ export async function listTablesAction(shopSlug: string): Promise<ActionResult<T
           opened_at: s.opened_at,
           orders: orders.length,
           pending: orders.filter((o) => o.status === 'submitted').length,
-          validated_cents: orders.filter((o) => ['accepted', 'ready', 'served'].includes(o.status)).reduce((a, o) => a + o.subtotal_cents, 0),
+          validated_cents: orders
+            .filter((o) => ['accepted', 'ready', 'served'].includes(o.status))
+            .reduce((a, o) => a + o.subtotal_cents, 0),
         },
       ] as const;
     }),
   );
-  return ok((tables ?? []).map((t) => ({ id: t.id, label: t.label, zone: t.zone, session: byTable.get(t.id) ?? null })));
+  return ok(
+    (tables ?? []).map((t) => ({
+      id: t.id,
+      label: t.label,
+      zone: t.zone,
+      session: byTable.get(t.id) ?? null,
+    })),
+  );
 }
 
 /** All orders of a table session, for the detail and the printable summary. */
-export async function getSessionOrdersAction(shopSlug: string, sessionId: string): Promise<ActionResult<StaffOrder[]>> {
+export async function getSessionOrdersAction(
+  shopSlug: string,
+  sessionId: string,
+): Promise<ActionResult<StaffOrder[]>> {
   const res = await requireStaffPermission(z.string().max(40).parse(shopSlug), 'floor');
   if (!res.ok) return res;
   const { data, error } = await res.value.db
@@ -170,10 +209,15 @@ export async function getSessionOrdersAction(shopSlug: string, sessionId: string
 }
 
 /** Frees a table once paid (SAL-04); refused while an order is pending. */
-export async function closeTableAction(shopSlug: string, sessionId: string): Promise<ActionResult<number>> {
+export async function closeTableAction(
+  shopSlug: string,
+  sessionId: string,
+): Promise<ActionResult<number>> {
   const res = await requireStaffPermission(z.string().max(40).parse(shopSlug), 'floor');
   if (!res.ok) return res;
-  const { data, error } = await res.value.db.rpc('staff_close_table_session', { p_session_id: z.uuid().parse(sessionId) });
+  const { data, error } = await res.value.db.rpc('staff_close_table_session', {
+    p_session_id: z.uuid().parse(sessionId),
+  });
   if (error) return err(mapDbError(error).code, 'ERROR');
   return ok(Number((data as { total_cents?: number } | null)?.total_cents ?? 0));
 }

@@ -12,7 +12,13 @@ export default async function FloorPage({ params }: { params: Promise<{ shopSlug
   const res = await listActiveOrdersAction(ctx.shop.slug);
   const initial = res.ok
     ? res.value
-    : { orders: [], serverNow: Date.now(), acceptingOrders: ctx.shop.accepting_orders, kitchenWarningMinutes: ctx.shop.kitchen_warning_minutes, kitchenCriticalMinutes: ctx.shop.kitchen_critical_minutes };
+    : {
+        orders: [],
+        serverNow: Date.now(),
+        acceptingOrders: ctx.shop.accepting_orders,
+        kitchenWarningMinutes: ctx.shop.kitchen_warning_minutes,
+        kitchenCriticalMinutes: ctx.shop.kitchen_critical_minutes,
+      };
   return (
     <FloorBoard
       shop={{ id: ctx.shop.id, slug: ctx.shop.slug }}

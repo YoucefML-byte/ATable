@@ -4,7 +4,10 @@ import { format, subMinutes } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 /** Mirror of private.business_day(): business day of an instant for a shop (tested against the DB). */
-export function businessDay(at: Date, shop: { timezone: string; businessDayStart: string }): string {
+export function businessDay(
+  at: Date,
+  shop: { timezone: string; businessDayStart: string },
+): string {
   const [h = '5', m = '0'] = shop.businessDayStart.split(':');
   const local = new TZDate(at.getTime(), shop.timezone);
   const shifted = subMinutes(local, Number(h) * 60 + Number(m));
@@ -16,7 +19,9 @@ export function formatTime(at: Date | string, timezone: string): string {
 }
 
 export function formatDateTime(at: Date | string, timezone: string): string {
-  return format(new TZDate(new Date(at).getTime(), timezone), "d MMM yyyy 'à' HH:mm", { locale: fr });
+  return format(new TZDate(new Date(at).getTime(), timezone), "d MMM yyyy 'à' HH:mm", {
+    locale: fr,
+  });
 }
 
 export function formatDate(at: Date | string, timezone: string): string {
@@ -27,7 +32,9 @@ export function formatDate(at: Date | string, timezone: string): string {
 export function formatHourFr(at: Date | string, timezone: string): string {
   const d = new TZDate(new Date(at).getTime(), timezone);
   const minutes = d.getMinutes();
-  return minutes === 0 ? `${d.getHours()} h` : `${d.getHours()} h ${minutes.toString().padStart(2, '0')}`;
+  return minutes === 0
+    ? `${d.getHours()} h`
+    : `${d.getHours()} h ${minutes.toString().padStart(2, '0')}`;
 }
 
 /** Today's business day, as an ISO date. */

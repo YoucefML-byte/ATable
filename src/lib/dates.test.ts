@@ -12,7 +12,12 @@ describe('businessDay (mirror of private.business_day)', () => {
     expect(businessDay(new Date('2026-10-15T02:59:00Z'), bistrot)).toBe('2026-10-14');
   });
   it('handles a custom start (Lounge, 06:00) and winter time', () => {
-    expect(businessDay(new Date('2026-12-15T04:30:00Z'), { timezone: 'Europe/Paris', businessDayStart: '06:00' })).toBe('2026-12-14');
+    expect(
+      businessDay(new Date('2026-12-15T04:30:00Z'), {
+        timezone: 'Europe/Paris',
+        businessDayStart: '06:00',
+      }),
+    ).toBe('2026-12-14');
   });
 });
 

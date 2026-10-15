@@ -15,11 +15,16 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title: { default: shop.name, template: `%s · ${shop.name}` },
     description: shop.welcome_message ?? undefined,
     robots: { index: shop.status === 'active', follow: shop.status === 'active' },
-    icons: shop.theme?.logo_path ? { icon: `${mediaBaseUrl()}/${shop.theme.logo_path}-400.webp` } : undefined,
+    icons: shop.theme?.logo_path
+      ? { icon: `${mediaBaseUrl()}/${shop.theme.logo_path}-400.webp` }
+      : undefined,
   };
 }
 
-export default async function SiteLayout({ children, params }: Params & { children: React.ReactNode }) {
+export default async function SiteLayout({
+  children,
+  params,
+}: Params & { children: React.ReactNode }) {
   const { host } = await params;
   const shop = await getSiteShop(host);
   const theme = shop.theme ?? PRESETS.classique!;
@@ -34,9 +39,17 @@ export default async function SiteLayout({ children, params }: Params & { childr
       <main className="mx-auto flex min-h-[70dvh] max-w-md flex-col items-center justify-center gap-3 p-6 text-center">
         {logoPath && (
           // eslint-disable-next-line @next/next/no-img-element -- storage CDN
-          <img src={`${mediaBaseUrl()}/${logoPath}-400.webp`} alt={shop.name} width={96} height={96} className="h-24 w-24 object-contain" />
+          <img
+            src={`${mediaBaseUrl()}/${logoPath}-400.webp`}
+            alt={shop.name}
+            width={96}
+            height={96}
+            className="h-24 w-24 object-contain"
+          />
         )}
-        <h1 className="font-display text-2xl font-semibold">{onboarding ? t('comingSoon') : t('unavailable')}</h1>
+        <h1 className="font-display text-2xl font-semibold">
+          {onboarding ? t('comingSoon') : t('unavailable')}
+        </h1>
         <p className="text-muted">{onboarding ? t('comingSoonText') : t('unavailableText')}</p>
       </main>
     );
@@ -45,7 +58,7 @@ export default async function SiteLayout({ children, params }: Params & { childr
   return (
     <NextIntlClientProvider messages={siteClientMessages}>
       <style>{css}</style>
-      <div className="site-root site-body flex min-h-dvh flex-col bg-bg text-fg">
+      <div className="site-root site-body bg-bg text-fg flex min-h-dvh flex-col">
         {content}
         <SiteFooter priceNotice={shop.price_notice} />
       </div>

@@ -15,11 +15,12 @@ export function AllergenText({
 }) {
   const t = useTranslations('site.menu');
   const tc = useTranslations('common.allergens');
-  if (!declared) return <p className="text-sm text-muted">{t('askTeam')}</p>;
-  if (contains.length === 0 && mayContain.length === 0) return <p className="text-sm text-muted">{t('noAllergen')}</p>;
+  if (!declared) return <p className="text-muted text-sm">{t('askTeam')}</p>;
+  if (contains.length === 0 && mayContain.length === 0)
+    return <p className="text-muted text-sm">{t('noAllergen')}</p>;
   const list = (codes: AllergenCode[]) => codes.map((c) => tc(c).toLowerCase()).join(', ');
   return (
-    <p className="text-sm text-muted">
+    <p className="text-muted text-sm">
       {contains.length > 0 && <span>{t('contains', { list: list(contains) })} </span>}
       {mayContain.length > 0 && <span>{t('mayContain', { list: list(mayContain) })}</span>}
     </p>
@@ -38,7 +39,7 @@ export function AllergenBadges({ codes }: { codes: AllergenCode[] }) {
           <abbr
             title={tc(c)}
             aria-label={tc(c)}
-            className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-line px-1 text-[0.7rem] font-semibold text-muted no-underline"
+            className="border-line text-muted inline-flex h-6 min-w-6 items-center justify-center rounded-full border px-1 text-[0.7rem] font-semibold no-underline"
           >
             {ts(c)}
           </abbr>

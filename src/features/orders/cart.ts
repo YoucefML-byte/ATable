@@ -11,7 +11,13 @@ export type CartLine = {
   productId: string;
   name: string;
   quantity: number;
-  options: Array<{ optionId: string; groupId: string; name: string; quantity: number; priceDeltaCents: number }>;
+  options: Array<{
+    optionId: string;
+    groupId: string;
+    name: string;
+    quantity: number;
+    priceDeltaCents: number;
+  }>;
   basePriceCents: number;
   unavailable?: boolean;
 };
@@ -94,8 +100,11 @@ export function unitPriceCents(product: MenuProduct, selections: Selections): nu
   return unit;
 }
 
-export function linePriceCents(line: Pick<CartLine, 'basePriceCents' | 'options' | 'quantity'>): number {
-  const unit = line.basePriceCents + line.options.reduce((a, o) => a + o.priceDeltaCents * o.quantity, 0);
+export function linePriceCents(
+  line: Pick<CartLine, 'basePriceCents' | 'options' | 'quantity'>,
+): number {
+  const unit =
+    line.basePriceCents + line.options.reduce((a, o) => a + o.priceDeltaCents * o.quantity, 0);
   return unit * line.quantity;
 }
 
@@ -127,31 +136,59 @@ export function combinedAllergens(
   return { contains: [...contains] as AllergenCode[], mayContain: [...may] as AllergenCode[] };
 }
 
-export function buildLine(product: MenuProduct, selections: Selections, quantity: number): CartLine {
+export function buildLine(
+  product: MenuProduct,
+  selections: Selections,
+  quantity: number,
+): CartLine {
   const options: CartLine['options'] = [];
   for (const group of product.option_groups) {
     for (const option of group.options) {
       const q = selections[group.id]?.[option.id] ?? 0;
       if (q > 0) {
-        options.push({ optionId: option.id, groupId: group.id, name: option.name, quantity: q, priceDeltaCents: option.price_delta_cents });
+        options.push({
+          optionId: option.id,
+          groupId: group.id,
+          name: option.name,
+          quantity: q,
+          priceDeltaCents: option.price_delta_cents,
+        });
       }
     }
   }
-  const key = `${product.id}|${options.map((o) => `${o.optionId}x${o.quantity}`).sort().join(',')}`;
-  return { key, productId: product.id, name: product.name, quantity, options, basePriceCents: product.base_price_cents };
+  const key = `${product.id}|${options
+    .map((o) => `${o.optionId}x${o.quantity}`)
+    .sort()
+    .join(',')}`;
+  return {
+    key,
+    productId: product.id,
+    name: product.name,
+    quantity,
+    options,
+    basePriceCents: product.base_price_cents,
+  };
 }
 
 export function addLine(cart: Cart, line: CartLine): Cart {
   const existing = cart.lines.find((l) => l.key === line.key);
   if (existing) {
-    return { ...cart, lines: cart.lines.map((l) => (l.key === line.key ? { ...l, quantity: Math.min(20, l.quantity + line.quantity) } : l)) };
+    return {
+      ...cart,
+      lines: cart.lines.map((l) =>
+        l.key === line.key ? { ...l, quantity: Math.min(20, l.quantity + line.quantity) } : l,
+      ),
+    };
   }
   return { ...cart, lines: [...cart.lines, line] };
 }
 
 export function setLineQuantity(cart: Cart, key: string, quantity: number): Cart {
   if (quantity <= 0) return { ...cart, lines: cart.lines.filter((l) => l.key !== key) };
-  return { ...cart, lines: cart.lines.map((l) => (l.key === key ? { ...l, quantity: Math.min(20, quantity) } : l)) };
+  return {
+    ...cart,
+    lines: cart.lines.map((l) => (l.key === key ? { ...l, quantity: Math.min(20, quantity) } : l)),
+  };
 }
 
 export function emptyCart(shopId: string, table: string, now = Date.now()): Cart {
@@ -166,18 +203,27 @@ export function restoreCart(raw: unknown, shopId: string, table: string, now = D
   if (c.shopId !== shopId || c.table !== table) return fresh; // CLI-04: another table empties the cart
   if (typeof c.createdAt !== 'number' || now - c.createdAt > CART_TTL_MS) return fresh;
   if (!Array.isArray(c.lines)) return fresh;
-  return { ...fresh, createdAt: c.createdAt, lines: c.lines as CartLine[], note: typeof c.note === 'string' ? c.note.slice(0, MAX_NOTE_LENGTH) : '' };
+  return {
+    ...fresh,
+    createdAt: c.createdAt,
+    lines: c.lines as CartLine[],
+    note: typeof c.note === 'string' ? c.note.slice(0, MAX_NOTE_LENGTH) : '',
+  };
 }
 
 /** Marks lines whose product or options are no longer orderable in the current menu. */
 export function markUnavailable(cart: Cart, menu: Menu, productId?: string): Cart {
-  const products = new Map(menu.categories.flatMap((c) => c.products.map((p) => [p.id, p] as const)));
+  const products = new Map(
+    menu.categories.flatMap((c) => c.products.map((p) => [p.id, p] as const)),
+  );
   return {
     ...cart,
     lines: cart.lines.map((l) => {
       const p = products.get(l.productId);
       const optionsOk = l.options.every((o) =>
-        p?.option_groups.some((g) => g.options.some((opt) => opt.id === o.optionId && !opt.is_sold_out)),
+        p?.option_groups.some((g) =>
+          g.options.some((opt) => opt.id === o.optionId && !opt.is_sold_out),
+        ),
       );
       const unavailable = !p || p.is_sold_out || !optionsOk || l.productId === productId;
       return { ...l, unavailable };

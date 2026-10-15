@@ -28,7 +28,13 @@ export function ReasonDialog({
     return () => d?.close();
   }, []);
   return (
-    <dialog ref={ref} onClose={onClose} onCancel={onClose} aria-labelledby={`${id}-t`} className="m-auto w-full max-w-md rounded-xl bg-surface p-0 text-fg backdrop:bg-black/50">
+    <dialog
+      ref={ref}
+      onClose={onClose}
+      onCancel={onClose}
+      aria-labelledby={`${id}-t`}
+      className="bg-surface text-fg m-auto w-full max-w-md rounded-xl p-0 backdrop:bg-black/50"
+    >
       <form
         method="dialog"
         className="space-y-4 p-5"

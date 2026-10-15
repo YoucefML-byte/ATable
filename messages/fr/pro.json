@@ -289,7 +289,10 @@
     "newOption": "Nouvelle option",
     "preview": "Aperçu client",
     "invalidPrice": "Prix invalide (exemple : 12,50).",
-    "minGreaterThanMax": "Le minimum ne peut pas dépasser le maximum."
+    "minGreaterThanMax": "Le minimum ne peut pas dépasser le maximum.",
+    "noLinkedGroups": "Aucun groupe d'options lié à ce produit.",
+    "saveFirst": "Enregistrez d'abord le produit pour ajouter sa photo et ses allergènes.",
+    "saveGroupFirst": "Enregistrez d'abord le groupe pour lui ajouter des options."
   },
   "menus": {
     "title": "Cartes et horaires",
@@ -311,7 +314,17 @@
     "simulate": "Voir",
     "simulatorResult": "Cartes actives : {menus}",
     "simulatorNone": "Aucune carte active à ce moment : « La carte n'est pas disponible pour le moment ».",
-    "visibleCategories": "Catégories visibles"
+    "visibleCategories": "Catégories visibles",
+    "name": "Nom",
+    "description": "Description",
+    "inactive": "désactivée",
+    "days": "Jours",
+    "removeSchedule": "Retirer cette plage",
+    "invalidSchedule": "Chaque plage doit avoir au moins un jour et des heures de début et de fin différentes.",
+    "select": "Sélectionnez une carte à modifier.",
+    "deleteConfirm": "Supprimer la carte « {name} » ?",
+    "simulatorDate": "Date",
+    "simulatorTime": "Heure"
   },
   "tablesAdmin": {
     "title": "Tables et QR codes",
@@ -348,7 +361,16 @@
     "nfc4": "Dans l'application, écrivez un enregistrement de type « URL » avec ce lien.",
     "nfc5": "Verrouillez la puce en écriture pour qu'un tiers ne puisse pas la reprogrammer.",
     "nfc6": "Testez : approchez un téléphone, la carte doit s'ouvrir avec le nom de la table.",
-    "copyNfcLink": "Copier le lien NFC"
+    "copyNfcLink": "Copier le lien NFC",
+    "noDomain": "Ce commerce n'a pas encore de domaine : les QR codes seront disponibles dès qu'un domaine lui sera attribué.",
+    "created": "{count, plural, one {# table créée} other {# tables créées}}.",
+    "createCount": "Créer {count, plural, one {# table} other {# tables}}",
+    "selectAll": "Tout sélectionner",
+    "regenerated": "Nouveau QR code généré. Pensez à réimprimer l'étiquette.",
+    "deleteConfirm": "Supprimer la table {table} ? Son QR code ne fonctionnera plus ; l'historique est conservé.",
+    "qrOf": "QR code de {table}",
+    "regenerateHelp": "Régénérez le QR code si une étiquette a été photographiée ou détournée : l'ancien lien cesse aussitôt de fonctionner.",
+    "sheetCount": "{count, plural, =0 {Aucune table à imprimer.} one {# QR code} other {# QR codes}}"
   },
   "team": {
     "title": "Équipe",
@@ -529,6 +551,17 @@
     "reason": "Motif",
     "count": "Nombre",
     "day": "Jour",
-    "hour": "Heure"
+    "hour": "Heure",
+    "from": "Du",
+    "to": "Au",
+    "apply": "Afficher",
+    "rangeLabel": "Du {from} au {to} (journées de service)",
+    "alertsTitle": "Points d'attention",
+    "kpiTitle": "Chiffres clés",
+    "table": "Table",
+    "status": "Statut",
+    "rejected": "Refusée",
+    "cancelled": "Annulée",
+    "noReason": "Sans motif"
   }
 }

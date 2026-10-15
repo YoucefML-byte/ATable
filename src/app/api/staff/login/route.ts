@@ -22,12 +22,17 @@ const bodySchema = z.object({ memberId: z.uuid(), pin: z.string().regex(/^\d{6}$
 function fail(code: ErrorCode) {
   // Same message for an unknown member, a wrong PIN and a locked member: no remaining-attempt
   // count is revealed (ADR-009).
-  return NextResponse.json({ ok: false, code }, { status: httpStatusFor(code), headers: { 'Cache-Control': 'no-store' } });
+  return NextResponse.json(
+    { ok: false, code },
+    { status: httpStatusFor(code), headers: { 'Cache-Control': 'no-store' } },
+  );
 }
 
 function sessionIdFromJwt(token: string): string | null {
   try {
-    const payload = JSON.parse(Buffer.from(token.split('.')[1] ?? '', 'base64url').toString('utf8')) as { session_id?: string };
+    const payload = JSON.parse(
+      Buffer.from(token.split('.')[1] ?? '', 'base64url').toString('utf8'),
+    ) as { session_id?: string };
     return typeof payload.session_id === 'string' ? payload.session_id : null;
   } catch {
     return null;
@@ -36,7 +41,8 @@ function sessionIdFromJwt(token: string): string | null {
 
 export async function POST(request: NextRequest) {
   // 1. Origin of the request (pro space only).
-  if (!isAllowedOrigin(request.headers.get('origin'), env.PLATFORM_PRO_HOST)) return fail('BAD_ORIGIN');
+  if (!isAllowedOrigin(request.headers.get('origin'), env.PLATFORM_PRO_HOST))
+    return fail('BAD_ORIGIN');
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return fail('BAD_REQUEST');
   const { memberId, pin } = parsed.data;
@@ -49,12 +55,18 @@ export async function POST(request: NextRequest) {
   const admin = createAdminClient();
   const { data: member } = await admin
     .from('shop_members')
-    .select('id, shop_id, user_id, role, is_active, pin_hash, pin_failed_count, pin_lock_level, pin_locked_until, pin_hard_locked')
+    .select(
+      'id, shop_id, user_id, role, is_active, pin_hash, pin_failed_count, pin_lock_level, pin_locked_until, pin_hard_locked',
+    )
     .eq('id', memberId)
     .maybeSingle();
-  const eligible = !!member && member.shop_id === device.shop_id && member.role === 'staff' && member.is_active;
+  const eligible =
+    !!member && member.shop_id === device.shop_id && member.role === 'staff' && member.is_active;
   const now = Date.now();
-  const locked = !!member && (member.pin_hard_locked || (!!member.pin_locked_until && new Date(member.pin_locked_until).getTime() > now));
+  const locked =
+    !!member &&
+    (member.pin_hard_locked ||
+      (!!member.pin_locked_until && new Date(member.pin_locked_until).getTime() > now));
 
   // 3–4. Argon2id verification, always executed (comparable response time in every case).
   const pinOk = await verifyPin(eligible && !locked ? member!.pin_hash : null, pin);
@@ -74,14 +86,18 @@ export async function POST(request: NextRequest) {
 
   if (!eligible || locked || !pinOk) {
     // Device counter: 20 failures within one hour locks the device (new logins only).
-    const windowStart = device.failed_attempts_window_start ? new Date(device.failed_attempts_window_start).getTime() : 0;
+    const windowStart = device.failed_attempts_window_start
+      ? new Date(device.failed_attempts_window_start).getTime()
+      : 0;
     const inWindow = now - windowStart < 60 * 60 * 1000;
     const attempts = inWindow ? device.failed_attempts + 1 : 1;
     await admin
       .from('devices')
       .update({
         failed_attempts: attempts,
-        failed_attempts_window_start: inWindow ? device.failed_attempts_window_start : new Date(now).toISOString(),
+        failed_attempts_window_start: inWindow
+          ? device.failed_attempts_window_start
+          : new Date(now).toISOString(),
         locked: attempts >= DEVICE_MAX_FAILURES_PER_HOUR,
       })
       .eq('id', device.id);
@@ -102,7 +118,10 @@ export async function POST(request: NextRequest) {
           .eq('id', member!.id);
         await audit('member.pin_locked', { level });
       } else {
-        await admin.from('shop_members').update({ pin_failed_count: failures }).eq('id', member!.id);
+        await admin
+          .from('shop_members')
+          .update({ pin_failed_count: failures })
+          .eq('id', member!.id);
       }
     }
     await audit('staff.login_failed');
@@ -115,14 +134,20 @@ export async function POST(request: NextRequest) {
   const { data: user } = await admin.auth.admin.getUserById(member!.user_id);
   const email = user?.user?.email;
   if (!email) return fail('INTERNAL');
-  const { data: link, error: linkError } = await admin.auth.admin.generateLink({ type: 'magiclink', email });
+  const { data: link, error: linkError } = await admin.auth.admin.generateLink({
+    type: 'magiclink',
+    email,
+  });
   if (linkError || !link?.properties?.hashed_token) {
     logger.error({ event: 'staff.link_failed', code: linkError?.code });
     return fail('INTERNAL');
   }
   const supabase = await createUserClient();
   await supabase.auth.signOut({ scope: 'local' });
-  const { data: verified, error: verifyError } = await supabase.auth.verifyOtp({ type: 'email', token_hash: link.properties.hashed_token });
+  const { data: verified, error: verifyError } = await supabase.auth.verifyOtp({
+    type: 'email',
+    token_hash: link.properties.hashed_token,
+  });
   const accessToken = verified?.session?.access_token;
   const sessionId = accessToken ? sessionIdFromJwt(accessToken) : null;
   if (verifyError || !sessionId) {
@@ -144,10 +169,23 @@ export async function POST(request: NextRequest) {
     logger.error({ event: 'staff.session_insert_failed', code: insertError.code });
     return fail('INTERNAL');
   }
-  await admin.from('shop_members').update({ pin_failed_count: 0, pin_lock_level: 0, pin_locked_until: null }).eq('id', member!.id);
-  await admin.from('devices').update({ last_seen_at: new Date(now).toISOString(), failed_attempts: 0, failed_attempts_window_start: null }).eq('id', device.id);
+  await admin
+    .from('shop_members')
+    .update({ pin_failed_count: 0, pin_lock_level: 0, pin_locked_until: null })
+    .eq('id', member!.id);
+  await admin
+    .from('devices')
+    .update({
+      last_seen_at: new Date(now).toISOString(),
+      failed_attempts: 0,
+      failed_attempts_window_start: null,
+    })
+    .eq('id', device.id);
   await audit('staff.login');
 
   const { data: shop } = await admin.from('shops').select('slug').eq('id', device.shop_id).single();
-  return NextResponse.json({ ok: true, redirect: `/${shop?.slug ?? ''}` }, { headers: { 'Cache-Control': 'no-store' } });
+  return NextResponse.json(
+    { ok: true, redirect: `/${shop?.slug ?? ''}` },
+    { headers: { 'Cache-Control': 'no-store' } },
+  );
 }

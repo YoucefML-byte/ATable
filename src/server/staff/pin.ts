@@ -5,7 +5,8 @@ import { hash, verify } from '@node-rs/argon2';
 const OPTIONS = { algorithm: 2, memoryCost: 19456, timeCost: 2, parallelism: 1 } as const;
 
 // Used when the member does not exist or is locked, so that the response time does not reveal it.
-const DUMMY_HASH = '$argon2id$v=19$m=19456,t=2,p=1$AEVU+DBJa15IrftsAyYzRA$RIzV0TmAbnFGq4O51kGJgpeSbTa83nSqRnH/UKCMhzQ';
+const DUMMY_HASH =
+  '$argon2id$v=19$m=19456,t=2,p=1$AEVU+DBJa15IrftsAyYzRA$RIzV0TmAbnFGq4O51kGJgpeSbTa83nSqRnH/UKCMhzQ';
 
 export async function hashPin(pin: string): Promise<string> {
   return hash(pin, OPTIONS);

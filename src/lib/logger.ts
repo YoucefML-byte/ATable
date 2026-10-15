@@ -8,7 +8,8 @@ const LEVELS: Record<Level, number> = { debug: 10, info: 20, warn: 30, error: 40
 const SENSITIVE_KEY = /pin|password|secret|token|cookie|authorization|client_?key|api_?key/i;
 
 function minLevel(): number {
-  const configured = (process.env.LOG_LEVEL ?? (process.env.NODE_ENV === 'production' ? 'info' : 'debug')) as Level;
+  const configured = (process.env.LOG_LEVEL ??
+    (process.env.NODE_ENV === 'production' ? 'info' : 'debug')) as Level;
   return LEVELS[configured] ?? LEVELS.info;
 }
 

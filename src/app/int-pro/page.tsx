@@ -36,7 +36,10 @@ export default async function ProHome() {
         <ul className="space-y-2">
           {shops.map((s) => (
             <li key={s.slug}>
-              <Link href={`/${s.slug}`} className="flex min-h-12 items-center rounded-lg border border-line px-4 font-medium hover:bg-brand-soft">
+              <Link
+                href={`/${s.slug}`}
+                className="border-line hover:bg-brand-soft flex min-h-12 items-center rounded-lg border px-4 font-medium"
+              >
                 {s.name}
               </Link>
             </li>

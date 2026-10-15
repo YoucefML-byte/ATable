@@ -5,7 +5,12 @@ import { cookies } from 'next/headers';
 import { z } from 'zod';
 import { requireOwner, requireShopAction } from '@/server/auth/guards';
 import { createAdminClient } from '@/server/supabase/admin';
-import { DEVICE_COOKIE, deviceCookieOptions, hashSecret, newDeviceSecret } from '@/server/staff/device';
+import {
+  DEVICE_COOKIE,
+  deviceCookieOptions,
+  hashSecret,
+  newDeviceSecret,
+} from '@/server/staff/device';
 import { generatePin, hashPin, isWeakPin } from '@/server/staff/pin';
 import { env } from '@/server/env';
 import { err, ok, type ActionResult } from '@/lib/result';
@@ -20,7 +25,10 @@ const PERMISSIONS = z.array(z.enum(['floor', 'kitchen', 'stock'])).max(3);
 // ---------------------------------------------------------------------------
 
 /** Enrols THIS device: random secret in a protected cookie, only its SHA-256 in the database. */
-export async function enrollDeviceAction(shopSlug: string, name: string): Promise<ActionResult<string>> {
+export async function enrollDeviceAction(
+  shopSlug: string,
+  name: string,
+): Promise<ActionResult<string>> {
   const res = await requireOwner(slug.parse(shopSlug));
   if (!res.ok) return res;
   const parsedName = z.string().trim().min(1).max(40).safeParse(name);
@@ -36,18 +44,28 @@ export async function enrollDeviceAction(shopSlug: string, name: string): Promis
   return ok(String(data));
 }
 
-export async function revokeDeviceAction(shopSlug: string, deviceId: string): Promise<ActionResult<null>> {
+export async function revokeDeviceAction(
+  shopSlug: string,
+  deviceId: string,
+): Promise<ActionResult<null>> {
   const res = await requireShopAction(slug.parse(shopSlug), 'owner');
   if (!res.ok) return res;
-  const { error } = await res.value.db.rpc('owner_revoke_device', { p_device_id: z.uuid().parse(deviceId) });
+  const { error } = await res.value.db.rpc('owner_revoke_device', {
+    p_device_id: z.uuid().parse(deviceId),
+  });
   if (error) return err(mapDbError(error).code, 'ERROR');
   return ok(null);
 }
 
-export async function unlockDeviceAction(shopSlug: string, deviceId: string): Promise<ActionResult<null>> {
+export async function unlockDeviceAction(
+  shopSlug: string,
+  deviceId: string,
+): Promise<ActionResult<null>> {
   const res = await requireOwner(slug.parse(shopSlug));
   if (!res.ok) return res;
-  const { error } = await res.value.db.rpc('owner_unlock_device', { p_device_id: z.uuid().parse(deviceId) });
+  const { error } = await res.value.db.rpc('owner_unlock_device', {
+    p_device_id: z.uuid().parse(deviceId),
+  });
   if (error) return err(mapDbError(error).code, 'ERROR');
   return ok(null);
 }
@@ -62,7 +80,10 @@ const createMemberSchema = z
     displayName: z.string().trim().min(1).max(40),
     color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
     permissions: PERMISSIONS,
-    pin: z.string().regex(/^\d{6}$/).nullable(),
+    pin: z
+      .string()
+      .regex(/^\d{6}$/)
+      .nullable(),
   })
   .strict();
 
@@ -71,7 +92,9 @@ const createMemberSchema = z
  * random password nobody knows (vol. 03 §6.2), then the member row with the Argon2id hash of the
  * PIN. Uses the admin client (documented in admin-usage.md).
  */
-export async function createMemberAction(input: z.input<typeof createMemberSchema>): Promise<ActionResult<{ generatedPin: string | null }>> {
+export async function createMemberAction(
+  input: z.input<typeof createMemberSchema>,
+): Promise<ActionResult<{ generatedPin: string | null }>> {
   const parsed = createMemberSchema.safeParse(input);
   if (!parsed.success) return err('VALIDATION', 'VALIDATION');
   const res = await requireOwner(parsed.data.shopSlug);
@@ -130,7 +153,9 @@ const updateMemberSchema = z
   .strict();
 
 /** Name, colour, permissions, deactivation — through RLS (owner, column privileges). */
-export async function updateMemberAction(input: z.input<typeof updateMemberSchema>): Promise<ActionResult<null>> {
+export async function updateMemberAction(
+  input: z.input<typeof updateMemberSchema>,
+): Promise<ActionResult<null>> {
   const parsed = updateMemberSchema.safeParse(input);
   if (!parsed.success) return err('VALIDATION', 'VALIDATION');
   const res = await requireOwner(parsed.data.shopSlug);
@@ -156,10 +181,21 @@ export async function updateMemberAction(input: z.input<typeof updateMemberSchem
   return ok(null);
 }
 
-const resetPinSchema = z.object({ shopSlug: slug, memberId: z.uuid(), pin: z.string().regex(/^\d{6}$/).nullable() }).strict();
+const resetPinSchema = z
+  .object({
+    shopSlug: slug,
+    memberId: z.uuid(),
+    pin: z
+      .string()
+      .regex(/^\d{6}$/)
+      .nullable(),
+  })
+  .strict();
 
 /** New PIN (typed or generated): only the server writes the hash (secret key). */
-export async function resetPinAction(input: z.input<typeof resetPinSchema>): Promise<ActionResult<{ generatedPin: string | null }>> {
+export async function resetPinAction(
+  input: z.input<typeof resetPinSchema>,
+): Promise<ActionResult<{ generatedPin: string | null }>> {
   const parsed = resetPinSchema.safeParse(input);
   if (!parsed.success) return err('VALIDATION', 'VALIDATION');
   const res = await requireOwner(parsed.data.shopSlug);
@@ -169,7 +205,13 @@ export async function resetPinAction(input: z.input<typeof resetPinSchema>): Pro
   const admin = createAdminClient();
   const { data, error } = await admin
     .from('shop_members')
-    .update({ pin_hash: await hashPin(pin), pin_failed_count: 0, pin_lock_level: 0, pin_locked_until: null, pin_hard_locked: false })
+    .update({
+      pin_hash: await hashPin(pin),
+      pin_failed_count: 0,
+      pin_lock_level: 0,
+      pin_locked_until: null,
+      pin_hard_locked: false,
+    })
     .eq('id', parsed.data.memberId)
     .eq('shop_id', res.value.shop.id)
     .eq('role', 'staff')
@@ -187,18 +229,28 @@ export async function resetPinAction(input: z.input<typeof resetPinSchema>): Pro
   return ok({ generatedPin: parsed.data.pin ? null : pin });
 }
 
-export async function unlockMemberAction(shopSlug: string, memberId: string): Promise<ActionResult<null>> {
+export async function unlockMemberAction(
+  shopSlug: string,
+  memberId: string,
+): Promise<ActionResult<null>> {
   const res = await requireOwner(slug.parse(shopSlug));
   if (!res.ok) return res;
-  const { error } = await res.value.db.rpc('owner_unlock_member', { p_member_id: z.uuid().parse(memberId) });
+  const { error } = await res.value.db.rpc('owner_unlock_member', {
+    p_member_id: z.uuid().parse(memberId),
+  });
   if (error) return err(mapDbError(error).code, 'ERROR');
   return ok(null);
 }
 
-export async function closeMemberSessionsAction(shopSlug: string, memberId: string): Promise<ActionResult<null>> {
+export async function closeMemberSessionsAction(
+  shopSlug: string,
+  memberId: string,
+): Promise<ActionResult<null>> {
   const res = await requireShopAction(slug.parse(shopSlug), 'owner');
   if (!res.ok) return res;
-  const { error } = await res.value.db.rpc('owner_revoke_member_sessions', { p_member_id: z.uuid().parse(memberId) });
+  const { error } = await res.value.db.rpc('owner_revoke_member_sessions', {
+    p_member_id: z.uuid().parse(memberId),
+  });
   if (error) return err(mapDbError(error).code, 'ERROR');
   return ok(null);
 }

@@ -8,14 +8,27 @@ export const CONSOLE = 'http://console.localhost:3000';
 export const MAILPIT = 'http://127.0.0.1:54324';
 
 // Demo accounts of supabase/seed.sql (local only).
-export const KARIM = { email: 'karim@bistrot.test', password: 'Bistrot-Demo-2026!', totp: 'KRSXG5CTMVRXEZLU' };
-export const SAMIA = { email: 'samia@lounge.test', password: 'Lounge-Demo-2026!', totp: 'GEZDGNBVGY3TQOJQ' };
-export const ADMIN = { email: 'admin@atable.test', password: 'Console-Demo-2026!', totp: 'JBSWY3DPEHPK3PXP' };
+export const KARIM = {
+  email: 'karim@bistrot.test',
+  password: 'Bistrot-Demo-2026!',
+  totp: 'KRSXG5CTMVRXEZLU',
+};
+export const SAMIA = {
+  email: 'samia@lounge.test',
+  password: 'Lounge-Demo-2026!',
+  totp: 'GEZDGNBVGY3TQOJQ',
+};
+export const ADMIN = {
+  email: 'admin@atable.test',
+  password: 'Console-Demo-2026!',
+  totp: 'JBSWY3DPEHPK3PXP',
+};
 
 function base32Decode(input: string): Buffer {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
   let bits = '';
-  for (const c of input.replace(/=+$/, '').toUpperCase()) bits += alphabet.indexOf(c).toString(2).padStart(5, '0');
+  for (const c of input.replace(/=+$/, '').toUpperCase())
+    bits += alphabet.indexOf(c).toString(2).padStart(5, '0');
   const bytes: number[] = [];
   for (let i = 0; i + 8 <= bits.length; i += 8) bytes.push(parseInt(bits.slice(i, i + 8), 2));
   return Buffer.from(bytes);
@@ -31,7 +44,11 @@ export function totp(secret: string, at = Date.now()): string {
   return code.toString().padStart(6, '0');
 }
 
-export async function ownerLogin(page: Page, account: { email: string; password: string; totp: string }, host = PRO) {
+export async function ownerLogin(
+  page: Page,
+  account: { email: string; password: string; totp: string },
+  host = PRO,
+) {
   await page.goto(`${host}/connexion`);
   await page.getByLabel('E-mail').fill(account.email);
   await page.getByLabel('Mot de passe').fill(account.password);

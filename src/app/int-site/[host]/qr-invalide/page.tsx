@@ -12,7 +12,10 @@ export default async function InvalidQrPage({ params }: { params: Promise<{ host
       <h1 className="font-display text-2xl font-semibold">{t('title')}</h1>
       <p className="text-muted">{t('text')}</p>
       {shop.public_menu_enabled && (
-        <Link href="/carte" className="flex min-h-12 items-center justify-center rounded-button border border-brand-line px-6 font-semibold text-brand-text">
+        <Link
+          href="/carte"
+          className="rounded-button border-brand-line text-brand-text flex min-h-12 items-center justify-center border px-6 font-semibold"
+        >
           {t('seeMenu')}
         </Link>
       )}

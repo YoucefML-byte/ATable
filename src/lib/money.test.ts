@@ -27,9 +27,12 @@ describe('parsePriceInput', () => {
   ])('parses %s', (input, expected) => {
     expect(parsePriceInput(input)).toBe(expected);
   });
-  it.each(['', 'abc', '-1', '12,345', '1.234,50', '1 234', '12,', ',50', '1e3'])('refuses ambiguous %s', (input) => {
-    expect(parsePriceInput(input)).toBeNull();
-  });
+  it.each(['', 'abc', '-1', '12,345', '1.234,50', '1 234', '12,', ',50', '1e3'])(
+    'refuses ambiguous %s',
+    (input) => {
+      expect(parsePriceInput(input)).toBeNull();
+    },
+  );
   it('round-trips with centsToInput', () => {
     for (const cents of [0, 5, 50, 999, 1250, 100000]) {
       expect(parsePriceInput(centsToInput(cents))).toBe(cents);

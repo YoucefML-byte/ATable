@@ -36,13 +36,29 @@ export function ServiceBar({
           {t('start')}
         </Button>
       ) : (
-        <button type="button" onClick={onToggleSound} className="inline-flex min-h-12 items-center gap-2 rounded-lg border border-line px-3 text-sm font-medium" aria-pressed={soundOn}>
-          {soundOn ? <Bell aria-hidden className="h-5 w-5" /> : <BellOff aria-hidden className="h-5 w-5" />}
+        <button
+          type="button"
+          onClick={onToggleSound}
+          className="border-line inline-flex min-h-12 items-center gap-2 rounded-lg border px-3 text-sm font-medium"
+          aria-pressed={soundOn}
+        >
+          {soundOn ? (
+            <Bell aria-hidden className="h-5 w-5" />
+          ) : (
+            <BellOff aria-hidden className="h-5 w-5" />
+          )}
           {soundOn ? t('soundOn') : t('soundOff')}
         </button>
       )}
-      <span role="status" className={`inline-flex items-center gap-2 text-sm font-medium ${status === 'connected' ? 'text-st-ready' : 'text-st-warning'}`}>
-        {status === 'connected' ? <Wifi aria-hidden className="h-5 w-5" /> : <WifiOff aria-hidden className="h-5 w-5" />}
+      <span
+        role="status"
+        className={`inline-flex items-center gap-2 text-sm font-medium ${status === 'connected' ? 'text-st-ready' : 'text-st-warning'}`}
+      >
+        {status === 'connected' ? (
+          <Wifi aria-hidden className="h-5 w-5" />
+        ) : (
+          <WifiOff aria-hidden className="h-5 w-5" />
+        )}
         {status === 'connected' ? t('connected') : t('reconnecting')}
       </span>
     </div>

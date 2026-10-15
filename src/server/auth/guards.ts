@@ -29,7 +29,13 @@ export type ShopContext = {
     business_day_start: string;
     sold_out_label: string;
   };
-  member: { id: string; role: 'owner' | 'staff'; display_name: string; color: string; permissions: Permission[] };
+  member: {
+    id: string;
+    role: 'owner' | 'staff';
+    display_name: string;
+    color: string;
+    permissions: Permission[];
+  };
   isOwner: boolean;
   isReadOnly: boolean;
   can: (perm: Permission | 'owner') => boolean;
@@ -83,7 +89,10 @@ const loadShopContext = cache(async (slug: string): Promise<ShopContext | Contex
 });
 
 /** Page guard: redirects to login / 2FA, or 404. */
-export async function requireShopPage(slug: string, perm?: Permission | 'owner'): Promise<ShopContext> {
+export async function requireShopPage(
+  slug: string,
+  perm?: Permission | 'owner',
+): Promise<ShopContext> {
   const ctx = await loadShopContext(slug);
   if (ctx === 'UNAUTHENTICATED') redirect('/connexion');
   if (ctx === 'MFA_REQUIRED') redirect('/2fa');
@@ -94,7 +103,10 @@ export async function requireShopPage(slug: string, perm?: Permission | 'owner')
 }
 
 /** Action guard: typed error instead of a redirect. */
-export async function requireShopAction(slug: string, perm?: Permission | 'owner'): Promise<Result<ShopContext>> {
+export async function requireShopAction(
+  slug: string,
+  perm?: Permission | 'owner',
+): Promise<Result<ShopContext>> {
   const ctx = await loadShopContext(slug);
   if (ctx === 'UNAUTHENTICATED') return err('UNAUTHENTICATED', 'UNAUTHENTICATED');
   if (ctx === 'MFA_REQUIRED') return err('MFA_REQUIRED', 'MFA_REQUIRED');
@@ -110,7 +122,10 @@ export async function requireOwner(slug: string): Promise<Result<ShopContext>> {
   return res;
 }
 
-export async function requireStaffPermission(slug: string, perm: Permission): Promise<Result<ShopContext>> {
+export async function requireStaffPermission(
+  slug: string,
+  perm: Permission,
+): Promise<Result<ShopContext>> {
   return requireShopAction(slug, perm);
 }
 
@@ -123,7 +138,11 @@ export const loadAdminContext = cache(async (): Promise<AdminContext | AdminFail
   if (!claims) return 'UNAUTHENTICATED';
   if (claims.aal !== 'aal2') return 'MFA_REQUIRED';
   const db = await createUserClient();
-  const { data } = await db.from('platform_admins').select('user_id').eq('user_id', claims.userId).maybeSingle();
+  const { data } = await db
+    .from('platform_admins')
+    .select('user_id')
+    .eq('user_id', claims.userId)
+    .maybeSingle();
   if (!data) return 'NOT_FOUND';
   return { db, claims };
 });

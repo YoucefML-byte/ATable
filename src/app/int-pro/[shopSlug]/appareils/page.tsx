@@ -10,7 +10,11 @@ export default async function DevicesPage({ params }: { params: Promise<{ shopSl
   const { shopSlug } = await params;
   const ctx = await requireShopPage(shopSlug, 'owner');
   const [{ data }, current] = await Promise.all([
-    ctx.db.from('devices').select('id, name, enrolled_at, last_seen_at, locked, revoked_at').eq('shop_id', ctx.shop.id).order('enrolled_at', { ascending: false }),
+    ctx.db
+      .from('devices')
+      .select('id, name, enrolled_at, last_seen_at, locked, revoked_at')
+      .eq('shop_id', ctx.shop.id)
+      .order('enrolled_at', { ascending: false }),
     getCurrentDevice(),
   ]);
   const tz = ctx.shop.timezone;

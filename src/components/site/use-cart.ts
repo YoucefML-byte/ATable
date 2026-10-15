@@ -45,7 +45,10 @@ export function useCart(shopId: string, tableKey: string) {
     (next: Cart | ((c: Cart) => Cart)) => {
       setCart((current) => {
         const value = typeof next === 'function' ? next(current) : next;
-        const stamped = current.lines.length === 0 && value.lines.length > 0 ? { ...value, createdAt: Date.now() } : value;
+        const stamped =
+          current.lines.length === 0 && value.lines.length > 0
+            ? { ...value, createdAt: Date.now() }
+            : value;
         write(shopId, stamped);
         return stamped;
       });

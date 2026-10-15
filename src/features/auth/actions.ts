@@ -10,13 +10,21 @@ import { logger } from '@/lib/logger';
 
 // Redirects are done by the browser (full navigation through proxy.ts): a redirect() thrown by a
 // server action is rendered internally, without the host rewrite (ADR-010).
-export type FormState = { error: string | null; info?: string | null; waitSeconds?: number; redirectTo?: string };
+export type FormState = {
+  error: string | null;
+  info?: string | null;
+  waitSeconds?: number;
+  redirectTo?: string;
+};
 
 const loginSchema = z.object({ email: z.email().max(254), password: z.string().min(1).max(200) });
 
 /** Owner / platform admin login (AUTH-01). Same message whether the e-mail exists or not. */
 export async function signInAction(_prev: FormState, formData: FormData): Promise<FormState> {
-  const parsed = loginSchema.safeParse({ email: formData.get('email'), password: formData.get('password') });
+  const parsed = loginSchema.safeParse({
+    email: formData.get('email'),
+    password: formData.get('password'),
+  });
   if (!parsed.success) return { error: 'BAD_CREDENTIALS' };
   if (isStaffEmail(parsed.data.email)) return { error: 'BAD_CREDENTIALS' };
   const supabase = await createUserClient();
@@ -28,9 +36,10 @@ export async function signInAction(_prev: FormState, formData: FormData): Promis
   return { error: null, redirectTo: '/2fa' };
 }
 
-
 /** Starts the TOTP enrolment: removes unverified factors, returns the QR code and the secret. */
-export async function startEnrollAction(): Promise<{ factorId: string; qr: string; secret: string } | { error: string }> {
+export async function startEnrollAction(): Promise<
+  { factorId: string; qr: string; secret: string } | { error: string }
+> {
   const claims = await getSessionClaims();
   if (!claims || isStaffEmail(claims.email)) return { error: 'UNAUTHENTICATED' };
   const supabase = await createUserClient();
@@ -39,7 +48,10 @@ export async function startEnrollAction(): Promise<{ factorId: string; qr: strin
   for (const factor of list?.all ?? []) {
     if (factor.status !== 'verified') await supabase.auth.mfa.unenroll({ factorId: factor.id });
   }
-  const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: `Atable ${new Date().toISOString().slice(0, 10)}` });
+  const { data, error } = await supabase.auth.mfa.enroll({
+    factorType: 'totp',
+    friendlyName: `Atable ${new Date().toISOString().slice(0, 10)}`,
+  });
   if (error || !data) {
     logger.error({ event: 'auth.mfa_enroll_failed', code: error?.code });
     return { error: 'INTERNAL' };
@@ -68,7 +80,10 @@ export async function verifyMfaAction(_prev: FormState, formData: FormData): Pro
     factorId = list?.totp.find((f) => f.status === 'verified')?.id;
   }
   if (!factorId) return { error: 'BAD_CODE' };
-  const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId, code: parsed.data.code });
+  const { error } = await supabase.auth.mfa.challengeAndVerify({
+    factorId,
+    code: parsed.data.code,
+  });
   if (error) {
     const { data: next } = await supabase.rpc('auth_register_mfa_failure');
     logger.info({ event: 'auth.mfa_failed' });
@@ -81,11 +96,15 @@ export async function verifyMfaAction(_prev: FormState, formData: FormData): Pro
 const emailSchema = z.object({ email: z.email().max(254) });
 
 /** Password reset by e-mail; the link expires after 1 hour. Same answer whether the e-mail exists. */
-export async function forgotPasswordAction(_prev: FormState, formData: FormData): Promise<FormState> {
+export async function forgotPasswordAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
   const parsed = emailSchema.safeParse({ email: formData.get('email') });
   if (parsed.success && !isStaffEmail(parsed.data.email)) {
     const host = (await headers()).get('host') ?? env.PLATFORM_PRO_HOST;
-    const target = host === env.PLATFORM_CONSOLE_HOST ? env.PLATFORM_CONSOLE_HOST : env.PLATFORM_PRO_HOST;
+    const target =
+      host === env.PLATFORM_CONSOLE_HOST ? env.PLATFORM_CONSOLE_HOST : env.PLATFORM_PRO_HOST;
     const supabase = await createUserClient();
     const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
       redirectTo: `${env.PUBLIC_SCHEME}://${target}/auth/confirm`,
@@ -103,7 +122,10 @@ const passwordSchema = z
 export async function setPasswordAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const claims = await getSessionClaims();
   if (!claims) return { error: 'LINK_EXPIRED' };
-  const parsed = passwordSchema.safeParse({ password: formData.get('password'), confirm: formData.get('confirm') });
+  const parsed = passwordSchema.safeParse({
+    password: formData.get('password'),
+    confirm: formData.get('confirm'),
+  });
   if (!parsed.success) {
     const issue = parsed.error.issues[0];
     return { error: issue?.path[0] === 'confirm' ? 'MISMATCH' : 'TOO_SHORT' };

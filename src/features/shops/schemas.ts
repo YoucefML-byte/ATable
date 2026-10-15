@@ -71,7 +71,10 @@ export const shopSettingsSchema = z
     max_order_total_cents: z.number().int().min(1).max(10_000_000),
     legal_name: z.string().trim().max(120),
     legal_form: z.string().trim().max(60),
-    legal_siret: z.string().trim().regex(/^(\d{14})?$/),
+    legal_siret: z
+      .string()
+      .trim()
+      .regex(/^(\d{14})?$/),
     legal_address: z.string().trim().max(300),
     legal_publication_director: z.string().trim().max(120),
   })

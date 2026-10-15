@@ -24,7 +24,9 @@ export function encodeTableCookie(token: string, source: 'qr' | 'nfc'): string {
   return source === 'nfc' ? `${token}~nfc` : token;
 }
 
-export function decodeTableCookie(value: string | undefined): { token: string; source: 'qr' | 'nfc' } | null {
+export function decodeTableCookie(
+  value: string | undefined,
+): { token: string; source: 'qr' | 'nfc' } | null {
   if (!value) return null;
   const [token = '', suffix] = value.split('~');
   if (!TOKEN_RE.test(token)) return null;
@@ -40,7 +42,10 @@ export function isValidClientKey(value: string | undefined): value is string {
   return !!value && CLIENT_RE.test(value);
 }
 
-export async function readSiteCookies(): Promise<{ table: { token: string; source: 'qr' | 'nfc' } | null; clientKey: string | null }> {
+export async function readSiteCookies(): Promise<{
+  table: { token: string; source: 'qr' | 'nfc' } | null;
+  clientKey: string | null;
+}> {
   const store = await cookies();
   const table = decodeTableCookie(store.get(TABLE_COOKIE)?.value);
   const client = store.get(CLIENT_COOKIE)?.value;

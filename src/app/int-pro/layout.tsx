@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function ProLayout({ children }: { children: React.ReactNode }) {
   return (
     <NextIntlClientProvider messages={proClientMessages}>
-      <div data-theme="light" className="min-h-dvh bg-bg text-fg">
+      <div data-theme="light" className="bg-bg text-fg min-h-dvh">
         {children}
       </div>
     </NextIntlClientProvider>

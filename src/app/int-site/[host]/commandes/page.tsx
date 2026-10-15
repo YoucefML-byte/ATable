@@ -29,7 +29,10 @@ export default async function MyOrdersPage({ params }: { params: Promise<{ host:
       p_token: table.token,
       p_client_key: clientKey,
     });
-    orders = z.array(myOrderSchema).catch([]).parse(data ?? []);
+    orders = z
+      .array(myOrderSchema)
+      .catch([])
+      .parse(data ?? []);
   }
   const total = orders.filter((o) => o.status === 'sent').reduce((a, o) => a + o.subtotal_cents, 0);
 
@@ -42,24 +45,41 @@ export default async function MyOrdersPage({ params }: { params: Promise<{ host:
         {table && orders.length === 0 && <p className="text-muted">{t('empty')}</p>}
         <ul className="space-y-3">
           {orders.map((order) => (
-            <li key={order.order_id} className="rounded-theme border border-line bg-surface p-4">
+            <li key={order.order_id} className="rounded-theme border-line bg-surface border p-4">
               <div className="flex items-center justify-between gap-2">
-                <p className="tabular font-semibold">{t('numberAt', { number: String(order.number).padStart(3, '0'), time: formatTime(order.created_at, shop.timezone) })}</p>
-                <p className={`text-sm font-medium ${order.status === 'withdrawn' ? 'text-st-danger' : 'text-brand-text'}`}>
+                <p className="tabular font-semibold">
+                  {t('numberAt', {
+                    number: String(order.number).padStart(3, '0'),
+                    time: formatTime(order.created_at, shop.timezone),
+                  })}
+                </p>
+                <p
+                  className={`text-sm font-medium ${order.status === 'withdrawn' ? 'text-st-danger' : 'text-brand-text'}`}
+                >
                   {order.status === 'sent' ? t('sent') : ''}
                 </p>
               </div>
-              {order.status === 'withdrawn' && <p className="mt-1 text-sm font-medium text-st-danger">{t('withdrawn')}</p>}
+              {order.status === 'withdrawn' && (
+                <p className="text-st-danger mt-1 text-sm font-medium">{t('withdrawn')}</p>
+              )}
               <ul className="mt-2 space-y-1">
                 {order.items.map((item, i) => (
                   <li key={i} className="flex justify-between gap-2">
                     <span>
                       {item.quantity} × {item.name}
                       {item.options.length > 0 && (
-                        <span className="block text-sm text-muted">{item.options.map((o) => (o.quantity > 1 ? `${o.name} ×${o.quantity}` : o.name)).join(', ')}</span>
+                        <span className="text-muted block text-sm">
+                          {item.options
+                            .map((o) => (o.quantity > 1 ? `${o.name} ×${o.quantity}` : o.name))
+                            .join(', ')}
+                        </span>
                       )}
                     </span>
-                    <span className={`tabular ${order.status === 'withdrawn' ? 'text-muted line-through' : ''}`}>{formatPrice(item.line_total_cents)}</span>
+                    <span
+                      className={`tabular ${order.status === 'withdrawn' ? 'text-muted line-through' : ''}`}
+                    >
+                      {formatPrice(item.line_total_cents)}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -67,15 +87,18 @@ export default async function MyOrdersPage({ params }: { params: Promise<{ host:
           ))}
         </ul>
         {orders.length > 0 && (
-          <div className="rounded-theme border border-line p-4">
+          <div className="rounded-theme border-line border p-4">
             <p className="flex justify-between text-lg font-semibold">
               <span>{t('indicativeTotal')}</span>
               <span className="tabular">{formatPrice(total)}</span>
             </p>
-            <p className="mt-1 text-sm text-muted">{t('indicativeNote')}</p>
+            <p className="text-muted mt-1 text-sm">{t('indicativeNote')}</p>
           </div>
         )}
-        <Link href="/carte" className="flex min-h-12 items-center justify-center rounded-button bg-brand font-semibold text-brand-fg">
+        <Link
+          href="/carte"
+          className="rounded-button bg-brand text-brand-fg flex min-h-12 items-center justify-center font-semibold"
+        >
           {(await getTranslations('site.confirmation'))('orderMore')}
         </Link>
       </main>

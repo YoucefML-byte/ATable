@@ -28,8 +28,20 @@ export type HistoryOrder = {
   subtotal_cents: number;
   item_count: number;
   table_label: string;
-  items: Array<{ name: string; category: string; quantity: number; unit_price_cents: number; line_total_cents: number; options: string[] }>;
-  events: Array<{ to_status: string; actor_name: string | null; created_at: string; reason: string | null }>;
+  items: Array<{
+    name: string;
+    category: string;
+    quantity: number;
+    unit_price_cents: number;
+    line_total_cents: number;
+    options: string[];
+  }>;
+  events: Array<{
+    to_status: string;
+    actor_name: string | null;
+    created_at: string;
+    reason: string | null;
+  }>;
 };
 
 const SELECT =
@@ -47,11 +59,31 @@ type Row = {
   subtotal_cents: number;
   item_count: number;
   dining_tables: { label: string } | null;
-  order_items: Array<{ product_name: string; category_name: string; quantity: number; unit_price_cents: number; line_total_cents: number; position: number; order_item_options: Array<{ option_name: string; quantity: number }> }>;
-  order_status_events: Array<{ id: number; to_status: string; actor_name: string | null; created_at: string; reason: string | null }>;
+  order_items: Array<{
+    product_name: string;
+    category_name: string;
+    quantity: number;
+    unit_price_cents: number;
+    line_total_cents: number;
+    position: number;
+    order_item_options: Array<{ option_name: string; quantity: number }>;
+  }>;
+  order_status_events: Array<{
+    id: number;
+    to_status: string;
+    actor_name: string | null;
+    created_at: string;
+    reason: string | null;
+  }>;
 };
 
-async function queryPage(db: UserClient, shopId: string, filter: HistoryFilter, from: number, to: number) {
+async function queryPage(
+  db: UserClient,
+  shopId: string,
+  filter: HistoryFilter,
+  from: number,
+  to: number,
+) {
   let query = db
     .from('orders')
     .select(SELECT, { count: 'exact' })
@@ -68,7 +100,12 @@ async function queryPage(db: UserClient, shopId: string, filter: HistoryFilter, 
 }
 
 /** One page of history, or every order of the period for the CSV export (chunks of 1000 rows). */
-export async function queryHistory(db: UserClient, shopId: string, filter: HistoryFilter, opts: { all?: boolean } = {}) {
+export async function queryHistory(
+  db: UserClient,
+  shopId: string,
+  filter: HistoryFilter,
+  opts: { all?: boolean } = {},
+) {
   let rows: Row[] = [];
   let total = 0;
   if (opts.all) {
@@ -79,7 +116,13 @@ export async function queryHistory(db: UserClient, shopId: string, filter: Histo
       if (chunk.rows.length < 1000) break;
     }
   } else {
-    const page = await queryPage(db, shopId, filter, (filter.page - 1) * PAGE_SIZE, filter.page * PAGE_SIZE - 1);
+    const page = await queryPage(
+      db,
+      shopId,
+      filter,
+      (filter.page - 1) * PAGE_SIZE,
+      filter.page * PAGE_SIZE - 1,
+    );
     rows = page.rows;
     total = page.count;
   }
@@ -103,9 +146,18 @@ export async function queryHistory(db: UserClient, shopId: string, filter: Histo
         quantity: i.quantity,
         unit_price_cents: i.unit_price_cents,
         line_total_cents: i.line_total_cents,
-        options: i.order_item_options.map((o) => (o.quantity > 1 ? `${o.option_name} ×${o.quantity}` : o.option_name)),
+        options: i.order_item_options.map((o) =>
+          o.quantity > 1 ? `${o.option_name} ×${o.quantity}` : o.option_name,
+        ),
       })),
-    events: [...r.order_status_events].sort((a, b) => a.id - b.id).map((e) => ({ to_status: e.to_status, actor_name: e.actor_name, created_at: e.created_at, reason: e.reason })),
+    events: [...r.order_status_events]
+      .sort((a, b) => a.id - b.id)
+      .map((e) => ({
+        to_status: e.to_status,
+        actor_name: e.actor_name,
+        created_at: e.created_at,
+        reason: e.reason,
+      })),
   }));
   return { orders, total };
 }

@@ -4,7 +4,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { AlertTriangle, ArrowLeft, Printer } from 'lucide-react';
-import { closeTableAction, getSessionOrdersAction, listTablesAction } from '@/features/orders/staff-actions';
+import {
+  closeTableAction,
+  getSessionOrdersAction,
+  listTablesAction,
+} from '@/features/orders/staff-actions';
 import type { StaffOrder, TableOverview } from '@/features/orders/staff-types';
 import { formatPrice } from '@/lib/money';
 import { formatTime } from '@/lib/dates';
@@ -12,7 +16,13 @@ import { Alert, Button } from '@/components/ui/primitives';
 import { cn } from '@/lib/cn';
 
 /** Tables grouped by zone, amount per table, detail and closing (SAL-04, vol. 07 §5.4). */
-export function TablesView({ shop, initial }: { shop: { slug: string; name: string; timezone: string }; initial: TableOverview[] }) {
+export function TablesView({
+  shop,
+  initial,
+}: {
+  shop: { slug: string; name: string; timezone: string };
+  initial: TableOverview[];
+}) {
   const t = useTranslations('pro.tables');
   const tf = useTranslations('pro.floor');
   const te = useTranslations('errors');
@@ -56,15 +66,21 @@ export function TablesView({ shop, initial }: { shop: { slug: string; name: stri
     return [...map.entries()];
   }, [tables]);
 
-  const validated = (orders ?? []).filter((o) => ['accepted', 'ready', 'served'].includes(o.status));
+  const validated = (orders ?? []).filter((o) =>
+    ['accepted', 'ready', 'served'].includes(o.status),
+  );
   const pending = (orders ?? []).filter((o) => o.status === 'submitted');
-  const inProgress = (orders ?? []).some((o) => ['submitted', 'accepted', 'ready'].includes(o.status));
+  const inProgress = (orders ?? []).some((o) =>
+    ['submitted', 'accepted', 'ready'].includes(o.status),
+  );
   const consolidated = useMemo(() => {
     const map = new Map<string, number>();
-    for (const o of validated) for (const i of o.items) {
-      const key = i.options.length > 0 ? `${i.name} (${i.options.map((x) => x.name).join(', ')})` : i.name;
-      map.set(key, (map.get(key) ?? 0) + i.quantity);
-    }
+    for (const o of validated)
+      for (const i of o.items) {
+        const key =
+          i.options.length > 0 ? `${i.name} (${i.options.map((x) => x.name).join(', ')})` : i.name;
+        map.set(key, (map.get(key) ?? 0) + i.quantity);
+      }
     return [...map.entries()];
   }, [validated]);
   const total = validated.reduce((a, o) => a + o.subtotal_cents, 0);
@@ -74,7 +90,10 @@ export function TablesView({ shop, initial }: { shop: { slug: string; name: stri
     setConfirming(false);
     const res = await closeTableAction(shop.slug, selected.session.id);
     if (!res.ok) {
-      setMessage({ tone: 'danger', text: res.code === 'TABLE_HAS_PENDING_ORDERS' ? t('cannotClose') : te(res.code) });
+      setMessage({
+        tone: 'danger',
+        text: res.code === 'TABLE_HAS_PENDING_ORDERS' ? t('cannotClose') : te(res.code),
+      });
       return;
     }
     setMessage({ tone: 'success', text: t('closed') });
@@ -100,7 +119,7 @@ export function TablesView({ shop, initial }: { shop: { slug: string; name: stri
         {!selected.session && <p className="text-muted">{t('noSession')}</p>}
         {orders && (
           <div className="grid gap-4 lg:grid-cols-2">
-            <section className="space-y-3 rounded-xl border border-line bg-surface p-4">
+            <section className="border-line bg-surface space-y-3 rounded-xl border p-4">
               <h2 className="text-lg font-semibold">{t('summary')}</h2>
               <ul className="space-y-1">
                 {consolidated.map(([name, qty]) => (
@@ -110,24 +129,35 @@ export function TablesView({ shop, initial }: { shop: { slug: string; name: stri
                   </li>
                 ))}
               </ul>
-              <p className="flex justify-between border-t border-line pt-2 text-lg font-bold">
+              <p className="border-line flex justify-between border-t pt-2 text-lg font-bold">
                 <span>{t('total')}</span>
                 <span className="tabular">{formatPrice(total)}</span>
               </p>
             </section>
             <section className="space-y-3 print:hidden">
               {orders.map((o) => (
-                <div key={o.id} className={cn('rounded-xl border bg-surface p-3', o.status === 'submitted' ? 'border-st-submitted' : 'border-line')}>
+                <div
+                  key={o.id}
+                  className={cn(
+                    'bg-surface rounded-xl border p-3',
+                    o.status === 'submitted' ? 'border-st-submitted' : 'border-line',
+                  )}
+                >
                   <p className="flex justify-between font-semibold">
                     <span>
-                      #{String(o.number).padStart(3, '0')} · {formatTime(o.created_at, shop.timezone)}
+                      #{String(o.number).padStart(3, '0')} ·{' '}
+                      {formatTime(o.created_at, shop.timezone)}
                     </span>
                     <span>{tc(`status.${o.status}`)}</span>
                   </p>
-                  <p className="text-sm text-muted">{o.items.map((i) => `${i.quantity} × ${i.name}`).join(', ')}</p>
+                  <p className="text-muted text-sm">
+                    {o.items.map((i) => `${i.quantity} × ${i.name}`).join(', ')}
+                  </p>
                 </div>
               ))}
-              {pending.length > 0 && <p className="text-sm font-medium text-st-submitted">{t('pendingList')}</p>}
+              {pending.length > 0 && (
+                <p className="text-st-submitted text-sm font-medium">{t('pendingList')}</p>
+              )}
             </section>
           </div>
         )}
@@ -138,9 +168,17 @@ export function TablesView({ shop, initial }: { shop: { slug: string; name: stri
               {t('print')}
             </Button>
             {!confirming ? (
-              <Button onClick={() => (inProgress ? setMessage({ tone: 'danger', text: t('cannotClose') }) : setConfirming(true))}>{t('close')}</Button>
+              <Button
+                onClick={() =>
+                  inProgress
+                    ? setMessage({ tone: 'danger', text: t('cannotClose') })
+                    : setConfirming(true)
+                }
+              >
+                {t('close')}
+              </Button>
             ) : (
-              <div className="flex flex-wrap items-center gap-2 rounded-xl border border-line p-2">
+              <div className="border-line flex flex-wrap items-center gap-2 rounded-xl border p-2">
                 <span className="font-medium">{t('closeConfirm', { table: selected.label })}</span>
                 <Button variant="secondary" onClick={() => setConfirming(false)}>
                   {tc('cancel')}
@@ -158,14 +196,17 @@ export function TablesView({ shop, initial }: { shop: { slug: string; name: stri
     <div className="space-y-5 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">{t('title')}</h1>
-        <Link href={`/${shop.slug}/salle`} className="inline-flex min-h-12 items-center rounded-lg border border-line px-4 font-semibold hover:bg-brand-soft">
+        <Link
+          href={`/${shop.slug}/salle`}
+          className="border-line hover:bg-brand-soft inline-flex min-h-12 items-center rounded-lg border px-4 font-semibold"
+        >
           {t('backToFloor')}
         </Link>
       </div>
       {message && <Alert tone={message.tone}>{message.text}</Alert>}
       {zones.map(([zone, list]) => (
         <section key={zone} className="space-y-2">
-          {zone && <h2 className="font-semibold text-muted">{zone}</h2>}
+          {zone && <h2 className="text-muted font-semibold">{zone}</h2>}
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
             {list.map((table) => (
               <li key={table.id}>
@@ -177,22 +218,39 @@ export function TablesView({ shop, initial }: { shop: { slug: string; name: stri
                   }}
                   className={cn(
                     'flex min-h-28 w-full flex-col items-start gap-1 rounded-xl border-2 p-3 text-left',
-                    !table.session ? 'border-line bg-surface' : table.session.pending > 0 ? 'border-st-submitted bg-st-submitted-soft' : 'border-st-accepted bg-st-accepted-soft',
+                    !table.session
+                      ? 'border-line bg-surface'
+                      : table.session.pending > 0
+                        ? 'border-st-submitted bg-st-submitted-soft'
+                        : 'border-st-accepted bg-st-accepted-soft',
                   )}
                 >
                   <span className="flex w-full items-center justify-between text-lg font-bold">
                     {table.label}
-                    {table.session && table.session.pending > 0 && <AlertTriangle aria-label={tf('toValidate')} className="h-5 w-5 text-st-submitted" />}
+                    {table.session && table.session.pending > 0 && (
+                      <AlertTriangle
+                        aria-label={tf('toValidate')}
+                        className="text-st-submitted h-5 w-5"
+                      />
+                    )}
                   </span>
                   {!table.session ? (
                     <span className="text-muted">{t('free')}</span>
                   ) : (
                     <>
-                      <span className="tabular font-semibold">{formatPrice(table.session.validated_cents)}</span>
-                      <span className="text-sm">
-                        {table.session.pending > 0 ? t('pendingCount', { count: table.session.pending }) : t('orders', { count: table.session.orders })}
+                      <span className="tabular font-semibold">
+                        {formatPrice(table.session.validated_cents)}
                       </span>
-                      <span className="text-xs text-muted">{t('openedAt', { time: formatTime(table.session.opened_at, shop.timezone) })}</span>
+                      <span className="text-sm">
+                        {table.session.pending > 0
+                          ? t('pendingCount', { count: table.session.pending })
+                          : t('orders', { count: table.session.orders })}
+                      </span>
+                      <span className="text-muted text-xs">
+                        {t('openedAt', {
+                          time: formatTime(table.session.opened_at, shop.timezone),
+                        })}
+                      </span>
                     </>
                   )}
                 </button>

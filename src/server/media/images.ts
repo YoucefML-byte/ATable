@@ -45,13 +45,11 @@ export async function processAndStoreImage(
         })
         .webp({ quality: 82 })
         .toBuffer();
-      const { error } = await admin.storage
-        .from(BUCKET)
-        .upload(`${base}-${size}.webp`, output, {
-          contentType: 'image/webp',
-          upsert: false,
-          cacheControl: '31536000',
-        });
+      const { error } = await admin.storage.from(BUCKET).upload(`${base}-${size}.webp`, output, {
+        contentType: 'image/webp',
+        upsert: false,
+        cacheControl: '31536000',
+      });
       if (error) throw new Error(error.message);
     }
     if (kind === 'logo') {

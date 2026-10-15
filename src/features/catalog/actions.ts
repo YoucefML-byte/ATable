@@ -89,16 +89,14 @@ export async function saveCategoryAction(input: CategoryInput): Promise<ActionRe
     if (error) return dbFail(error);
   }
   if (toAdd.length > 0) {
-    const { error } = await db
-      .from('menu_categories')
-      .insert(
-        toAdd.map((menuId) => ({
-          menu_id: menuId,
-          category_id: id!,
-          shop_id: shop.id,
-          position: 99,
-        })),
-      );
+    const { error } = await db.from('menu_categories').insert(
+      toAdd.map((menuId) => ({
+        menu_id: menuId,
+        category_id: id!,
+        shop_id: shop.id,
+        position: 99,
+      })),
+    );
     if (error) return dbFail(error);
   }
   revalidateMenu(shop.id);
@@ -228,18 +226,16 @@ export async function saveProductAction(input: ProductInput): Promise<ActionResu
   const { error: delError } = await db.from('product_option_groups').delete().eq('product_id', id);
   if (delError) return dbFail(delError);
   if (groups.length > 0) {
-    const { error } = await db
-      .from('product_option_groups')
-      .insert(
-        groups.map((g, i) => ({
-          product_id: id!,
-          group_id: g.groupId,
-          shop_id: shop.id,
-          position: i + 1,
-          min_override: g.minOverride,
-          max_override: g.maxOverride,
-        })),
-      );
+    const { error } = await db.from('product_option_groups').insert(
+      groups.map((g, i) => ({
+        product_id: id!,
+        group_id: g.groupId,
+        shop_id: shop.id,
+        position: i + 1,
+        min_override: g.minOverride,
+        max_override: g.maxOverride,
+      })),
+    );
     if (error) return dbFail(error);
   }
   revalidateMenu(shop.id);

@@ -24,8 +24,8 @@
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
     "load": "k6 run tests/load/rush.js",
-    "admin:create": "node --experimental-strip-types scripts/create-platform-admin.ts",
-    "demo:qr": "node --experimental-strip-types scripts/demo-qr.ts",
+    "admin:create": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/create-platform-admin.ts",
+    "demo:qr": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/demo-qr.ts",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm db:test"
   },
   "dependencies": {

@@ -90,17 +90,15 @@ export async function saveMenuAction(input: MenuInput): Promise<ActionResult<str
   const { error: delError } = await db.from('menu_schedules').delete().eq('menu_id', menuId);
   if (delError) return fail(delError);
   if (parsed.data.schedules.length > 0) {
-    const { error } = await db
-      .from('menu_schedules')
-      .insert(
-        parsed.data.schedules.map((s) => ({
-          shop_id: shop.id,
-          menu_id: menuId,
-          days: [...new Set(s.days)].sort(),
-          start_time: s.start,
-          end_time: s.end,
-        })),
-      );
+    const { error } = await db.from('menu_schedules').insert(
+      parsed.data.schedules.map((s) => ({
+        shop_id: shop.id,
+        menu_id: menuId,
+        days: [...new Set(s.days)].sort(),
+        start_time: s.start,
+        end_time: s.end,
+      })),
+    );
     if (error) return fail(error);
   }
   // Categories shown by this menu.
@@ -121,16 +119,14 @@ export async function saveMenuAction(input: MenuInput): Promise<ActionResult<str
     if (error) return fail(error);
   }
   if (toAdd.length > 0) {
-    const { error } = await db
-      .from('menu_categories')
-      .insert(
-        toAdd.map((categoryId) => ({
-          menu_id: menuId,
-          category_id: categoryId,
-          shop_id: shop.id,
-          position: parsed.data.categoryIds.indexOf(categoryId) + 1,
-        })),
-      );
+    const { error } = await db.from('menu_categories').insert(
+      toAdd.map((categoryId) => ({
+        menu_id: menuId,
+        category_id: categoryId,
+        shop_id: shop.id,
+        position: parsed.data.categoryIds.indexOf(categoryId) + 1,
+      })),
+    );
     if (error) return fail(error);
   }
   revalidateMenu(shop.id);

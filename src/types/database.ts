@@ -790,6 +790,9 @@ isOneToOne: false
 "auth_reset_mfa_failures":
 { Args: Record<PropertyKey, never>; Returns: undefined
                            },
+"auth_user_id_by_email":
+{ Args: { "p_email": string }; Returns: string
+                           },
 "console_anomalies":
 { Args: Record<PropertyKey, never>; Returns: {
               "name": string,"open_tables_old": number,"pin_failures_1h": number,"refusal_rate_today": number,"shop_id": string

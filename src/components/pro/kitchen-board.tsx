@@ -208,14 +208,14 @@ export function KitchenBoard({
                       : 'border-line',
                 )}
               >
-                <header className="flex items-start justify-between gap-2">
-                  <p className="text-xl font-bold">
+                <header className="flex flex-wrap items-start justify-between gap-2">
+                  <p className="min-w-0 text-xl font-bold">
                     <span className="tabular">#{String(order.number).padStart(3, '0')}</span>{' '}
                     <span className="text-[1.625rem]">{order.table_label}</span>
                   </p>
                   <p
                     className={cn(
-                      'tabular rounded-lg px-2 text-[2.5rem] leading-none font-bold',
+                      'tabular shrink-0 rounded-lg text-[2.5rem] leading-none font-bold',
                       lvl === 'critical'
                         ? 'text-st-danger'
                         : lvl === 'warning'

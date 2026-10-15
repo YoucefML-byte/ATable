@@ -1,26 +1,195 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/*
+ * Design tokens (vol. 07 §2). Colours are CSS variables:
+ *  - customer site: injected per shop by the theme engine (src/features/theming/theme.ts);
+ *  - pro space and console: fixed palette below, light or dark (data-theme).
+ * Only these tokens are used in components: no arbitrary colour (vol. 06 §7).
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted-fg);
+  --color-line: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-fg: var(--brand-foreground);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-line: var(--brand-border);
+  --color-brand-text: var(--brand-text);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-foreground);
+  --color-accent-text: var(--accent-text);
+
+  /* Status colours of the pro space, constant for every shop (vol. 07 §2.3) */
+  --color-st-submitted: var(--st-submitted);
+  --color-st-submitted-soft: var(--st-submitted-soft);
+  --color-st-accepted: var(--st-accepted);
+  --color-st-accepted-soft: var(--st-accepted-soft);
+  --color-st-ready: var(--st-ready);
+  --color-st-ready-soft: var(--st-ready-soft);
+  --color-st-served: var(--st-served);
+  --color-st-danger: var(--st-danger);
+  --color-st-danger-soft: var(--st-danger-soft);
+  --color-st-warning: var(--st-warning);
+  --color-st-warning-soft: var(--st-warning-soft);
+  --color-focus: var(--focus);
+
+  --radius-theme: var(--radius, 10px);
+  --radius-button: var(--radius-button, 10px);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Pro space and console palette (light) */
+:root,
+[data-theme='light'] {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --fg: #111827;
+  --muted-fg: #4b5563;
+  --border: #d9dde3;
+  --brand: #1f2937;
+  --brand-foreground: #ffffff;
+  --brand-hover: #374151;
+  --brand-soft: #eef0f3;
+  --brand-border: #c7ccd4;
+  --brand-text: #1f2937;
+  --accent: #2563eb;
+  --accent-foreground: #ffffff;
+  --accent-text: #1d4ed8;
+  --st-submitted: #b45309;
+  --st-submitted-soft: #fef3c7;
+  --st-accepted: #1d4ed8;
+  --st-accepted-soft: #dbeafe;
+  --st-ready: #047857;
+  --st-ready-soft: #d1fae5;
+  --st-served: #4b5563;
+  --st-danger: #b91c1c;
+  --st-danger-soft: #fee2e2;
+  --st-warning: #c2410c;
+  --st-warning-soft: #ffedd5;
+  --focus: #2563eb;
+  color-scheme: light;
+}
+
+/* Dark palette (kitchen by default, floor on demand) */
+[data-theme='dark'] {
+  --bg: #0b0f14;
+  --surface: #151b23;
+  --fg: #f3f4f6;
+  --muted-fg: #b6bdc8;
+  --border: #2b3542;
+  --brand: #e5e7eb;
+  --brand-foreground: #0b0f14;
+  --brand-hover: #ffffff;
+  --brand-soft: #1f2732;
+  --brand-border: #3a4554;
+  --brand-text: #e5e7eb;
+  --accent: #60a5fa;
+  --accent-foreground: #0b0f14;
+  --accent-text: #93c5fd;
+  --st-submitted: #fbbf24;
+  --st-submitted-soft: #3a2a05;
+  --st-accepted: #60a5fa;
+  --st-accepted-soft: #0f2744;
+  --st-ready: #34d399;
+  --st-ready-soft: #06301f;
+  --st-served: #9ca3af;
+  --st-danger: #f87171;
+  --st-danger-soft: #3b0d0d;
+  --st-warning: #fb923c;
+  --st-warning-soft: #3a1a05;
+  --focus: #93c5fd;
+  color-scheme: dark;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
+
+/* Customer site: the shop's font pair */
+.site-body {
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+.font-display {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+}
+
+/* Visible focus everywhere (2 px ring, vol. 07 §7) */
+:focus-visible {
+  outline: 2px solid var(--focus, var(--brand));
+  outline-offset: 2px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sold-out hatching (vol. 07 §2.3) */
+.hatched {
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 6px,
+    color-mix(in srgb, var(--muted-fg) 18%, transparent) 6px 8px
+  );
+}
+
+@keyframes soft-blink {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  50% {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--st-submitted) 45%, transparent);
+  }
+}
+.blink-new {
+  animation: soft-blink 1.6s ease-in-out 3;
+}
+
+@keyframes pulse-critical {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--st-danger) 50%, transparent);
+  }
+}
+.pulse-critical {
+  animation: pulse-critical 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+.skeleton {
+  background: color-mix(in srgb, var(--muted-fg) 22%, transparent);
+  animation: skeleton 1.6s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

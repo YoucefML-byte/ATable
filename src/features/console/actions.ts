@@ -72,20 +72,18 @@ async function attachOwner(
     userId = data.user.id;
     outcome = 'invited';
   }
-  const { error } = await admin
-    .from('shop_members')
-    .upsert(
-      {
-        shop_id: shopId,
-        user_id: userId,
-        role: 'owner',
-        display_name: displayName,
-        permissions: ['floor', 'kitchen', 'stock'],
-        is_active: true,
-        deactivated_at: null,
-      },
-      { onConflict: 'shop_id,user_id' },
-    );
+  const { error } = await admin.from('shop_members').upsert(
+    {
+      shop_id: shopId,
+      user_id: userId,
+      role: 'owner',
+      display_name: displayName,
+      permissions: ['floor', 'kitchen', 'stock'],
+      is_active: true,
+      deactivated_at: null,
+    },
+    { onConflict: 'shop_id,user_id' },
+  );
   if (error) return err(mapDbError(error).code, 'ERROR');
   await auditPlatform(ctx, shopId, 'owner.invite', 'member', null, {
     email_domain: email.split('@')[1] ?? null,

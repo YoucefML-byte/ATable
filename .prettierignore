@@ -6,3 +6,5 @@ src/types/database.ts
 coverage
 playwright-report
 test-results
+supabase/
+.claude/skills/**/template.md

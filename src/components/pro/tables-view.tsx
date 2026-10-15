@@ -29,7 +29,7 @@ export function TablesView({
   const tc = useTranslations('common');
   const [tables, setTables] = useState(initial);
   const [selected, setSelected] = useState<TableOverview | null>(null);
-  const [orders, setOrders] = useState<StaffOrder[] | null>(null);
+  const [loaded, setLoaded] = useState<{ sessionId: string; orders: StaffOrder[] } | null>(null);
   const [message, setMessage] = useState<{ tone: 'success' | 'danger'; text: string } | null>(null);
   const [confirming, setConfirming] = useState(false);
 
@@ -44,18 +44,19 @@ export function TablesView({
   }, [refresh]);
 
   useEffect(() => {
-    if (!selected?.session) {
-      setOrders(null);
-      return;
-    }
+    const sessionId = selected?.session?.id;
+    if (!sessionId) return;
     let cancelled = false;
-    getSessionOrdersAction(shop.slug, selected.session.id).then((res) => {
-      if (!cancelled && res.ok) setOrders(res.value);
+    getSessionOrdersAction(shop.slug, sessionId).then((res) => {
+      if (!cancelled && res.ok) setLoaded({ sessionId, orders: res.value });
     });
     return () => {
       cancelled = true;
     };
   }, [selected, shop.slug]);
+
+  // Orders of the selected session only (never those of a previously opened table).
+  const orders = loaded && loaded.sessionId === selected?.session?.id ? loaded.orders : null;
 
   const zones = useMemo(() => {
     const map = new Map<string, TableOverview[]>();

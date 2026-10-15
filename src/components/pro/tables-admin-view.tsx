@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import QRCode from 'qrcode';
+import { QrCode, qrSvgFile } from '@/components/ui/qr-code';
 import { Download, Link2, Nfc, Plus, Printer, RefreshCw, Trash2 } from 'lucide-react';
 import {
   createTableAction,
@@ -391,19 +392,7 @@ function TableDetail({
   const [label, setLabel] = useState(table.label);
   const [zone, setZone] = useState(table.zone ?? '');
   const [seats, setSeats] = useState(table.seats ? String(table.seats) : '');
-  const [svg, setSvg] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!table.url) return;
-    let cancelled = false;
-    void QRCode.toString(table.url, { type: 'svg', margin: 2, errorCorrectionLevel: 'M' }).then(
-      (s) => !cancelled && setSvg(s),
-    );
-    return () => {
-      cancelled = true;
-    };
-  }, [table.url]);
 
   const fileBase = `qr-${slugify(shopName)}-${slugify(table.label)}`;
   const copy = async (value: string, key: string) => {
@@ -415,12 +404,11 @@ function TableDetail({
   return (
     <Card className="grid gap-6 md:grid-cols-[16rem_minmax(0,1fr)]" aria-label={table.label}>
       <div className="space-y-2">
-        {svg ? (
-          <div
-            className="rounded-lg bg-white p-2 [&_svg]:h-full [&_svg]:w-full"
-            role="img"
-            aria-label={t('qrOf', { table: table.label })}
-            dangerouslySetInnerHTML={{ __html: svg }}
+        {table.url ? (
+          <QrCode
+            value={table.url}
+            label={t('qrOf', { table: table.label })}
+            className="w-full rounded-lg"
           />
         ) : (
           <div className="bg-line aspect-square rounded-lg" />
@@ -430,12 +418,10 @@ function TableDetail({
             <Button
               size="sm"
               variant="secondary"
-              disabled={!svg}
               onClick={() =>
-                svg &&
                 download(
                   `${fileBase}.svg`,
-                  `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
+                  `data:image/svg+xml;charset=utf-8,${encodeURIComponent(qrSvgFile(table.url!))}`,
                 )
               }
             >

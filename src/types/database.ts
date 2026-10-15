@@ -863,6 +863,9 @@ isOneToOne: false
 "owner_unlock_member":
 { Args: { "p_member_id": string }; Returns: undefined
                            },
+"public_client_left_table":
+{ Args: { "p_client_key": string,"p_shop_id": string,"p_token": string }; Returns: boolean
+                           },
 "public_get_menu":
 { Args: { "p_shop_id": string }; Returns: Json
                            },

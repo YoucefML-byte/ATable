@@ -1,7 +1,7 @@
 -- Order placement tests. Bible: vol. 04 §15 « Commande », vol. 02 CLI-05, vol. 05 M1–M3.
 begin;
 \ir 00_helpers.sql.inc
-select plan(43);
+select plan(47);
 
 -- Products of Le Bistrot Démo (seed)
 --   Café f...21 (1,80 €, always-available menu), Tiramisu f...16 (6,50 €), Croque-monsieur f...11 (lunch/evening)
@@ -170,6 +170,18 @@ select is(
         jsonb_array_elements(c -> 'products') p
    where p ->> 'id' = 'f1000000-0000-4000-8000-000000000013'),
   true, 'tacos needing 2 meats with only 1 meat left is shown sold out');
+
+-- 12. A customer who left cannot keep ordering after the table was closed (ADR-009 §12).
+select lives_ok(format($$ select tests.order_at('[{"product_id":%s,"quantity":1}]', tests.paris('12:00'), p_token => 'demoBistrotTable000006', p_client => repeat('q', 40)) $$, to_json(:cafe::text)),
+  'CLI-01 — customer orders at table 6');
+update public.table_sessions set closed_at = tests.paris('12:30')
+ where table_id = (select table_id from public.table_tokens where token = 'demoBistrotTable000006') and closed_at is null;
+select throws_ok(format($$ select tests.order_at('[{"product_id":%s,"quantity":1}]', tests.paris('13:00'), p_token => 'demoBistrotTable000006', p_client => repeat('q', 40)) $$, to_json(:cafe::text)),
+  'P0001', 'TABLE_CLOSED', 'TAB — the departed customer is refused once the table is closed');
+select lives_ok(format($$ select tests.order_at('[{"product_id":%s,"quantity":1}]', tests.paris('13:00'), p_token => 'demoBistrotTable000006', p_client => repeat('r', 40)) $$, to_json(:cafe::text)),
+  'TAB — the next customers (new key after scanning) can order');
+select lives_ok(format($$ select tests.order_at('[{"product_id":%s,"quantity":1}]', tests.paris('13:00') + interval '13 hours', p_token => 'demoBistrotTable000006', p_client => repeat('q', 40)) $$, to_json(:cafe::text)),
+  'TAB — after 12 h the old key is no longer considered');
 
 select * from finish();
 rollback;

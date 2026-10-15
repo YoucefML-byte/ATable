@@ -29,11 +29,12 @@ export function AllergenText({
 
 /** Small pictograms with an accessible name (vol. 07 §4.1). */
 export function AllergenBadges({ codes }: { codes: AllergenCode[] }) {
+  const t = useTranslations('site.menu');
   const tc = useTranslations('common.allergens');
   const ts = useTranslations('common.allergenShort');
   if (codes.length === 0) return null;
   return (
-    <ul className="flex flex-wrap gap-1" aria-label="Allergènes">
+    <ul className="flex flex-wrap gap-1" aria-label={t('allergensLink')}>
       {codes.map((c) => (
         <li key={c}>
           <abbr

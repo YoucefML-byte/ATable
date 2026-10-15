@@ -102,6 +102,20 @@ test('E9 E12 E15 — PIN login, order in less than 3 s, kitchen, served, closing
     phone.getByText("Vous n'avez pas encore passé de commande à cette table."),
   ).toBeVisible();
 
+  // ADR-009 §12 — the previous customers cannot keep ordering for the closed table...
+  await phone.goto(`${BISTROT}/carte`);
+  await phone.getByRole('button', { name: 'Ajouter Café', exact: true }).click();
+  await phone.getByRole('button', { name: /Voir mon panier · 1/ }).click();
+  await phone.getByRole('button', { name: 'Envoyer ma commande' }).click();
+  await phone.getByRole('button', { name: 'Oui, envoyer' }).click();
+  await expect(phone.getByText(/Cette table a été libérée/).first()).toBeVisible();
+  // ...until they scan the QR code of the table again.
+  await scanTable(phone, 'demoBistrotTable000009');
+  await phone.getByRole('button', { name: /Voir mon panier · 1/ }).click();
+  await phone.getByRole('button', { name: 'Envoyer ma commande' }).click();
+  await phone.getByRole('button', { name: 'Oui, envoyer' }).click();
+  await expect(phone.getByText('Commande envoyée ✓')).toBeVisible();
+
   await phoneContext.close();
   await tablet.close();
 });

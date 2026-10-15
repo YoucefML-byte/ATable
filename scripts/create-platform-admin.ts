@@ -42,15 +42,13 @@ if (error) {
   console.error(`Could not grant the platform role: ${error.message}`);
   process.exit(1);
 }
-await admin
-  .from('audit_log')
-  .insert({
-    shop_id: null,
-    actor_kind: 'system',
-    action: 'platform_admin.grant',
-    entity_type: 'user',
-    entity_id: userId,
-  });
+await admin.from('audit_log').insert({
+  shop_id: null,
+  actor_kind: 'system',
+  action: 'platform_admin.grant',
+  entity_type: 'user',
+  entity_id: userId,
+});
 console.log(
   `${email} is now a platform administrator. Console: ${scheme}://${consoleHost}/connexion`,
 );

@@ -22,9 +22,11 @@ export function useActiveOrders(opts: {
     warning: opts.initial.kitchenWarningMinutes,
     critical: opts.initial.kitchenCriticalMinutes,
   });
-  const clockOffset = useRef(opts.initial.serverNow - Date.now());
+  // Offset between the server clock and this device; null until first measured.
+  const clockOffset = useRef<number | null>(null);
   const inflight = useRef<Promise<void> | null>(null);
   const [lastNew, setLastNew] = useState<StaffOrder | null>(null);
+  const [arrivedIds, setArrivedIds] = useState<ReadonlySet<string>>(() => new Set());
   const known = useRef(new Set(opts.initial.orders.map((o) => o.id)));
 
   const reload = useCallback(async () => {
@@ -39,7 +41,10 @@ export function useActiveOrders(opts: {
         (o) => o.status === 'submitted' && !known.current.has(o.id),
       );
       for (const o of res.value.orders) known.current.add(o.id);
-      if (fresh.length > 0) setLastNew(fresh[fresh.length - 1]!);
+      if (fresh.length > 0) {
+        setLastNew(fresh[fresh.length - 1]!);
+        setArrivedIds((ids) => new Set([...ids, ...fresh.map((o) => o.id)]));
+      }
       setOrders(res.value.orders);
       setAcceptingOrders(res.value.acceptingOrders);
       setThresholds({
@@ -70,9 +75,22 @@ export function useActiveOrders(opts: {
     return () => document.removeEventListener('visibilitychange', onVisible);
   }, [reload]);
 
-  const serverNow = useCallback(() => Date.now() + clockOffset.current, []);
+  const serverNow = useCallback(() => {
+    if (clockOffset.current === null) clockOffset.current = opts.initial.serverNow - Date.now();
+    return Date.now() + clockOffset.current;
+  }, [opts.initial.serverNow]);
 
-  return { orders, setOrders, reload, status, serverNow, lastNew, acceptingOrders, thresholds };
+  return {
+    orders,
+    setOrders,
+    reload,
+    status,
+    serverNow,
+    lastNew,
+    arrivedIds,
+    acceptingOrders,
+    thresholds,
+  };
 }
 
 /** Re-renders every `ms` milliseconds (timers, "3 min ago"). */

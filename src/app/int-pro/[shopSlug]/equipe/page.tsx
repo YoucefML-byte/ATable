@@ -25,6 +25,7 @@ export default async function TeamPage({ params }: { params: Promise<{ shopSlug:
   ]);
   const count = new Map<string, number>();
   for (const s of sessions ?? []) count.set(s.member_id, (count.get(s.member_id) ?? 0) + 1);
+  // eslint-disable-next-line react-hooks/purity -- server component: rendered once per request
   const now = Date.now();
   const rows: MemberRow[] = (members ?? []).map((m) => ({
     id: m.id,

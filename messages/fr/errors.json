@@ -39,5 +39,6 @@
   "LABEL_TAKEN": "Une table porte déjà ce nom.",
   "DOMAIN_TAKEN": "Ce domaine est déjà utilisé.",
   "EMAIL_TAKEN": "Un compte existe déjà avec cette adresse.",
-  "CONTRAST_TOO_LOW": "La couleur principale est trop proche du fond : choisissez une couleur plus contrastée."
+  "CONTRAST_TOO_LOW": "La couleur principale est trop proche du fond : choisissez une couleur plus contrastée.",
+  "TABLE_CLOSED": "Cette table a été libérée. Scannez à nouveau le QR code de votre table pour commander."
 }

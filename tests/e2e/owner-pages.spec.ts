@@ -84,7 +84,7 @@ test('TAB-02 — QR code of a table and A4 print sheet @desktop', async ({ page 
     .getByRole('row', { name: /Table 1\b/ })
     .getByRole('button', { name: 'Modifier' })
     .click();
-  await expect(page.getByRole('img', { name: 'QR code de Table 1' }).locator('svg')).toBeVisible();
+  await expect(page.getByRole('img', { name: 'QR code de Table 1' })).toBeVisible();
   await page.getByLabel('Format').selectOption('labels6');
   const [sheet] = await Promise.all([
     page.waitForEvent('popup'),

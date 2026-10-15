@@ -14,6 +14,7 @@ export default async function FloorPage({ params }: { params: Promise<{ shopSlug
     ? res.value
     : {
         orders: [],
+        // eslint-disable-next-line react-hooks/purity -- server component: rendered once per request
         serverNow: Date.now(),
         acceptingOrders: ctx.shop.accepting_orders,
         kitchenWarningMinutes: ctx.shop.kitchen_warning_minutes,

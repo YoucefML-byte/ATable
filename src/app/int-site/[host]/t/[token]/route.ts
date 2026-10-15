@@ -44,12 +44,19 @@ export async function GET(
   const response = go('/carte');
   const options = siteCookieOptions();
   response.cookies.set(TABLE_COOKIE, encodeTableCookie(token, source), options);
+  // A customer key that ordered in a table session closed since then gets renewed: the previous
+  // customers cannot keep ordering for this table (ADR-009 §12).
   const existing = request.cookies.get(CLIENT_COOKIE)?.value;
-  response.cookies.set(
-    CLIENT_COOKIE,
-    isValidClientKey(existing) ? existing : newClientKey(),
-    options,
-  );
+  let keep = isValidClientKey(existing);
+  if (keep) {
+    const { data: left } = await createPublicClient().rpc('public_client_left_table', {
+      p_shop_id: shop.shop_id,
+      p_token: token,
+      p_client_key: existing!,
+    });
+    keep = left !== true;
+  }
+  response.cookies.set(CLIENT_COOKIE, keep ? existing! : newClientKey(), options);
   response.headers.set('Cache-Control', 'no-store');
   return response;
 }

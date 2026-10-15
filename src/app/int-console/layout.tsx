@@ -4,6 +4,7 @@ import { consoleClientMessages } from '@/i18n/client-messages';
 
 export const metadata: Metadata = {
   title: { default: 'Console', template: '%s · Console Atable' },
+  icons: { icon: '/icons/favicon-32.png' },
 };
 
 export default function ConsoleLayout({ children }: { children: React.ReactNode }) {

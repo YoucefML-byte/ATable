@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { createShopAction } from '@/features/console/actions';
 import { BUSINESS_TYPES } from '@/features/console/constants';
@@ -27,6 +28,7 @@ export function CreateShopForm({ rootDomain }: { rootDomain: string }) {
   const [timezone, setTimezone] = useState('Europe/Paris');
   const [ownerEmail, setOwnerEmail] = useState('');
   const [ownerName, setOwnerName] = useState('');
+  const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,7 +53,7 @@ export function CreateShopForm({ rootDomain }: { rootDomain: string }) {
             setError(te(res.code));
             return;
           }
-          window.location.assign(`/commerces/${res.value.shopId}?cree=${res.value.owner}`);
+          router.push(`/commerces/${res.value.shopId}?cree=${res.value.owner}`);
         }}
       >
         <p className="text-muted">{t('intro')}</p>

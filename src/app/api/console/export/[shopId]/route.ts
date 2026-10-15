@@ -23,10 +23,26 @@ export async function GET(
       { status: res.code === 'FORBIDDEN' ? 403 : 401 },
     );
   const { db } = res.value;
-  const by = <T extends string>(table: T) =>
+  // Explicit columns: a column added later is never exported by accident.
+  const COLUMNS = {
+    menus: 'id, name, description, position, is_active, is_default, deleted_at',
+    menu_schedules: 'menu_id, days, start_time, end_time',
+    menu_categories: 'menu_id, category_id, position',
+    categories: 'id, name, description, prep_station, position, is_hidden, is_sold_out, deleted_at',
+    products:
+      'id, category_id, name, description, base_price_cents, image_path, tags, origin_info, allergens_declared_at, position, is_hidden, is_sold_out, deleted_at',
+    option_groups:
+      'id, name, internal_name, min_select, max_select, allow_quantity, max_per_option, position, is_hidden, deleted_at',
+    options:
+      'id, group_id, name, price_delta_cents, is_default, allergens_declared_at, position, is_hidden, is_sold_out, deleted_at',
+    product_option_groups: 'product_id, group_id, position, min_override, max_override',
+    product_allergens: 'product_id, allergen_code, presence',
+    option_allergens: 'option_id, allergen_code, presence',
+  } as const;
+  const by = (table: keyof typeof COLUMNS) =>
     db
       .from(table as 'menus')
-      .select('*')
+      .select(COLUMNS[table])
       .eq('shop_id', shopId);
   const { data: shop } = await db
     .from('shops')
@@ -51,7 +67,13 @@ export async function GET(
     optionAllergens,
     tables,
   ] = await Promise.all([
-    db.from('shop_themes').select('*').eq('shop_id', shopId).maybeSingle(),
+    db
+      .from('shop_themes')
+      .select(
+        'preset, primary_color, accent_color, font_pair, radius, density, menu_layout, color_scheme, logo_path, cover_path',
+      )
+      .eq('shop_id', shopId)
+      .maybeSingle(),
     db.from('shop_domains').select('hostname, kind, is_primary, verified_at').eq('shop_id', shopId),
     by('menus'),
     by('menu_schedules'),

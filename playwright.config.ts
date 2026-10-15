@@ -25,9 +25,17 @@ export default defineConfig({
   projects: [
     // Mobile projects use the Chromium engine with the device viewport and user agent; in CI,
     // install WebKit to run "iPhone 13" on its real engine.
-    { name: 'iphone-13', use: { ...devices['iPhone 13'], browserName: 'chromium', launchOptions }, grep: /@mobile/ },
+    {
+      name: 'iphone-13',
+      use: { ...devices['iPhone 13'], browserName: 'chromium', launchOptions },
+      grep: /@mobile/,
+    },
     { name: 'pixel-7', use: { ...devices['Pixel 7'], launchOptions }, grep: /@mobile/ },
-    { name: 'tablette', use: { viewport: { width: 1024, height: 768 }, hasTouch: true, launchOptions }, grep: /@tablet/ },
+    {
+      name: 'tablette',
+      use: { viewport: { width: 1024, height: 768 }, hasTouch: true, launchOptions },
+      grep: /@tablet/,
+    },
     { name: 'bureau', use: { ...devices['Desktop Chrome'], launchOptions }, grep: /@desktop/ },
   ],
   ...(process.env.E2E_NO_SERVER

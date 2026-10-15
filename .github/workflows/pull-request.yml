@@ -1,0 +1,91 @@
+# Checks of every pull request (vol. 08 §2.1): lint, types, unit tests, database tests (pgTAP),
+# production build and end-to-end tests against a local Supabase.
+name: Pull request
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint and types
+        run: |
+          pnpm lint
+          pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Start local Supabase
+        run: pnpm db:start
+
+      - name: Database tests (pgTAP)
+        run: pnpm db:test
+
+      - name: Generated types are up to date
+        run: |
+          pnpm db:types
+          pnpm exec prettier --write src/types/database.ts
+          git diff --exit-code src/types/database.ts
+
+      - name: Environment for the app
+        run: |
+          pnpm exec supabase status -o env > .supabase.env
+          . ./.supabase.env
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$PUBLISHABLE_KEY"
+            echo "SUPABASE_SECRET_KEY=$SECRET_KEY"
+            echo "PLATFORM_ROOT_DOMAIN=localhost"
+            echo "PLATFORM_PRO_HOST=pro.localhost:3000"
+            echo "PLATFORM_CONSOLE_HOST=console.localhost:3000"
+            echo "PUBLIC_SCHEME=http"
+          } > .env.local
+          rm .supabase.env
+
+      - name: Build
+        run: pnpm build
+
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        run: |
+          pnpm start > next.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf http://localhost:3000/api/health && break; sleep 1; done
+          E2E_NO_SERVER=1 pnpm e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+            next.log
+          retention-days: 7

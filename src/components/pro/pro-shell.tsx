@@ -71,9 +71,10 @@ export function ProShell({
   }, [router, member.id]);
 
   // Inactivity lock for staff sessions (AUTH-03): asks for the PIN of the same person again.
-  const lastActivity = useRef(Date.now());
+  const lastActivity = useRef(0);
   useEffect(() => {
     if (!idleLockMinutes) return;
+    lastActivity.current = Date.now();
     const bump = () => {
       lastActivity.current = Date.now();
     };

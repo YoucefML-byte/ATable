@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import QRCode from 'qrcode';
 import { getTranslations } from 'next-intl/server';
 import { requireShopPage } from '@/server/auth/guards';
 import { shopPublicUrl } from '@/server/env';
 import { PrintButton } from '@/components/pro/print-button';
+import { QrCode } from '@/components/ui/qr-code';
 
 export const metadata: Metadata = { title: 'Planche de QR codes' };
 
@@ -54,19 +54,13 @@ export default async function PrintSheetPage({
   ]);
   const host = domains.data?.[0]?.hostname;
   const tokenOf = new Map((tokens.data ?? []).map((x) => [x.table_id, x.token]));
-  const cells = await Promise.all(
-    (tables.data ?? [])
-      .filter((x) => host && tokenOf.has(x.id))
-      .map(async (x) => ({
-        id: x.id,
-        label: x.label,
-        svg: await QRCode.toString(shopPublicUrl(host!, `/t/${tokenOf.get(x.id)}`), {
-          type: 'svg',
-          margin: 1,
-          errorCorrectionLevel: 'M',
-        }),
-      })),
-  );
+  const cells = (tables.data ?? [])
+    .filter((x) => host && tokenOf.has(x.id))
+    .map((x) => ({
+      id: x.id,
+      label: x.label,
+      url: shopPublicUrl(host!, `/t/${tokenOf.get(x.id)}`),
+    }));
   const perPage = format.cols * format.rows;
   const pages = Array.from({ length: Math.ceil(cells.length / perPage) }, (_, i) =>
     cells.slice(i * perPage, (i + 1) * perPage),
@@ -99,11 +93,9 @@ export default async function PrintSheetPage({
               <p className="font-semibold" style={{ fontSize: format.title }}>
                 {shop.name}
               </p>
-              <div
-                className="[&_svg]:h-full [&_svg]:w-full"
-                style={{ width: format.qr, height: format.qr }}
-                dangerouslySetInnerHTML={{ __html: cell.svg }}
-              />
+              <div style={{ width: format.qr, height: format.qr }}>
+                <QrCode value={cell.url} label={cell.label} margin={1} className="h-full w-full" />
+              </div>
               <p className="font-bold" style={{ fontSize: format.title }}>
                 {cell.label}
               </p>

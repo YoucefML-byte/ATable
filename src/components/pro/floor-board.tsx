@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { transitionOrderAction } from '@/features/orders/staff-actions';
@@ -31,7 +31,7 @@ export function FloorBoard({
 }) {
   const t = useTranslations('pro.floor');
   const te = useTranslations('errors');
-  const { orders, setOrders, reload, status, serverNow, lastNew } = useActiveOrders({
+  const { orders, setOrders, reload, status, serverNow, lastNew, arrivedIds } = useActiveOrders({
     shopId: shop.id,
     shopSlug: shop.slug,
     supabaseUrl,
@@ -47,8 +47,6 @@ export function FloorBoard({
   );
   const [messages, setMessages] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<Record<string, boolean>>({});
-  const [announce, setAnnounce] = useState('');
-  const newIds = useRef(new Set<string>());
 
   const columns = useMemo(() => {
     const by: Record<Column, StaffOrder[]> = { submitted: [], accepted: [], ready: [] };
@@ -59,12 +57,10 @@ export function FloorBoard({
   }, [orders]);
 
   // New order: sound, gentle blink, aria-live announcement.
+  const announce = lastNew ? t('newOrder', { table: lastNew.table_label }) : '';
   useEffect(() => {
-    if (!lastNew) return;
-    newIds.current.add(lastNew.id);
-    setAnnounce(t('newOrder', { table: lastNew.table_label }));
-    if (started && soundOn) playNewOrderChime();
-  }, [lastNew, started, soundOn, t]);
+    if (lastNew && started && soundOn) playNewOrderChime();
+  }, [lastNew, started, soundOn]);
 
   // The sound repeats while an order is waiting to be validated (configurable, can be disabled).
   const pendingCount = columns.submitted.length;
@@ -196,7 +192,7 @@ export function FloorBoard({
                 key={order.id}
                 order={order}
                 ageLabel={age(order)}
-                isNew={newIds.current.has(order.id) && order.status === 'submitted'}
+                isNew={arrivedIds.has(order.id) && order.status === 'submitted'}
                 message={messages[order.id] ?? null}
                 actions={
                   order.status === 'submitted' ? (

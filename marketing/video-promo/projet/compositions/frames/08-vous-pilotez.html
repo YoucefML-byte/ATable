@@ -1,0 +1,397 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Source Serif 4", serif;
+      color: #0c1613;
+    }
+
+    /* ---------- layers (full-frame clips) ---------- */
+    [id="08-vous-pilotez-bg"],
+    [id="08-vous-pilotez-rail"],
+    [id="08-vous-pilotez-copy"],
+    [id="08-vous-pilotez-grid"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+    }
+    [id="08-vous-pilotez-bg"] {
+      background: #f4efe6;
+    }
+
+    /* ---------- ticket rail (film invariant) ---------- */
+    [id="08-vous-pilotez-logo"] {
+      position: absolute;
+      left: 96px;
+      top: 44px;
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+    [id="08-vous-pilotez-wordmark"] {
+      position: absolute;
+      left: 150px;
+      top: 52px;
+      height: 24px;
+      line-height: 24px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.18em;
+      color: #0c1613;
+      white-space: nowrap;
+    }
+    [id="08-vous-pilotez-line"] {
+      position: absolute;
+      left: 640px;
+      top: 63px;
+      width: 1000px;
+      height: 2px;
+      background: #0c1613;
+    }
+    [class~="08-vous-pilotez-dot"] {
+      position: absolute;
+      top: 57px;
+      width: 14px;
+      height: 14px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 50%;
+      background: #f4efe6;
+    }
+    [class~="08-vous-pilotez-dot-past"] {
+      background: #0c1613;
+    }
+    [class~="08-vous-pilotez-station"] {
+      position: absolute;
+      top: 83px;
+      width: 200px;
+      height: 18px;
+      line-height: 18px;
+      padding-left: 0.14em;
+      box-sizing: border-box;
+      text-align: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #0c1613;
+      white-space: nowrap;
+    }
+    [class~="08-vous-pilotez-station-future"] {
+      opacity: 0.45;
+    }
+    [id="08-vous-pilotez-tag"] {
+      position: absolute;
+      left: 1190px;
+      top: 16px;
+      width: 92px;
+      height: 30px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 6px;
+      background: #e7dcc6;
+      text-align: center;
+      line-height: 26px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 13px;
+      color: #0c1613;
+      white-space: nowrap;
+    }
+
+    /* ---------- headline (left third) ---------- */
+    [id="08-vous-pilotez-headline"] {
+      position: absolute;
+      left: 120px;
+      top: 412px;
+      display: inline-block;
+    }
+    [class~="08-vous-pilotez-hline"] {
+      display: block;
+      margin: 0;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      font-size: 5cqw;
+      line-height: 0.96;
+      letter-spacing: -0.02em;
+      font-optical-sizing: auto;
+      color: #1f4d3a;
+      white-space: nowrap;
+    }
+    [class~="08-vous-pilotez-word"] {
+      display: inline-block;
+    }
+    [id="08-vous-pilotez-rule"] {
+      width: 100%;
+      height: 2px;
+      margin-top: 28px;
+      background: #e0a33a;
+      transform-origin: 0 50%;
+    }
+
+    /* ---------- 2x2 tile grid (right two-thirds) ---------- */
+    [class~="08-vous-pilotez-slot"],
+    [class~="08-vous-pilotez-tile"] {
+      position: absolute;
+      width: 524px;
+      height: 302px;
+      box-sizing: border-box;
+      border-radius: 6px;
+    }
+    [class~="08-vous-pilotez-slot"] {
+      border: 2px solid #e7dcc6;
+    }
+    [class~="08-vous-pilotez-tile"] {
+      border: 2px solid #1f4d3a;
+      background: #e7dcc6;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+    [class~="08-vous-pilotez-pos1"] { left: 752px; top: 190px; }
+    [class~="08-vous-pilotez-pos2"] { left: 1300px; top: 190px; }
+    [class~="08-vous-pilotez-pos3"] { left: 752px; top: 516px; }
+    [class~="08-vous-pilotez-pos4"] { left: 1300px; top: 516px; }
+
+    [class~="08-vous-pilotez-screen"] {
+      position: relative;
+      flex: none;
+      width: 496px;
+      height: 198px;
+      overflow: hidden;
+      border-radius: 2px;
+      background: #ffffff;
+    }
+    [class~="08-vous-pilotez-zoom-outer"],
+    [class~="08-vous-pilotez-zoom-inner"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 496px;
+      height: 198px;
+      will-change: transform;
+    }
+    [class~="08-vous-pilotez-zoom-outer"] {
+      transform-origin: 50% 50%;
+    }
+    [class~="08-vous-pilotez-shot"] {
+      position: absolute;
+      display: block;
+      max-width: none;
+      max-height: none;
+    }
+    [class~="08-vous-pilotez-title"] {
+      flex: none;
+      margin-top: 14px;
+      height: 24px;
+      line-height: 24px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 1.25cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #1f4d3a;
+      white-space: nowrap;
+    }
+    [class~="08-vous-pilotez-desc"] {
+      flex: none;
+      margin-top: 6px;
+      font-family: "Source Serif 4", serif;
+      font-weight: 400;
+      font-size: 1.35cqw;
+      line-height: 1.2;
+      color: #0c1613;
+      white-space: nowrap;
+    }
+  </style>
+
+  <div id="root" data-composition-id="08-vous-pilotez" data-start="0" data-duration="8.5" data-width="1920" data-height="1080">
+    <!-- cream ground -->
+    <div id="08-vous-pilotez-bg" class="clip" data-start="0" data-duration="8.5" data-track-index="0"></div>
+
+    <!-- ticket rail: current station 05 PATRON -->
+    <div id="08-vous-pilotez-rail" class="clip" data-start="0" data-duration="8.5" data-track-index="1">
+      <img id="08-vous-pilotez-logo" src="assets/atable-logo.svg" alt="" />
+      <div id="08-vous-pilotez-wordmark">ATABLE</div>
+      <div id="08-vous-pilotez-line"></div>
+
+      <div class="08-vous-pilotez-dot 08-vous-pilotez-dot-past" style="left: 653px"></div>
+      <div class="08-vous-pilotez-dot 08-vous-pilotez-dot-past" style="left: 845px"></div>
+      <div class="08-vous-pilotez-dot 08-vous-pilotez-dot-past" style="left: 1037px"></div>
+      <div class="08-vous-pilotez-dot 08-vous-pilotez-dot-past" style="left: 1229px"></div>
+      <div id="08-vous-pilotez-dot5" class="08-vous-pilotez-dot" style="left: 1421px"></div>
+      <div class="08-vous-pilotez-dot" style="left: 1613px"></div>
+
+      <div class="08-vous-pilotez-station" style="left: 560px">01 CLIENT</div>
+      <div class="08-vous-pilotez-station" style="left: 752px">02 SALLE</div>
+      <div class="08-vous-pilotez-station" style="left: 944px">03 CUISINE</div>
+      <div class="08-vous-pilotez-station" style="left: 1136px">04 ÉQUIPE</div>
+      <div id="08-vous-pilotez-station5" class="08-vous-pilotez-station 08-vous-pilotez-station-future" style="left: 1328px">05 PATRON</div>
+      <div class="08-vous-pilotez-station 08-vous-pilotez-station-future" style="left: 1520px">06 PLATEFORME</div>
+
+      <div id="08-vous-pilotez-tag">TABLE 4</div>
+    </div>
+
+    <!-- headline, left third -->
+    <div id="08-vous-pilotez-copy" class="clip" data-start="0" data-duration="8.5" data-track-index="2">
+      <div id="08-vous-pilotez-headline">
+        <span class="08-vous-pilotez-hline"><span class="08-vous-pilotez-word">Et</span> <span class="08-vous-pilotez-word">vous,</span></span>
+        <span class="08-vous-pilotez-hline"><span class="08-vous-pilotez-word">vous</span> <span class="08-vous-pilotez-word">pilotez.</span></span>
+        <div id="08-vous-pilotez-rule"></div>
+      </div>
+    </div>
+
+    <!-- 2x2 grid of real owner-space crops -->
+    <div id="08-vous-pilotez-grid" class="clip" data-start="0" data-duration="8.5" data-track-index="3">
+      <div class="08-vous-pilotez-slot 08-vous-pilotez-pos1"></div>
+      <div class="08-vous-pilotez-slot 08-vous-pilotez-pos2"></div>
+      <div class="08-vous-pilotez-slot 08-vous-pilotez-pos3"></div>
+      <div class="08-vous-pilotez-slot 08-vous-pilotez-pos4"></div>
+
+      <!-- tile 1: patron-carte, crop [1081,182,1779,1125] cover -->
+      <div id="08-vous-pilotez-tile1" class="08-vous-pilotez-tile 08-vous-pilotez-pos1">
+        <div class="08-vous-pilotez-screen" data-layout-allow-overflow>
+          <div id="08-vous-pilotez-zo1" class="08-vous-pilotez-zoom-outer">
+            <div id="08-vous-pilotez-zi1" class="08-vous-pilotez-zoom-inner">
+              <img class="08-vous-pilotez-shot" src="assets/patron-carte.png" alt="" style="left: -768.16px; top: -365.38px; width: 1279.08px; height: 799.43px" />
+            </div>
+          </div>
+        </div>
+        <div class="08-vous-pilotez-title">VOTRE CARTE</div>
+        <div class="08-vous-pilotez-desc">Produits, options, photos, 14 allergènes</div>
+      </div>
+
+      <!-- tile 2: patron-horaires, crop [320,1250,1778,1830] cover -->
+      <div id="08-vous-pilotez-tile2" class="08-vous-pilotez-tile 08-vous-pilotez-pos2">
+        <div class="08-vous-pilotez-screen" data-layout-allow-overflow>
+          <div id="08-vous-pilotez-zo2" class="08-vous-pilotez-zoom-outer">
+            <div id="08-vous-pilotez-zi2" class="08-vous-pilotez-zoom-inner">
+              <img class="08-vous-pilotez-shot" src="assets/patron-horaires.png" alt="" style="left: -110.11px; top: -426.72px; width: 614.48px; height: 715.53px" />
+            </div>
+          </div>
+        </div>
+        <div class="08-vous-pilotez-title">MIDI, SOIR</div>
+        <div class="08-vous-pilotez-desc">Chaque carte à son heure</div>
+      </div>
+
+      <!-- tile 3: patron-qr, crop [300,560,700,960] cover (finder patterns kept in view) -->
+      <div id="08-vous-pilotez-tile3" class="08-vous-pilotez-tile 08-vous-pilotez-pos3">
+        <div class="08-vous-pilotez-screen" data-layout-allow-overflow>
+          <div id="08-vous-pilotez-zo3" class="08-vous-pilotez-zoom-outer">
+            <div id="08-vous-pilotez-zi3" class="08-vous-pilotez-zoom-inner">
+              <img class="08-vous-pilotez-shot" src="assets/patron-qr.png" alt="" style="left: -372px; top: -740.48px; width: 2232px; height: 1395px" />
+            </div>
+          </div>
+        </div>
+        <div class="08-vous-pilotez-title">QR CODES ET NFC</div>
+        <div class="08-vous-pilotez-desc">Prêts à imprimer</div>
+      </div>
+
+      <!-- tile 4: patron-theme, crop [341,140,1776,940] cover (presets + preview header kept in view) -->
+      <div id="08-vous-pilotez-tile4" class="08-vous-pilotez-tile 08-vous-pilotez-pos4">
+        <div class="08-vous-pilotez-screen" data-layout-allow-overflow>
+          <div id="08-vous-pilotez-zo4" class="08-vous-pilotez-zoom-outer">
+            <div id="08-vous-pilotez-zi4" class="08-vous-pilotez-zoom-inner">
+              <img class="08-vous-pilotez-shot" src="assets/patron-theme.png" alt="" style="left: -117.86px; top: -48.94px; width: 622.16px; height: 388.85px" />
+            </div>
+          </div>
+        </div>
+        <div class="08-vous-pilotez-title">VOS COULEURS</div>
+        <div class="08-vous-pilotez-desc">Le site prend votre style</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      var ID = "08-vous-pilotez";
+      var byId = function (s) {
+        return document.getElementById(ID + "-" + s);
+      };
+      var root = byId("grid").parentNode;
+      var all = function (cls) {
+        return Array.prototype.slice.call(root.querySelectorAll('[class~="' + ID + "-" + cls + '"]'));
+      };
+
+      var tl = gsap.timeline({ paused: true });
+
+      // Scene 1 (0.0-1.5s): rail tag slides 04 -> 05 PATRON, headline per-word reveal.
+      tl.fromTo(byId("tag"), { x: 0 }, { x: 192, duration: 0.6, ease: "power3.out" }, 0);
+      tl.fromTo(byId("dot5"), { backgroundColor: "#F4EFE6" }, { backgroundColor: "#E0A33A", duration: 0.15, ease: "power1.out" }, 0.45);
+      tl.fromTo(byId("station5"), { opacity: 0.45 }, { opacity: 1, duration: 0.2, ease: "power1.out" }, 0.45);
+
+      tl.fromTo(all("slot"), { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power1.out", stagger: 0.08 }, 0.2);
+
+      tl.fromTo(
+        all("word"),
+        { y: 44, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.09 },
+        0.3
+      );
+
+      // Scene 2 (1.5-6.5s): one tile per 1.2s slides up into its slot; its crop does a
+      // short coordinate-target zoom (outer scales 1 -> 1.08 about centre, inner
+      // counter-translates by -offset, same start / duration / ease), then stops.
+      // Offsets are (target - crop centre) x crop scale, baked from image pixels.
+      var ZOOM = 1.08;
+      var tiles = [
+        { at: 1.5, tx: 5.68, ty: -18.83 },  // patron-carte: aim at the price + tags form
+        { at: 2.7, tx: 14.68, ty: 0 },      // patron-horaires: keep day labels in view
+        { at: 3.9, tx: 0, ty: 6.2 },        // patron-qr: keep the finder patterns in view
+        { at: 5.1, tx: 17.46, ty: 2.77 }    // patron-theme: presets side
+      ];
+      tiles.forEach(function (t, i) {
+        var n = i + 1;
+        var tile = byId("tile" + n);
+        tl.fromTo(tile, { y: 56 }, { y: 0, duration: 0.85, ease: "power4.out" }, t.at);
+        tl.fromTo(tile, { opacity: 0 }, { opacity: 1, duration: 0.28, ease: "power1.out" }, t.at);
+        tl.fromTo(byId("zo" + n), { scale: 1 }, { scale: ZOOM, duration: 1.1, ease: "power2.inOut" }, t.at + 0.25);
+        tl.fromTo(byId("zi" + n), { x: 0, y: 0 }, { x: t.tx, y: t.ty, duration: 1.1, ease: "power2.inOut" }, t.at + 0.25);
+      });
+
+      // Scene 3 (6.5-8.0s): tiles held still; gold rule underlines the headline.
+      tl.fromTo(byId("rule"), { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 6.5);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines[ID] = tl;
+    })();
+  </script>
+</template>

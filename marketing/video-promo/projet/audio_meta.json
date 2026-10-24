@@ -1,0 +1,97 @@
+{
+  "bgm": {
+    "path": "assets/audio/soundtrack-vo.wav",
+    "volume": 1.0,
+    "source": "host",
+    "original": "assets/audio/soundtrack.wav"
+  },
+  "bgm_pending": false,
+  "voices": [
+    {
+      "path": "assets/audio/voiceover.wav",
+      "voice": "fr-FR-VivienneMultilingualNeural",
+      "engine": "edge-tts",
+      "start": 0,
+      "duration": 96,
+      "segments": [
+        {
+          "text": "Vendredi, vingt heures trente. Salle pleine. Tout le monde vous fait signe.",
+          "start": 0.15,
+          "end": 4.763
+        },
+        {
+          "text": "Et si chaque table pouvait commander toute seule ? Voici À table.",
+          "start": 6.35,
+          "end": 9.703
+        },
+        {
+          "text": "L'installation ? On s'en charge. Chaque table reçoit sa plaque en métal, et son QR code.",
+          "start": 12.15,
+          "end": 17.545
+        },
+        {
+          "text": "Elle se place au bord de la table, à gauche ou à droite. Trois finitions au choix : rose, argenté ou doré.",
+          "start": 18.15,
+          "end": 24.165
+        },
+        {
+          "text": "Et on vous fournit la tablette, reliée à tous vos QR codes. Les commandes y arrivent en direct.",
+          "start": 26.15,
+          "end": 30.897
+        },
+        {
+          "text": "Retour au vendredi soir. À la table quatre, un client sort son téléphone, et vise la plaque.",
+          "start": 32.45,
+          "end": 37.835
+        },
+        {
+          "text": "Un scan, et la carte s'ouvre. Pas d'appli, pas de compte.",
+          "start": 40.35,
+          "end": 44.146
+        },
+        {
+          "text": "Votre client choisit ses options, ajoute une précision pour la cuisine, et envoie. Le paiement, lui, se fait au comptoir.",
+          "start": 46.4,
+          "end": 53.402
+        },
+        {
+          "text": "En moins de trois secondes, la commande arrive en salle. Validée d'un geste.",
+          "start": 54.7,
+          "end": 58.603
+        },
+        {
+          "text": "En cuisine, chaque commande a son minuteur. Elle est prête ? La salle est prévenue.",
+          "start": 60.4,
+          "end": 65.213
+        },
+        {
+          "text": "Chacun a son code, et chaque table son état.",
+          "start": 66.35,
+          "end": 68.693
+        },
+        {
+          "text": "Et vous, vous pilotez tout : la carte, les horaires, les QR codes, et les couleurs de votre établissement.",
+          "start": 70.4,
+          "end": 75.896
+        },
+        {
+          "text": "Le tableau de bord vous montre l'essentiel : montant commandé, panier moyen, heures de rush.",
+          "start": 78.4,
+          "end": 83.316
+        },
+        {
+          "text": "Plusieurs commerces ? Un seul outil, et des données protégées.",
+          "start": 84.35,
+          "end": 87.767
+        },
+        {
+          "text": "À table ! Vos clients commandent, votre équipe sert. Demandez une démo.",
+          "start": 90.85,
+          "end": 95.333
+        }
+      ],
+      "ssml_lang": "fr-FR"
+    }
+  ],
+  "sfx": []
+}

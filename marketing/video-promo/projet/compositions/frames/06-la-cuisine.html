@@ -1,0 +1,654 @@
+<template>
+  <div
+    id="root"
+    data-composition-id="06-la-cuisine"
+    data-start="0"
+    data-duration="6.5"
+    data-width="1920"
+    data-height="1080"
+  >
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Source Serif 4";
+        src: url("assets/fonts/SourceSerif4-500.woff2") format("woff2");
+        font-weight: 500;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+        font-weight: 500;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2");
+        font-weight: 700;
+        font-style: normal;
+        font-display: block;
+      }
+
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        color: #f4efe6;
+      }
+
+      /* ---------- full-bleed ground (gravity frame: green) ---------- */
+      [id="06-la-cuisine-bg"] {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        background: #1f4d3a;
+      }
+
+      [id="06-la-cuisine-stage"] {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+      }
+
+      /* ---------- ticket rail (cream on green) ---------- */
+      [id="06-la-cuisine-logo"] {
+        position: absolute;
+        left: 96px;
+        top: 44px;
+        width: 40px;
+        height: 40px;
+        display: block;
+      }
+      [id="06-la-cuisine-brand"] {
+        position: absolute;
+        left: 150px;
+        top: 52px;
+        height: 24px;
+        line-height: 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: 0.18em;
+        color: #f4efe6;
+        white-space: nowrap;
+      }
+      [id="06-la-cuisine-line"] {
+        position: absolute;
+        left: 640px;
+        top: 63px;
+        width: 1000px;
+        height: 2px;
+        background: #f4efe6;
+      }
+      [class~="06-la-cuisine-dot"] {
+        position: absolute;
+        top: 57px;
+        width: 14px;
+        height: 14px;
+        box-sizing: border-box;
+        border: 2px solid #f4efe6;
+        border-radius: 50%;
+        background: #1f4d3a;
+      }
+      [class~="06-la-cuisine-dot-past"] {
+        background: #f4efe6;
+      }
+      [class~="06-la-cuisine-label"] {
+        position: absolute;
+        top: 83px;
+        width: 180px;
+        height: 18px;
+        line-height: 18px;
+        box-sizing: border-box;
+        padding-left: 0.14em;
+        text-align: center;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 500;
+        font-size: 15px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #f4efe6;
+        white-space: nowrap;
+      }
+      [class~="06-la-cuisine-label-future"] {
+        opacity: 0.45;
+      }
+      [id="06-la-cuisine-tag"] {
+        position: absolute;
+        left: 998px;
+        top: 16px;
+        width: 92px;
+        height: 30px;
+        box-sizing: border-box;
+        border: 2px solid #0c1613;
+        border-radius: 6px;
+        background: #e7dcc6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 13px;
+        color: #0c1613;
+        white-space: nowrap;
+      }
+
+      /* ---------- left copy column ---------- */
+      [id="06-la-cuisine-copy"] {
+        position: absolute;
+        left: 120px;
+        top: 300px;
+        width: 500px;
+        height: 440px;
+        display: grid;
+        align-items: center;
+      }
+      [class~="06-la-cuisine-line-wrap"] {
+        grid-area: 1 / 1;
+        width: 500px;
+      }
+      [class~="06-la-cuisine-headline"] {
+        width: 500px;
+        font-family: "Source Serif 4", serif;
+        font-weight: 500;
+        font-size: 84px;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        color: #f4efe6;
+        transform-origin: 0% 50%;
+      }
+      [class~="06-la-cuisine-word"] {
+        display: inline-block;
+      }
+      [id="06-la-cuisine-ready-word"] {
+        display: block;
+        color: #e0a33a;
+      }
+
+      /* ---------- mono callout above the tablet ---------- */
+      [id="06-la-cuisine-callout-rule"] {
+        position: absolute;
+        left: 680px;
+        top: 139px;
+        width: 36px;
+        height: 2px;
+        background: #e0a33a;
+        transform-origin: 0% 50%;
+      }
+      [id="06-la-cuisine-callout"] {
+        position: absolute;
+        left: 732px;
+        top: 128px;
+        height: 24px;
+        line-height: 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 500;
+        font-size: 20px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #f4efe6;
+        white-space: nowrap;
+      }
+
+      /* ---------- tablet (device frame never scales) ---------- */
+      [id="06-la-cuisine-tablet"] {
+        position: absolute;
+        left: 660px;
+        top: 175px;
+        width: 1060px;
+        height: 690px;
+        box-sizing: border-box;
+        border: 2px solid #0c1613;
+        border-radius: 34px;
+        background: #e7dcc6;
+      }
+      [id="06-la-cuisine-screen"] {
+        position: absolute;
+        left: 16px;
+        top: 23px;
+        width: 1024px;
+        height: 640px;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #0b0f14;
+        isolation: isolate;
+      }
+      [id="06-la-cuisine-cam-outer"] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1024px;
+        height: 640px;
+        transform-origin: 50% 50%;
+      }
+      [id="06-la-cuisine-cam-inner"] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1024px;
+        height: 640px;
+      }
+      /* world = the screenshot's own pixel space (1920×1200), statically fitted to the screen */
+      [id="06-la-cuisine-world"] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1200px;
+        transform: scale(0.5333333);
+        transform-origin: 0 0;
+      }
+      [id="06-la-cuisine-shot"] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1200px;
+        display: block;
+      }
+      [class~="06-la-cuisine-cover"] {
+        position: absolute;
+        background: #151b23;
+      }
+      [class~="06-la-cuisine-timer"] {
+        position: absolute;
+        top: 346px;
+        height: 59px;
+        line-height: 59px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 59px;
+        letter-spacing: 0;
+        color: #f9fafb;
+        white-space: nowrap;
+      }
+      [id="06-la-cuisine-ring"] {
+        position: absolute;
+        left: 405px;
+        top: 344px;
+        width: 186px;
+        height: 62px;
+        box-sizing: border-box;
+        border: 3.75px solid #e0a33a;
+        border-radius: 9px;
+        transform-origin: 50% 50%;
+      }
+      [id="06-la-cuisine-burst"] {
+        position: absolute;
+        left: 414px;
+        top: 551px;
+        width: 300px;
+        height: 95px;
+        box-sizing: border-box;
+        border: 3px solid #34d399;
+        border-radius: 18px;
+        transform-origin: 50% 50%;
+      }
+      [id="06-la-cuisine-btn"] {
+        position: absolute;
+        left: 414px;
+        top: 551px;
+        width: 300px;
+        height: 95px;
+        border-radius: 16px;
+        overflow: hidden;
+        transform-origin: 50% 50%;
+      }
+      [id="06-la-cuisine-btn-img"] {
+        position: absolute;
+        left: -414px;
+        top: -551px;
+        width: 1920px;
+        height: 1200px;
+        display: block;
+      }
+      [id="06-la-cuisine-stamp-pos"] {
+        position: absolute;
+        left: 563px;
+        top: 482px;
+        width: 0;
+        height: 0;
+      }
+      [id="06-la-cuisine-stamp-rot"] {
+        position: absolute;
+        left: -130px;
+        top: -44px;
+        width: 260px;
+        height: 88px;
+        transform: rotate(-8deg);
+        transform-origin: 50% 50%;
+      }
+      [id="06-la-cuisine-stamp"] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 260px;
+        height: 88px;
+        box-sizing: border-box;
+        border: 4px solid #047857;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-left: 0.12em;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 56px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #047857;
+        white-space: nowrap;
+        transform-origin: 50% 50%;
+      }
+
+      /* ---------- toast: the room is notified (straddles the tablet's top-right) ---------- */
+      [id="06-la-cuisine-toast"] {
+        position: absolute;
+        right: 224px;
+        top: 150px;
+        height: 60px;
+        box-sizing: border-box;
+        padding: 0 22px 0 20px;
+        border: 2px solid #0c1613;
+        border-radius: 6px;
+        background: #e7dcc6;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #0c1613;
+        white-space: nowrap;
+      }
+      [id="06-la-cuisine-toast-dot"] {
+        width: 12px;
+        height: 12px;
+        flex: 0 0 12px;
+        border-radius: 50%;
+        background: #047857;
+      }
+    </style>
+
+    <!-- lowest track: full-bleed green ground -->
+    <div
+      id="06-la-cuisine-bg"
+      class="clip"
+      data-start="0"
+      data-duration="6.5"
+      data-track-index="0"
+    ></div>
+
+    <div id="06-la-cuisine-stage">
+      <!-- ticket rail: station 03 CUISINE is current -->
+      <img id="06-la-cuisine-logo" src="assets/atable-logo.svg" alt="" />
+      <div id="06-la-cuisine-brand">ATABLE</div>
+      <div id="06-la-cuisine-line"></div>
+      <div id="06-la-cuisine-dot1" class="06-la-cuisine-dot 06-la-cuisine-dot-past" style="left: 653px"></div>
+      <div id="06-la-cuisine-dot2" class="06-la-cuisine-dot 06-la-cuisine-dot-past" style="left: 845px"></div>
+      <div id="06-la-cuisine-dot3" class="06-la-cuisine-dot" style="left: 1037px; background: #e0a33a"></div>
+      <div id="06-la-cuisine-dot4" class="06-la-cuisine-dot" style="left: 1229px"></div>
+      <div id="06-la-cuisine-dot5" class="06-la-cuisine-dot" style="left: 1421px"></div>
+      <div id="06-la-cuisine-dot6" class="06-la-cuisine-dot" style="left: 1613px"></div>
+      <div class="06-la-cuisine-label" style="left: 570px">01 CLIENT</div>
+      <div class="06-la-cuisine-label" style="left: 762px">02 SALLE</div>
+      <div id="06-la-cuisine-label3" class="06-la-cuisine-label" style="left: 954px">03 CUISINE</div>
+      <div class="06-la-cuisine-label 06-la-cuisine-label-future" style="left: 1146px">04 ÉQUIPE</div>
+      <div class="06-la-cuisine-label 06-la-cuisine-label-future" style="left: 1338px">05 PATRON</div>
+      <div class="06-la-cuisine-label 06-la-cuisine-label-future" style="left: 1530px">06 PLATEFORME</div>
+      <div id="06-la-cuisine-tag">TABLE 4</div>
+
+      <!-- left copy: headline, then the payoff line (inverse zoom-through swap at 4.0) -->
+      <div id="06-la-cuisine-copy">
+        <div id="06-la-cuisine-copy-a-wrap" class="06-la-cuisine-line-wrap">
+          <div id="06-la-cuisine-copy-a" class="06-la-cuisine-headline">
+            <span class="06-la-cuisine-word">La</span>
+            <span class="06-la-cuisine-word">cuisine</span>
+            <span class="06-la-cuisine-word">voit</span>
+            <span class="06-la-cuisine-word">tout.</span>
+          </div>
+        </div>
+        <div id="06-la-cuisine-copy-b-wrap" class="06-la-cuisine-line-wrap">
+          <div id="06-la-cuisine-copy-b" class="06-la-cuisine-headline">
+            <span id="06-la-cuisine-ready-word">Prête&nbsp;?</span>
+            La salle est prévenue.
+          </div>
+        </div>
+      </div>
+
+      <!-- mono callout above the tablet -->
+      <div id="06-la-cuisine-callout-rule"></div>
+      <div id="06-la-cuisine-callout">CHAQUE COMMANDE A SON MINUTEUR</div>
+
+      <!-- tablet held at the handoff position (centre 1190, 520) -->
+      <div id="06-la-cuisine-tablet">
+        <div id="06-la-cuisine-screen" data-layout-allow-overflow>
+          <div id="06-la-cuisine-cam-outer" data-layout-allow-overflow>
+            <div id="06-la-cuisine-cam-inner" data-layout-allow-overflow>
+              <div id="06-la-cuisine-world" data-layout-allow-overflow>
+                <img id="06-la-cuisine-shot" src="assets/pro-cuisine.png" alt="" />
+                <!-- live timers: originals covered with the card colour, digits redrawn -->
+                <div class="06-la-cuisine-cover" style="left: 400px; top: 334px; width: 328px; height: 80px"></div>
+                <div class="06-la-cuisine-cover" style="left: 784px; top: 334px; width: 328px; height: 80px"></div>
+                <div id="06-la-cuisine-t1" class="06-la-cuisine-timer" style="left: 414px">00:10</div>
+                <div id="06-la-cuisine-t2" class="06-la-cuisine-timer" style="left: 798px">00:09</div>
+                <div id="06-la-cuisine-ring"></div>
+                <!-- PRÊTE button on card 1, rebuilt from the real pixels so it can be pressed -->
+                <div class="06-la-cuisine-cover" style="left: 406px; top: 543px; width: 316px; height: 110px"></div>
+                <div id="06-la-cuisine-burst"></div>
+                <div id="06-la-cuisine-btn">
+                  <img id="06-la-cuisine-btn-img" src="assets/pro-cuisine.png" alt="" />
+                </div>
+                <div id="06-la-cuisine-stamp-pos">
+                  <div id="06-la-cuisine-stamp-rot">
+                    <div id="06-la-cuisine-stamp">PRÊTE</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- toast: the room is notified -->
+      <div id="06-la-cuisine-toast">
+        <span id="06-la-cuisine-toast-dot"></span>
+        <span>TABLE 4 · PRÊTE À SERVIR</span>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var FRAME = "06-la-cuisine";
+        var el = function (id) {
+          return document.getElementById(FRAME + "-" + id);
+        };
+
+        var CREAM = "#F4EFE6";
+        var GREEN = "#1F4D3A";
+        var GOLD = "#E0A33A";
+
+        // Card 1 [384,252,740,674] in screenshot pixels; world is fitted at 0.5333 into the 1024×640 screen.
+        var FIT = 1024 / 1920;
+        var OFFSET_X = (562 - 960) * FIT; // card centre minus screen centre, screen px
+        var OFFSET_Y = (463 - 600) * FIT;
+        var ZOOM_SCALE = 2.0; // card ≈ 70% of screen height at peak (headroom cap ≈ 2.5)
+
+        var tl = gsap.timeline({ paused: true });
+
+        // ---------- Scene 1 (0.0–1.5): rail tag 02 → 03, timers live, headline ----------
+        tl.fromTo(el("tag"), { x: -192 }, { x: 0, duration: 0.6, ease: "power3.out" }, 0);
+        tl.fromTo(
+          el("dot2"),
+          { backgroundColor: GOLD },
+          { backgroundColor: CREAM, duration: 0.15, ease: "power1.out" },
+          0.45,
+        );
+        tl.fromTo(
+          el("dot3"),
+          { backgroundColor: GREEN },
+          { backgroundColor: GOLD, duration: 0.15, ease: "power1.out" },
+          0.45,
+        );
+        tl.fromTo(
+          el("label3"),
+          { opacity: 0.45 },
+          { opacity: 1, duration: 0.15, ease: "power1.out" },
+          0.45,
+        );
+
+        // live timers, driven only by timeline time: +1 s per second from 00:10 and 00:09;
+        // card 1 stops at the PRÊTE press (3.5 s).
+        var t1 = el("t1");
+        var t2 = el("t2");
+        var fmt = function (s) {
+          return "00:" + (s < 10 ? "0" : "") + s;
+        };
+        var clock = { t: 0 };
+        var renderClock = function () {
+          var whole = Math.floor(clock.t + 1e-4);
+          var a = fmt(10 + Math.min(whole, 3));
+          var b = fmt(9 + whole);
+          if (t1.textContent !== a) t1.textContent = a;
+          if (t2.textContent !== b) t2.textContent = b;
+        };
+        tl.fromTo(
+          clock,
+          { t: 0 },
+          { t: 6, duration: 6, ease: "none", onUpdate: renderClock },
+          0,
+        );
+
+        var wordsA = el("copy-a").querySelectorAll("span");
+        tl.fromTo(
+          wordsA,
+          { y: 36, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, ease: "power3.out", stagger: 0.07 },
+          0.5,
+        );
+
+        // ---------- Scene 2 (1.5–3.5): coordinate-target-zoom onto card 1 ----------
+        // nested wrappers: outer scales about the screen centre, inner counter-translates by -offset
+        tl.fromTo(
+          el("cam-outer"),
+          { scale: 1 },
+          { scale: ZOOM_SCALE, duration: 1.0, ease: "power3.inOut", force3D: false },
+          1.5,
+        );
+        tl.fromTo(
+          el("cam-inner"),
+          { x: 0, y: 0 },
+          { x: -OFFSET_X, y: -OFFSET_Y, duration: 1.0, ease: "power3.inOut", force3D: false },
+          1.5,
+        );
+
+        // gold ring on the timer
+        tl.fromTo(
+          el("ring"),
+          { scale: 1.08, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.35, ease: "power3.out" },
+          2.0,
+        );
+
+        // mono callout
+        tl.fromTo(
+          el("callout-rule"),
+          { scaleX: 0 },
+          { scaleX: 1, duration: 0.3, ease: "power3.out" },
+          2.0,
+        );
+        tl.fromTo(
+          el("callout"),
+          { clipPath: "inset(0% 100% 0% 0%)", x: -10 },
+          { clipPath: "inset(0% 0% 0% 0%)", x: 0, duration: 0.55, ease: "power2.out" },
+          2.08,
+        );
+
+        // ---------- Scene 3 (3.5–6.0): PRÊTE pressed, stamp, toast, payoff, zoom back ----------
+        // press-release-spring: linear-ish dip, spring release (adjacent → state continuity)
+        var btn = el("btn");
+        tl.fromTo(
+          btn,
+          { scale: 1, filter: "brightness(1)" },
+          { scale: 0.92, filter: "brightness(0.86)", duration: 0.1, ease: "power1.in" },
+          3.4,
+        );
+        tl.to(
+          btn,
+          { scale: 1, filter: "brightness(1)", duration: 0.5, ease: "back.out(2)" },
+          3.5,
+        );
+        // flat release ring behind the button
+        var burst = el("burst");
+        tl.fromTo(burst, { scale: 1 }, { scale: 1.16, duration: 0.5, ease: "power2.out" }, 3.5);
+        tl.fromTo(burst, { opacity: 0 }, { opacity: 0.9, duration: 0.06, ease: "none" }, 3.5);
+        tl.to(burst, { opacity: 0, duration: 0.44, ease: "power1.in" }, 3.56);
+
+        // green stamp lands on the card
+        var stamp = el("stamp");
+        tl.fromTo(
+          stamp,
+          { scale: 1.35, opacity: 0, y: 0 },
+          { scale: 1, opacity: 0.9, y: 0, duration: 0.22, ease: "power3.out" },
+          3.8,
+        );
+        tl.to(stamp, { y: 1.8, duration: 0.06, ease: "power1.out" }, 4.02);
+        tl.to(stamp, { y: 0, duration: 0.06, ease: "power1.in" }, 4.08);
+
+        // toast slides in at the tablet's top-right
+        tl.fromTo(
+          el("toast"),
+          { x: 64, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" },
+          3.8,
+        );
+
+        // headline swap — inverse zoom-through (recede, hard cut at 4.0, arrive oversized)
+        var copyA = el("copy-a");
+        var copyB = el("copy-b");
+        tl.to(copyA, { scale: 0.8, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 3.8);
+        tl.to(wordsA, { opacity: 0.15, duration: 0.2, ease: "none" }, 3.8);
+        tl.fromTo(
+          el("copy-a-wrap"),
+          { opacity: 1 },
+          { opacity: 0, duration: 0.01, ease: "none" },
+          3.99,
+        );
+        tl.fromTo(
+          el("copy-b-wrap"),
+          { opacity: 0 },
+          { opacity: 1, duration: 0.01, ease: "none" },
+          3.99,
+        );
+        tl.fromTo(
+          copyB,
+          { opacity: 0.15, scale: 1.2, filter: "blur(10px)" },
+          { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.5, ease: "expo.out" },
+          4.0,
+        );
+
+        // zoom eases back to the full board by 5.5, then holds
+        tl.to(
+          el("cam-outer"),
+          { scale: 1, duration: 1.1, ease: "power3.inOut", force3D: false },
+          4.4,
+        );
+        tl.to(
+          el("cam-inner"),
+          { x: 0, y: 0, duration: 1.1, ease: "power3.inOut", force3D: false },
+          4.4,
+        );
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines[FRAME] = tl;
+      })();
+    </script>
+  </div>
+</template>

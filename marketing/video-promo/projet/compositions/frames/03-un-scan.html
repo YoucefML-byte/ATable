@@ -1,0 +1,355 @@
+<template>
+  <style>
+    @font-face { font-family: "Source Serif 4"; src: url("assets/fonts/SourceSerif4-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+    @font-face { font-family: "Source Serif 4"; src: url("assets/fonts/SourceSerif4-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: block; }
+    @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: block; }
+    @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      font-family: "Source Serif 4";
+      color: #0C1613;
+    }
+
+    /* full-bleed cream ground (its own clip, never on #root) */
+    [id="03-un-scan-bg"] { position: absolute; inset: 0; background: #F4EFE6; }
+    [id="03-un-scan-stage"] { position: absolute; inset: 0; }
+
+    /* ---------- ticket rail (film invariant) ---------- */
+    [id="03-un-scan-rail"] { position: absolute; inset: 0; z-index: 6; }
+    [id="03-un-scan-logo"] { position: absolute; left: 96px; top: 44px; width: 40px; height: 40px; display: block; }
+    [id="03-un-scan-wordmark"] {
+      position: absolute; left: 152px; top: 44px; height: 40px; line-height: 40px;
+      font-family: "JetBrains Mono"; font-weight: 700; font-size: 18px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #0C1613; white-space: nowrap;
+    }
+    [id="03-un-scan-railline"] { position: absolute; left: 640px; top: 63px; width: 1000px; height: 2px; background: #0C1613; }
+    [class~="03-un-scan-dot"] {
+      position: absolute; top: 57px; width: 14px; height: 14px; box-sizing: border-box;
+      border: 2px solid #0C1613; border-radius: 50%; background: #F4EFE6;
+    }
+    [class~="03-un-scan-lbl"] {
+      position: absolute; top: 82px; width: 220px; height: 20px; line-height: 20px; text-align: center;
+      font-family: "JetBrains Mono"; font-weight: 500; font-size: 15px; letter-spacing: 0.14em; padding-left: 0.14em;
+      box-sizing: border-box; text-transform: uppercase; color: #0C1613; white-space: nowrap;
+    }
+    [class~="03-un-scan-future"] { opacity: 0.45; }
+    [id="03-un-scan-tag"] {
+      position: absolute; left: 614px; top: 16px; width: 92px; height: 30px; box-sizing: border-box;
+      background: #E7DCC6; border: 2px solid #0C1613; border-radius: 6px;
+      font-family: "JetBrains Mono"; font-weight: 700; font-size: 13px; line-height: 26px; text-align: center;
+      color: #0C1613; white-space: nowrap;
+    }
+
+    /* ---------- left copy column (x 120–760) ---------- */
+    [id="03-un-scan-copy"] { position: absolute; left: 120px; top: 0; width: 640px; height: 1080px; z-index: 4; }
+    [id="03-un-scan-head"] {
+      position: absolute; left: 0; top: 286px; width: 640px; margin: 0;
+      font-family: "Source Serif 4"; font-weight: 500; font-size: 140px; line-height: 1.02; letter-spacing: -0.02em;
+      color: #1F4D3A; white-space: nowrap;
+    }
+    [class~="03-un-scan-mask"] { display: inline-block; overflow: hidden; vertical-align: top; }
+    [class~="03-un-scan-hw"] { display: inline-block; }
+    [id="03-un-scan-rule"] { position: absolute; left: 0; top: 468px; width: 96px; height: 2px; background: #1F4D3A; transform-origin: 0% 50%; }
+    [class~="03-un-scan-line"] {
+      position: absolute; left: 0; width: 640px; margin: 0;
+      font-family: "Source Serif 4"; font-weight: 400; font-size: 40px; line-height: 1.3; color: #0C1613;
+    }
+    [id="03-un-scan-line2"] { top: 496px; white-space: nowrap; }
+    [id="03-un-scan-line3"] { top: 572px; }
+    [class~="03-un-scan-w"] { display: inline-block; }
+
+    /* ---------- la plaque de la table 4 (installée dans 02a–02c), vue de dessus ---------- */
+    [id="03-un-scan-tent"] { position: absolute; left: 970px; top: 300px; width: 560px; height: 360px; z-index: 2; transform-origin: 50% 50%; }
+
+    /* ---------- plaque métal 560×360 : biseau plat, facettes, vis, gravure ---------- */
+    [class~="03-un-scan-plate"] { position: absolute; width: 560px; height: 360px; transform-origin: 50% 50%; }
+    [class~="03-un-scan-pclip"] { position: absolute; inset: 0; border-radius: 26px; overflow: hidden; }
+    [class~="03-un-scan-fin"] { position: absolute; inset: 0; }
+    [class~="03-un-scan-fbase"] { position: absolute; inset: 0; box-sizing: border-box; border: 10px solid; border-radius: 26px; }
+    [class~="03-un-scan-facet"] { position: absolute; left: 10px; top: 10px; width: 540px; height: 340px; }
+    [class~="03-un-scan-facet1"] { clip-path: polygon(9% 0, 27% 0, 12% 100%, -6% 100%); }
+    [class~="03-un-scan-facet2"] { clip-path: polygon(31% 0, 34% 0, 19% 100%, 16% 100%); }
+    [class~="03-un-scan-facet3"] { clip-path: polygon(80% 0, 100% 0, 100% 100%, 66% 100%); }
+    [class~="03-un-scan-screw"] { position: absolute; top: 171px; width: 18px; height: 18px; box-sizing: border-box; border: 2px solid; border-radius: 50%; }
+    [class~="03-un-scan-slot"] { position: absolute; left: 2px; top: 6px; width: 10px; height: 2px; transform: rotate(-35deg); }
+    [class~="03-un-scan-eng"] {
+      position: absolute; left: 0; right: 0; top: 302px; height: 20px; line-height: 20px; text-align: center;
+      font-family: "JetBrains Mono"; font-weight: 700; font-size: 14px; letter-spacing: 0.42em; padding-left: 0.42em;
+    }
+    [class~="03-un-scan-sheen"] { position: absolute; left: 0; top: -60px; width: 120px; height: 480px; background: #FFFDF6; opacity: 0.55; }
+    [class~="03-un-scan-pol"] { position: absolute; inset: 0; box-sizing: border-box; border: 2px solid #0C1613; border-radius: 26px; }
+    [class~="03-un-scan-edge"] { position: absolute; inset: 0; border-radius: 26px; }
+    [class~="03-un-scan-glint"] {
+      position: absolute; width: 46px; height: 46px; background: #FFFFFF;
+      clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
+    }
+
+    /* ---------- autocollant QR 220×250 (coin décollable via --f) ---------- */
+    [class~="03-un-scan-stk"] { position: absolute; width: 220px; height: 250px; transform-origin: 50% 50%; }
+    [class~="03-un-scan-stkface"] {
+      position: absolute; inset: 0; box-sizing: border-box; background: #F4EFE6; border: 2px solid #0C1613; border-radius: 14px;
+      clip-path: polygon(0 0, calc(100% - var(--f)) 0, 100% var(--f), 100% 100%, 0 100%);
+    }
+    [class~="03-un-scan-stkflap"] {
+      position: absolute; inset: 0; background: #D8CDB8;
+      clip-path: polygon(calc(100% - var(--f)) 0, 100% var(--f), calc(100% - var(--f)) var(--f));
+    }
+    [class~="03-un-scan-stkqr"] { position: absolute; left: 21px; top: 16px; width: 174px; height: 174px; display: block; }
+    [class~="03-un-scan-stklbl"] {
+      position: absolute; left: 0; right: 0; top: 200px; height: 30px; display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: "JetBrains Mono"; font-weight: 700; font-size: 18px; letter-spacing: 0.12em; color: #0C1613; white-space: nowrap;
+    }
+    [class~="03-un-scan-stklogo"] { width: 22px; height: 22px; display: block; }
+
+    /* ---------- phone (film invariant: 440×748, 2px ink, 56px radius, 10px cream-2 bezel) ---------- */
+    [id="03-un-scan-phone"] {
+      position: absolute; left: 1030px; top: 146px; width: 440px; height: 748px; box-sizing: border-box;
+      border: 2px solid #0C1613; border-radius: 56px; background: #E7DCC6; padding: 8px; z-index: 3;
+    }
+    [id="03-un-scan-screen"] {
+      position: relative; width: 420px; height: 728px; border-radius: 46px; overflow: hidden; background: #FFFFFF;
+    }
+
+    /* camera view */
+    [id="03-un-scan-cam"] { position: absolute; inset: 0; transform-origin: 50% 50%; filter: blur(0px); }
+    [id="03-un-scan-camworld"] { position: absolute; inset: 0; background: #E7DCC6; filter: blur(0px); }
+    [id="03-un-scan-camcard"] {
+      position: absolute; left: -70px; top: 118px; width: 560px; height: 900px; box-sizing: border-box;
+      background: #D6AE57; border: 2px solid #0C1613; border-radius: 26px; overflow: hidden;
+    }
+    [class~="03-un-scan-camfacet"] { position: absolute; inset: 0; }
+    [id="03-un-scan-camsticker"] {
+      position: absolute; left: 34px; top: 142px; width: 352px; height: 420px; box-sizing: border-box;
+      background: #F4EFE6; border: 2px solid #0C1613; border-radius: 22px;
+    }
+    [id="03-un-scan-camlabel"] {
+      position: absolute; left: 34px; top: 494px; width: 352px; height: 40px; line-height: 40px; text-align: center;
+      font-family: "JetBrains Mono"; font-weight: 700; font-size: 30px; letter-spacing: 0.12em; padding-left: 0.12em; color: #0C1613;
+    }
+    [id="03-un-scan-camqr"] { position: absolute; left: 60px; top: 168px; width: 300px; height: 300px; display: block; }
+    [id="03-un-scan-brackets"] { position: absolute; left: 42px; top: 150px; width: 336px; height: 336px; transform-origin: 50% 50%; }
+    [class~="03-un-scan-corner"] { position: absolute; width: 58px; height: 58px; box-sizing: border-box; border: 0 solid #0C1613; }
+    [id="03-un-scan-c-tl"] { left: 0; top: 0; border-top-width: 4px; border-left-width: 4px; border-top-left-radius: 14px; }
+    [id="03-un-scan-c-tr"] { right: 0; top: 0; border-top-width: 4px; border-right-width: 4px; border-top-right-radius: 14px; }
+    [id="03-un-scan-c-bl"] { left: 0; bottom: 0; border-bottom-width: 4px; border-left-width: 4px; border-bottom-left-radius: 14px; }
+    [id="03-un-scan-c-br"] { right: 0; bottom: 0; border-bottom-width: 4px; border-right-width: 4px; border-bottom-right-radius: 14px; }
+    [id="03-un-scan-scan"] { position: absolute; left: 56px; top: 0; width: 308px; height: 4px; border-radius: 2px; background: #E0A33A; }
+
+    /* menu (client-carte) + in-screen zoom wrappers */
+    [id="03-un-scan-menu"] { position: absolute; inset: 0; transform-origin: 50% 50%; filter: blur(0px); }
+    [id="03-un-scan-zoomouter"] { position: absolute; inset: 0; transform-origin: 50% 50%; }
+    [id="03-un-scan-zoominner"] { position: absolute; inset: 0; }
+    [id="03-un-scan-carte"] { position: absolute; left: 0; top: 0; width: 420px; height: auto; display: block; }
+    /* rings live in content space: 4px stroke / 6px pad / 10px radius at the 1.6× zoom */
+    [class~="03-un-scan-ring"] {
+      position: absolute; box-sizing: border-box; border: 2.5px solid #E0A33A; border-radius: 6.25px; transform-origin: 50% 50%;
+    }
+    [id="03-un-scan-ringprix"] { left: 9.904px; top: 345.545px; width: 71.731px; height: 35.833px; }
+    [id="03-un-scan-ringall"] { left: 338.365px; top: 288.109px; width: 71.731px; height: 41.218px; }
+
+    /* ---------- callouts (outside the phone) ---------- */
+    [class~="03-un-scan-hair"] { position: absolute; height: 2px; background: #B9822A; z-index: 5; }
+    [id="03-un-scan-hairprix"] { left: 900px; top: 546px; width: 147.6px; transform-origin: 100% 50%; }
+    [id="03-un-scan-hairall"] { left: 1446.7px; top: 459px; width: 373.3px; transform-origin: 0% 50%; }
+    [class~="03-un-scan-callout"] {
+      position: absolute; height: 22px; line-height: 22px; z-index: 5;
+      font-family: "JetBrains Mono"; font-weight: 500; font-size: 18px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #0C1613; white-space: nowrap;
+    }
+    [id="03-un-scan-lblprix"] { left: 900px; top: 516px; }
+    [id="03-un-scan-lblall"] { left: 1490px; top: 429px; width: 330px; text-align: right; }
+  </style>
+
+  <div id="root" data-composition-id="03-un-scan" data-width="1920" data-height="1080" data-duration="6.5">
+    <div id="03-un-scan-bg" class="clip" data-start="0" data-duration="6.5" data-track-index="0"></div>
+
+    <div id="03-un-scan-stage" class="clip" data-start="0" data-duration="6.5" data-track-index="1">
+
+      <!-- ticket rail: current station 01 CLIENT -->
+      <div id="03-un-scan-rail">
+        <img id="03-un-scan-logo" src="assets/atable-logo.svg" alt="" />
+        <div id="03-un-scan-wordmark">ATABLE</div>
+        <div id="03-un-scan-railline"></div>
+        <div id="03-un-scan-dot1" class="03-un-scan-dot" style="left: 653px"></div>
+        <div class="03-un-scan-dot" style="left: 845px"></div>
+        <div class="03-un-scan-dot" style="left: 1037px"></div>
+        <div class="03-un-scan-dot" style="left: 1229px"></div>
+        <div class="03-un-scan-dot" style="left: 1421px"></div>
+        <div class="03-un-scan-dot" style="left: 1613px"></div>
+        <div class="03-un-scan-lbl" style="left: 550px">01 CLIENT</div>
+        <div class="03-un-scan-lbl 03-un-scan-future" style="left: 742px">02 SALLE</div>
+        <div class="03-un-scan-lbl 03-un-scan-future" style="left: 934px">03 CUISINE</div>
+        <div class="03-un-scan-lbl 03-un-scan-future" style="left: 1126px">04 ÉQUIPE</div>
+        <div class="03-un-scan-lbl 03-un-scan-future" style="left: 1318px">05 PATRON</div>
+        <div class="03-un-scan-lbl 03-un-scan-future" style="left: 1510px">06 PLATEFORME</div>
+        <div id="03-un-scan-tag">TABLE 4</div>
+      </div>
+
+      <!-- left copy -->
+      <div id="03-un-scan-copy">
+        <h1 id="03-un-scan-head" data-layout-allow-overflow><span class="03-un-scan-mask"><span class="03-un-scan-hw">Un</span></span> <span class="03-un-scan-mask"><span class="03-un-scan-hw">scan.</span></span></h1>
+        <div id="03-un-scan-rule"></div>
+        <p id="03-un-scan-line2" class="03-un-scan-line"><span class="03-un-scan-w">Pas</span> <span class="03-un-scan-w">d’appli.</span> <span class="03-un-scan-w">Pas</span> <span class="03-un-scan-w">de</span> <span class="03-un-scan-w">compte.</span></p>
+        <p id="03-un-scan-line3" class="03-un-scan-line"><span class="03-un-scan-w">La</span> <span class="03-un-scan-w">carte</span> <span class="03-un-scan-w">du</span> <span class="03-un-scan-w">moment,</span><br /><span class="03-un-scan-w">prix</span> <span class="03-un-scan-w">et</span> <span class="03-un-scan-w">allergènes</span> <span class="03-un-scan-w">compris.</span></p>
+      </div>
+
+      <!-- la plaque dorée de la table 4 (derrière le téléphone) -->
+      <div id="03-un-scan-tent">
+      <div id="03-un-scan-tplate" class="03-un-scan-plate" style="left: 0; top: 0">
+        <div class="03-un-scan-pclip" data-layout-allow-occlusion>
+          <div id="03-un-scan-tg" class="03-un-scan-fin">
+            <div class="03-un-scan-fbase" style="background: #D6AE57; border-color: #F2D893 #A9832F #A9832F #F2D893"></div>
+            <div class="03-un-scan-facet 03-un-scan-facet1" style="background: #E4C373"></div>
+            <div class="03-un-scan-facet 03-un-scan-facet2" style="background: #F2D893"></div>
+            <div class="03-un-scan-facet 03-un-scan-facet3" style="background: #C79E48"></div>
+            <div class="03-un-scan-screw" style="left: 26px; border-color: #584313; background: #E4C373"><div class="03-un-scan-slot" style="background: #584313"></div></div>
+            <div class="03-un-scan-screw" style="left: 516px; border-color: #584313; background: #E4C373"><div class="03-un-scan-slot" style="background: #584313"></div></div>
+            <div class="03-un-scan-eng" style="color: #584313">ATABLE</div>
+          </div>
+          <div id="03-un-scan-tplate-stk" class="03-un-scan-stk" style="--f: 0px; left: 170px; top: 34px;">
+            <div class="03-un-scan-stkface">
+              <img class="03-un-scan-stkqr" src="assets/table-qr.svg" alt="" />
+              <div class="03-un-scan-stklbl"><img class="03-un-scan-stklogo" src="assets/atable-logo.svg" alt="" />TABLE 4</div>
+            </div>
+            <div class="03-un-scan-stkflap"></div>
+          </div>
+        </div>
+        <div class="03-un-scan-pol"></div>
+      </div>
+      </div>
+
+      <!-- phone -->
+      <div id="03-un-scan-phone">
+        <div id="03-un-scan-screen">
+          <div id="03-un-scan-cam">
+            <div id="03-un-scan-camworld" data-layout-allow-overflow>
+              <div id="03-un-scan-camcard">
+                <div class="03-un-scan-camfacet" style="background: #E4C373; clip-path: polygon(0 0, 22% 0, 4% 100%, 0 100%)"></div>
+                <div class="03-un-scan-camfacet" style="background: #C79E48; clip-path: polygon(82% 0, 100% 0, 100% 100%, 70% 100%)"></div>
+              </div>
+              <div id="03-un-scan-camsticker"></div>
+              <div id="03-un-scan-camlabel">TABLE 4</div>
+              <img id="03-un-scan-camqr" src="assets/table-qr.svg" alt="" />
+            </div>
+            <div id="03-un-scan-brackets">
+              <div id="03-un-scan-c-tl" class="03-un-scan-corner"></div>
+              <div id="03-un-scan-c-tr" class="03-un-scan-corner"></div>
+              <div id="03-un-scan-c-bl" class="03-un-scan-corner"></div>
+              <div id="03-un-scan-c-br" class="03-un-scan-corner"></div>
+            </div>
+            <div id="03-un-scan-scan"></div>
+          </div>
+          <div id="03-un-scan-menu">
+            <div id="03-un-scan-zoomouter" data-layout-allow-overflow>
+              <div id="03-un-scan-zoominner">
+                <img id="03-un-scan-carte" src="assets/client-carte.png" alt="" />
+                <div id="03-un-scan-ringprix" class="03-un-scan-ring"></div>
+                <div id="03-un-scan-ringall" class="03-un-scan-ring"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- callouts -->
+      <div id="03-un-scan-hairprix" class="03-un-scan-hair"></div>
+      <div id="03-un-scan-lblprix" class="03-un-scan-callout">PRIX</div>
+      <div id="03-un-scan-hairall" class="03-un-scan-hair"></div>
+      <div id="03-un-scan-lblall" class="03-un-scan-callout">ALLERGÈNES · LAIT, CÉLERI</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      var ID = "03-un-scan";
+      function $(s) { return document.getElementById(ID + "-" + s); }
+      function $$(root, c) { return Array.prototype.slice.call(root.querySelectorAll('[class~="' + ID + "-" + c + '"]')); }
+
+      var GOLD = "#E0A33A", CREAM = "#F4EFE6", OK_GREEN = "#047857";
+      var tl = gsap.timeline({ paused: true });
+
+      /* ---- Scene 1 (0.0–1.4): rail tag, tent, phone rise, scan ---- */
+      // ticket tag slides from above the previous station (x 560) to 01 CLIENT (x 660)
+      tl.fromTo($("tag"), { x: -100 }, { x: 0, duration: 0.6, ease: "power3.out", force3D: false }, 0);
+      tl.fromTo($("tag"), { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 0);
+      tl.fromTo($("dot1"), { backgroundColor: CREAM }, { backgroundColor: GOLD, duration: 0.15, ease: "power1.out" }, 0.45);
+
+      // the plate is on screen from frame 0, settling gently
+      tl.fromTo($("tent"), { y: 18 }, { y: 0, duration: 0.8, ease: "power2.out", force3D: false }, 0);
+
+      // phone rises from below and settles at centre (1250, 520)
+      tl.fromTo($("phone"), { y: 960, rotation: 3 }, { y: 0, rotation: 0, duration: 0.75, ease: "power3.out", force3D: false }, 0.3);
+      // the camera view counter-drifts as the phone lifts, then focuses
+      tl.fromTo($("camworld"), { y: -220 }, { y: 0, duration: 0.75, ease: "power3.out", force3D: false }, 0.3);
+      tl.fromTo($("camworld"), { filter: "blur(6px)" }, { filter: "blur(0px)", duration: 0.5, ease: "power2.out" }, 0.55);
+      tl.fromTo($("brackets"), { scale: 1.1 }, { scale: 1, duration: 0.6, ease: "power2.out", force3D: false }, 0.65);
+
+      // headline lands at display size (masked rise)
+      tl.fromTo($$($("head"), "hw"), { yPercent: 110 }, { yPercent: 0, duration: 0.8, ease: "power3.out", stagger: 0.12, force3D: false }, 0.5);
+
+      // gold scan line sweeps once (0.8–1.3)
+      tl.fromTo($("scan"), { y: 166 }, { y: 466, duration: 0.5, ease: "sine.inOut", force3D: false }, 0.8);
+      tl.fromTo($("scan"), { opacity: 0 }, { opacity: 1, duration: 0.06, ease: "none" }, 0.8);
+      tl.to($("scan"), { opacity: 0, duration: 0.06, ease: "none" }, 1.24);
+
+      /* ---- Scene 2 (1.4–3.0): brackets snap green, inverse zoom-through into the menu ---- */
+      tl.to($$($("brackets"), "corner"), { borderColor: OK_GREEN, duration: 0.06, ease: "none" }, 1.4);
+      tl.to($("brackets"), { scale: 0.95, duration: 0.14, ease: "power3.out", force3D: false }, 1.4);
+
+      // exit: camera view recedes upward (full-surface blur 18px)
+      tl.to($("cam"), { scale: 0.8, y: -40, filter: "blur(18px)", duration: 0.2, ease: "power3.in", force3D: false }, 1.5);
+      tl.to($("cam"), { opacity: 0.15, duration: 0.2, ease: "none" }, 1.5);
+      // hard cut at peak blur
+      tl.set($("menu"), { opacity: 0, immediateRender: true }, 0);
+      tl.set($("cam"), { opacity: 0 }, 1.7);
+      tl.set($("menu"), { opacity: 0.15, scale: 1.25, y: 56, filter: "blur(18px)", force3D: false }, 1.7);
+      // entry: client-carte arrives oversized and retracts up into place
+      tl.to($("menu"), { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out", force3D: false }, 1.7);
+
+      // the tent recedes behind the phone (scaled inside the phone's silhouette)
+      tl.to($("tent"), { scale: 0.76, y: 24, duration: 0.55, ease: "power2.inOut", force3D: false }, 1.5);
+      tl.to($("tent"), { opacity: 0, duration: 0.17, ease: "power1.in" }, 1.88);
+
+      // left copy: rule + « Pas d’appli. Pas de compte. »
+      tl.fromTo($("rule"), { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out", force3D: false }, 1.85);
+      tl.fromTo($$($("line2"), "w"), { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out", stagger: 0.07, force3D: false }, 2.0);
+
+      /* ---- Scene 3 (3.0–4.5): coordinate-target zoom onto « Velouté du moment », ring on the price ----
+         Nested wrappers: outer scales about the screen centre (210, 364), inner counter-translates T = -offset.
+         Screenshot scale k = 420/1170. Target A = image (380, 965) -> offset (-73.590, -17.590).
+         Target B = image (800, 965) -> offset (77.179, -17.590). Zoom S = 1.6 (image edges stay covered). */
+      var S = 1.6;
+      tl.to($("zoomouter"), { scale: S, duration: 0.65, ease: "power3.out", force3D: false }, 3.0);
+      tl.to($("zoominner"), { x: 73.59, y: 17.59, duration: 0.65, ease: "power3.out", force3D: false }, 3.0);
+
+      // ring lands on the price (3.5); PRIX callout to the left of the phone, joined by a 2px hairline
+      tl.fromTo($("ringprix"), { scale: 1.08, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "power3.out", force3D: false }, 3.5);
+      tl.fromTo($("hairprix"), { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power3.out", force3D: false }, 3.55);
+      tl.fromTo($("lblprix"), { x: 12, opacity: 0 }, { x: 0, opacity: 1, duration: 0.33, ease: "power3.out", force3D: false }, 3.62);
+
+      /* ---- Scene 4 (4.5–6.0): pan to the allergen badges, second ring, copy, ease back to the top ---- */
+      tl.to($("zoominner"), { x: -77.179, duration: 0.45, ease: "power3.inOut", force3D: false }, 4.05);
+      tl.to([$("ringprix"), $("hairprix"), $("lblprix")], { opacity: 0, duration: 0.18, ease: "power1.in" }, 4.05);
+
+      tl.fromTo($("ringall"), { scale: 1.08, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "power3.out", force3D: false }, 4.5);
+      tl.fromTo($("hairall"), { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power3.out", force3D: false }, 4.55);
+      tl.fromTo($("lblall"), { x: -12, opacity: 0 }, { x: 0, opacity: 1, duration: 0.33, ease: "power3.out", force3D: false }, 4.62);
+
+      // « La carte du moment, prix et allergènes compris. »
+      tl.fromTo($$($("line3"), "w"), { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out", stagger: 0.045, force3D: false }, 5.0);
+
+      // rings + callouts fade as the zoom eases back to the top of the menu (static by 5.8 for the handoff)
+      tl.to([$("ringall"), $("hairall"), $("lblall")], { opacity: 0, duration: 0.22, ease: "power1.in" }, 5.2);
+      tl.to($("zoomouter"), { scale: 1, duration: 0.55, ease: "power3.inOut", force3D: false }, 5.25);
+      tl.to($("zoominner"), { x: 0, y: 0, duration: 0.55, ease: "power3.inOut", force3D: false }, 5.25);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines[ID] = tl;
+    })();
+  </script>
+</template>

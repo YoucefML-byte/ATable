@@ -1,0 +1,719 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-600.woff2") format("woff2");
+      font-weight: 600;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #0C1613;
+      font-family: "Source Serif 4", serif;
+    }
+
+    /* ground — full-bleed clip on the lowest track */
+    .f04-il-compose-bg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      background: #F4EFE6;
+    }
+
+    /* ---------- ticket rail (film invariant, station 01 current) ---------- */
+    .f04-il-compose-brand-logo {
+      position: absolute;
+      left: 96px;
+      top: 44px;
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+    .f04-il-compose-brand-word {
+      position: absolute;
+      left: 150px;
+      top: 53px;
+      height: 22px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 22px;
+      letter-spacing: 0.18em;
+      color: #0C1613;
+      white-space: nowrap;
+    }
+    .f04-il-compose-rail-line {
+      position: absolute;
+      left: 640px;
+      top: 63px;
+      width: 1000px;
+      height: 2px;
+      background: #0C1613;
+    }
+    .f04-il-compose-dot {
+      position: absolute;
+      top: 57px;
+      width: 14px;
+      height: 14px;
+      box-sizing: border-box;
+      border: 2px solid #0C1613;
+      border-radius: 50%;
+      background: #F4EFE6;
+    }
+    .f04-il-compose-dot-current {
+      background: #E0A33A;
+    }
+    .f04-il-compose-station {
+      position: absolute;
+      top: 83px;
+      width: 200px;
+      height: 18px;
+      text-align: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 15px;
+      line-height: 18px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #0C1613;
+      white-space: nowrap;
+      opacity: 0.45;
+    }
+    .f04-il-compose-station-current {
+      opacity: 1;
+    }
+    .f04-il-compose-tag {
+      position: absolute;
+      left: 614px;
+      top: 16px;
+      width: 92px;
+      height: 30px;
+      box-sizing: border-box;
+      border: 2px solid #0C1613;
+      border-radius: 6px;
+      background: #E7DCC6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 1;
+      color: #0C1613;
+      white-space: nowrap;
+    }
+
+    /* ---------- copy column (x 120–760) ---------- */
+    .f04-il-compose-copy {
+      position: absolute;
+      left: 120px;
+      top: 0;
+      width: 640px;
+      height: 896px;
+    }
+    .f04-il-compose-progress {
+      position: absolute;
+      left: 0;
+      top: 380px;
+      width: 640px;
+      height: 2px;
+      background: #E7DCC6;
+    }
+    .f04-il-compose-progress-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 640px;
+      height: 2px;
+      background: #1F4D3A;
+      transform-origin: 0% 50%;
+    }
+    .f04-il-compose-head {
+      position: absolute;
+      left: 0;
+      top: 420px;
+      width: 640px;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      font-size: 4.4cqw;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: #1F4D3A;
+      font-optical-sizing: auto;
+      transform-origin: 0% 50%;
+    }
+    .f04-il-compose-line {
+      display: block;
+      white-space: nowrap;
+    }
+    .f04-il-compose-w {
+      display: inline-block;
+    }
+    .f04-il-compose-h3 {
+      position: absolute;
+      left: 0;
+      top: 420px;
+      width: 640px;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      font-size: 7.3cqw;
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: #1F4D3A;
+      white-space: nowrap;
+      font-optical-sizing: auto;
+      transform-origin: 0% 50%;
+    }
+    .f04-il-compose-h3-dot {
+      color: #B9822A;
+    }
+    .f04-il-compose-mono {
+      position: absolute;
+      left: 0;
+      top: 592px;
+      width: 640px;
+      height: 30px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 30px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #1F4D3A;
+      white-space: nowrap;
+    }
+
+    /* ---------- phone (film invariant) ---------- */
+    .f04-il-compose-phone {
+      position: absolute;
+      left: 1030px;
+      top: 146px;
+      width: 440px;
+      height: 748px;
+      box-sizing: border-box;
+      border: 2px solid #0C1613;
+      border-radius: 56px;
+      background: #E7DCC6;
+    }
+    .f04-il-compose-screen {
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      width: 420px;
+      height: 728px;
+      border-radius: 46px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+    .f04-il-compose-strip {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1260px;
+      height: 728px;
+    }
+    .f04-il-compose-page {
+      position: absolute;
+      top: 0;
+      width: 420px;
+      height: 728px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+    .f04-il-compose-page-a { left: 0; }
+    .f04-il-compose-page-b { left: 420px; }
+    .f04-il-compose-page-c { left: 840px; }
+    .f04-il-compose-zo {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 420px;
+      height: 728px;
+      transform-origin: 50% 50%;
+    }
+    .f04-il-compose-zi {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 420px;
+      height: 728px;
+    }
+    /* 1170×1992 screenshot at scale 0.358974 → 420×715, image at the top of the screen */
+    .f04-il-compose-shot {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1170px;
+      height: 1992px;
+      transform: scale(0.358974);
+      transform-origin: 0 0;
+    }
+    .f04-il-compose-shot-img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1170px;
+      height: 1992px;
+      display: block;
+    }
+
+    /* overlays, in screenshot pixels */
+    .f04-il-compose-boxmask {
+      position: absolute;
+      left: 59px;
+      width: 62px;
+      height: 63px;
+      box-sizing: border-box;
+      background: #FAFAFA;
+      border: 3px solid #E4E4E4;
+      border-radius: 7px;
+      transform-origin: 50% 50%;
+    }
+    .f04-il-compose-boxmask-a { top: 946px; }
+    .f04-il-compose-boxmask-b { top: 1090px; }
+
+    .f04-il-compose-ring {
+      position: absolute;
+      box-sizing: border-box;
+      border-style: solid;
+      border-color: #E0A33A;
+      border-radius: 50%;
+      transform-origin: 50% 50%;
+      opacity: 0;
+    }
+    .f04-il-compose-tapdot {
+      position: absolute;
+      border-radius: 50%;
+      background: #E0A33A;
+      transform-origin: 50% 50%;
+      opacity: 0;
+    }
+    .f04-il-compose-ring-a { left: 20px; top: 908px; width: 140px; height: 140px; border-width: 6px; }
+    .f04-il-compose-tapdot-a { left: 62px; top: 950px; width: 56px; height: 56px; }
+    .f04-il-compose-ring-b { left: 20px; top: 1052px; width: 140px; height: 140px; border-width: 6px; }
+    .f04-il-compose-tapdot-b { left: 62px; top: 1094px; width: 56px; height: 56px; }
+    .f04-il-compose-ring-c { left: 445px; top: 1731px; width: 280px; height: 280px; border-width: 11px; }
+    .f04-il-compose-tapdot-c { left: 529px; top: 1815px; width: 112px; height: 112px; }
+
+    .f04-il-compose-notemask {
+      position: absolute;
+      left: 78px;
+      top: 1276px;
+      width: 430px;
+      height: 68px;
+      background: #F7F5F2;
+    }
+    .f04-il-compose-note {
+      position: absolute;
+      left: 88px;
+      top: 1285px;
+      width: 900px;
+      height: 46px;
+      font-family: "Source Serif 4", serif;
+      font-weight: 400;
+      font-size: 46px;
+      line-height: 46px;
+      color: #1c1c1c;
+      white-space: pre;
+    }
+    .f04-il-compose-caret {
+      display: inline-block;
+      position: relative;
+      top: -5px;
+      width: 4px;
+      height: 56px;
+      margin-left: 3px;
+      vertical-align: top;
+      background: #2563EB;
+    }
+
+    .f04-il-compose-btncover {
+      position: absolute;
+      left: 40px;
+      top: 1792px;
+      width: 1090px;
+      height: 160px;
+      background: #FFFFFF;
+    }
+    .f04-il-compose-btnring {
+      position: absolute;
+      left: 20px;
+      top: 1772px;
+      width: 1130px;
+      height: 199px;
+      box-sizing: border-box;
+      border: 11px solid #E0A33A;
+      border-radius: 28px;
+      transform-origin: 50% 50%;
+    }
+    .f04-il-compose-btn {
+      position: absolute;
+      left: 48px;
+      top: 1800px;
+      width: 1074px;
+      height: 143px;
+      border-radius: 26px;
+      overflow: hidden;
+      transform-origin: 50% 50%;
+    }
+    .f04-il-compose-btn-img {
+      position: absolute;
+      left: -48px;
+      top: -1800px;
+      width: 1170px;
+      height: 1992px;
+      display: block;
+    }
+    .f04-il-compose-btn-dark {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1074px;
+      height: 143px;
+      background: #0C1613;
+    }
+
+    /* ---------- stamp (film invariant) ---------- */
+    .f04-il-compose-stamp-wrap {
+      position: absolute;
+      left: 1050px;
+      top: 345px;
+      width: 400px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .f04-il-compose-stamp {
+      display: block;
+      flex: none;
+      padding: 10px 18px 10px 22px;
+      border: 4px solid #E0A33A;
+      border-radius: 8px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 30px;
+      line-height: 36px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #E0A33A;
+      white-space: nowrap;
+      transform-origin: 50% 50%;
+    }
+  </style>
+
+  <div id="root" data-composition-id="04-il-compose" data-width="1920" data-height="1080" data-duration="8.5">
+    <div class="clip f04-il-compose-bg" data-start="0" data-duration="8.5" data-track-index="0"></div>
+
+    <!-- ticket rail -->
+    <img class="f04-il-compose-brand-logo" src="assets/atable-logo.svg" alt="" />
+    <div class="f04-il-compose-brand-word">ATABLE</div>
+    <div class="f04-il-compose-rail-line"></div>
+    <div class="f04-il-compose-dot f04-il-compose-dot-current" style="left: 653px"></div>
+    <div class="f04-il-compose-dot" style="left: 845px"></div>
+    <div class="f04-il-compose-dot" style="left: 1037px"></div>
+    <div class="f04-il-compose-dot" style="left: 1229px"></div>
+    <div class="f04-il-compose-dot" style="left: 1421px"></div>
+    <div class="f04-il-compose-dot" style="left: 1613px"></div>
+    <div class="f04-il-compose-station f04-il-compose-station-current" style="left: 560px">01 CLIENT</div>
+    <div class="f04-il-compose-station" style="left: 752px">02 SALLE</div>
+    <div class="f04-il-compose-station" style="left: 944px">03 CUISINE</div>
+    <div class="f04-il-compose-station" style="left: 1136px">04 ÉQUIPE</div>
+    <div class="f04-il-compose-station" style="left: 1328px">05 PATRON</div>
+    <div class="f04-il-compose-station" style="left: 1520px">06 PLATEFORME</div>
+    <div class="f04-il-compose-tag">TABLE 4</div>
+
+    <!-- copy column -->
+    <div class="f04-il-compose-copy" data-layout-allow-overflow>
+      <div class="f04-il-compose-progress">
+        <div class="f04-il-compose-progress-fill"></div>
+      </div>
+
+      <div class="f04-il-compose-head f04-il-compose-h1" data-layout-allow-overflow>
+        <div class="f04-il-compose-line"><span class="f04-il-compose-w f04-il-compose-w1">Il</span> <span class="f04-il-compose-w f04-il-compose-w1">compose</span></div>
+        <div class="f04-il-compose-line"><span class="f04-il-compose-w f04-il-compose-w1">son</span> <span class="f04-il-compose-w f04-il-compose-w1">plat.</span></div>
+      </div>
+
+      <div class="f04-il-compose-head f04-il-compose-h2" data-layout-allow-overflow>
+        <div class="f04-il-compose-line"><span class="f04-il-compose-w f04-il-compose-w2">Une</span> <span class="f04-il-compose-w f04-il-compose-w2">précision</span></div>
+        <div class="f04-il-compose-line"><span class="f04-il-compose-w f04-il-compose-w2">pour</span> <span class="f04-il-compose-w f04-il-compose-w2">la</span> <span class="f04-il-compose-w f04-il-compose-w2">cuisine&nbsp;?</span></div>
+      </div>
+
+      <div class="f04-il-compose-h3" data-layout-allow-overflow>Envoyé<span class="f04-il-compose-h3-dot">.</span></div>
+
+      <div class="f04-il-compose-mono">LE PAIEMENT SE FAIT AU COMPTOIR</div>
+    </div>
+
+    <!-- phone, static at the handoff position (centre 1250, 520) -->
+    <div class="f04-il-compose-phone">
+      <div class="f04-il-compose-screen">
+        <div class="f04-il-compose-strip" data-layout-allow-overflow>
+          <!-- step 1: product sheet -->
+          <div class="f04-il-compose-page f04-il-compose-page-a">
+            <div class="f04-il-compose-zo f04-il-compose-zo-a" data-layout-allow-overflow>
+              <div class="f04-il-compose-zi f04-il-compose-zi-a" data-layout-allow-overflow>
+                <div class="f04-il-compose-shot" data-layout-allow-overflow>
+                  <img class="f04-il-compose-shot-img" src="assets/client-produit.png" alt="" />
+                  <div class="f04-il-compose-boxmask f04-il-compose-boxmask-a"></div>
+                  <div class="f04-il-compose-boxmask f04-il-compose-boxmask-b"></div>
+                  <div class="f04-il-compose-tapdot f04-il-compose-tapdot-a"></div>
+                  <div class="f04-il-compose-ring f04-il-compose-ring-a"></div>
+                  <div class="f04-il-compose-tapdot f04-il-compose-tapdot-b"></div>
+                  <div class="f04-il-compose-ring f04-il-compose-ring-b"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- step 2: cart with the note -->
+          <div class="f04-il-compose-page f04-il-compose-page-b">
+            <div class="f04-il-compose-zo f04-il-compose-zo-b" data-layout-allow-overflow>
+              <div class="f04-il-compose-zi f04-il-compose-zi-b" data-layout-allow-overflow>
+                <div class="f04-il-compose-shot" data-layout-allow-overflow>
+                  <img class="f04-il-compose-shot-img" src="assets/client-panier.png" alt="" />
+                  <div class="f04-il-compose-notemask"></div>
+                  <div class="f04-il-compose-note"><span class="f04-il-compose-note-text"></span><span class="f04-il-compose-caret"></span></div>
+                  <div class="f04-il-compose-btncover"></div>
+                  <div class="f04-il-compose-btnring"></div>
+                  <div class="f04-il-compose-btn">
+                    <img class="f04-il-compose-btn-img" src="assets/client-panier.png" alt="" />
+                    <div class="f04-il-compose-btn-dark"></div>
+                  </div>
+                  <div class="f04-il-compose-tapdot f04-il-compose-tapdot-c"></div>
+                  <div class="f04-il-compose-ring f04-il-compose-ring-c"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- step 3: confirmation -->
+          <div class="f04-il-compose-page f04-il-compose-page-c">
+            <div class="f04-il-compose-zo" data-layout-allow-overflow>
+              <div class="f04-il-compose-zi" data-layout-allow-overflow>
+                <div class="f04-il-compose-shot" data-layout-allow-overflow>
+                  <img class="f04-il-compose-shot-img" src="assets/client-confirmation.png" alt="" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- stamp across the phone's upper screen -->
+    <div class="f04-il-compose-stamp-wrap" data-layout-allow-overflow>
+      <div class="f04-il-compose-stamp">ENVOYÉE · N°&nbsp;001</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      var ID = "04-il-compose";
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      function q(s) { return document.querySelector(s); }
+      function qa(s) { return Array.prototype.slice.call(document.querySelectorAll(s)); }
+
+      // ---- custom eases (pure functions of progress; invisible at p = 0) ----
+      function igniteEase(p) { return p <= 0 ? 0 : 0.35 + 0.65 * (1 - Math.pow(1 - p, 4)); }
+      function arriveEase(p) { return p <= 0 ? 0 : 0.15 + 0.85 * (p >= 1 ? 1 : 1 - Math.pow(2, -10 * p)); }
+      function recedeEase(p) { return p < 1 ? 0.85 * p : 1; }
+
+      // ---- in-screen camera targets (coordinate-target-zoom, nested: outer scales, inner translates, T = -offset) ----
+      // base image scale b = 420 / 1170; screen centre C = (210, 364)
+      // step 1 focus (292.5, 1050) img px → b·f = (105, 376.92) → T = (105, -12.92), S = 2 (left edge exactly at the screen edge)
+      var T1 = { x: 105, y: -12.92 }, S1 = 2.0;
+      // step 2 focus (395, 1320) img px → b·f = (141.79, 473.85) → T = (68.21, -109.85), S = 1.5
+      var T2 = { x: 68.21, y: -109.85 }, S2 = 1.5;
+
+      // ===== Scene 1 (0.0–2.5): product sheet, zoom onto the meat options, two taps =====
+      tl.fromTo(".f04-il-compose-zo-a", { scale: 1 }, { scale: S1, duration: 0.8, ease: "power3.inOut" }, 0.1);
+      tl.fromTo(".f04-il-compose-zi-a", { x: 0, y: 0 }, { x: T1.x, y: T1.y, duration: 0.8, ease: "power3.inOut" }, 0.1);
+      tl.fromTo(".f04-il-compose-zo-a", { scale: S1 }, { scale: 2.06, duration: 1.6, ease: "sine.inOut", immediateRender: false }, 0.9);
+
+      tl.fromTo(".f04-il-compose-boxmask-a", { opacity: 1, y: 0, scale: 1 }, { opacity: 0, y: -18, scale: 1.15, duration: 0.2, ease: "power2.out" }, 0.9);
+      tl.fromTo(".f04-il-compose-boxmask-b", { opacity: 1, y: 0, scale: 1 }, { opacity: 0, y: -18, scale: 1.15, duration: 0.2, ease: "power2.out" }, 1.4);
+
+      // headline 1 — staggered fade + rise
+      var w1 = qa(".f04-il-compose-w1");
+      w1.forEach(function (el, i) {
+        tl.fromTo(el, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 0.5 + i * 0.07);
+      });
+
+      // progress hairline — step 1 of 3
+      tl.fromTo(".f04-il-compose-progress-fill", { scaleX: 0 }, { scaleX: 1 / 3, duration: 0.6, ease: "power3.inOut" }, 0.5);
+
+      // ===== Scene 2 (2.5–5.0): velocity-matched swipe to the cart, zoom onto the note, type-on =====
+      tl.fromTo(".f04-il-compose-strip", { x: 0 }, { x: -420, duration: 0.4, ease: "power4.inOut" }, 2.5);
+
+      tl.fromTo(".f04-il-compose-zo-b", { scale: 1 }, { scale: S2, duration: 0.75, ease: "power3.inOut" }, 2.85);
+      tl.fromTo(".f04-il-compose-zi-b", { x: 0, y: 0 }, { x: T2.x, y: T2.y, duration: 0.75, ease: "power3.inOut" }, 2.85);
+
+      // headline 1 → 2: waterfall cut (leftward), last word dies at 3.0
+      w1.forEach(function (el, i) {
+        var at = 2.754 + i * 0.022;
+        tl.fromTo(el, { x: 0 }, { x: -230, duration: 0.34, ease: "power4.in", immediateRender: false }, at);
+        tl.fromTo(el, { opacity: 1 }, { opacity: 0, duration: 0.18, ease: "power1.in", immediateRender: false }, at);
+      });
+      var w2 = qa(".f04-il-compose-w2");
+      var gap = 0.05, acc = 0;
+      w2.forEach(function (el, i) {
+        if (i > 0) { acc += gap; gap *= 0.84; }
+        tl.fromTo(el, { x: 230 }, { x: 0, duration: 0.3, ease: "power4.out" }, 3.0 + acc);
+        tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: igniteEase }, 3.0 + acc);
+      });
+
+      tl.fromTo(".f04-il-compose-progress-fill", { scaleX: 1 / 3 }, { scaleX: 2 / 3, duration: 0.6, ease: "power3.inOut", immediateRender: false }, 3.0);
+
+      // ===== Scene 3 (5.0–6.5): zoom eases back, press, slide to confirmation, stamp =====
+      tl.fromTo(".f04-il-compose-zo-b", { scale: S2 }, { scale: 1, duration: 0.55, ease: "power2.inOut", immediateRender: false }, 4.45);
+      tl.fromTo(".f04-il-compose-zi-b", { x: T2.x, y: T2.y }, { x: 0, y: 0, duration: 0.55, ease: "power2.inOut", immediateRender: false }, 4.45);
+
+      // highlight ring on « Envoyer ma commande »
+      tl.fromTo(".f04-il-compose-btnring", { scale: 1.08, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "power3.out" }, 4.65);
+
+      // press-release-spring: linear dip, spring release (adjacent positions)
+      tl.fromTo(".f04-il-compose-btn", { scale: 1 }, { scale: 0.92, duration: 0.12, ease: "power1.in" }, 5.0);
+      tl.fromTo(".f04-il-compose-btn", { scale: 0.92 }, { scale: 1, duration: 0.45, ease: "back.out(2)", immediateRender: false }, 5.12);
+      tl.fromTo(".f04-il-compose-btn-dark", { opacity: 0 }, { opacity: 0.22, duration: 0.12, ease: "power1.in" }, 5.0);
+      tl.fromTo(".f04-il-compose-btn-dark", { opacity: 0.22 }, { opacity: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 5.12);
+      tl.fromTo(".f04-il-compose-btnring", { scale: 1, opacity: 1 }, { scale: 1.05, opacity: 0, duration: 0.45, ease: "power2.out", immediateRender: false }, 5.12);
+
+      // screen slides to the confirmation
+      tl.fromTo(".f04-il-compose-strip", { x: -420 }, { x: -840, duration: 0.4, ease: "power4.inOut", immediateRender: false }, 5.3);
+
+      // headline 2 → « Envoyé. »: inverse zoom-through (arrival)
+      tl.fromTo(".f04-il-compose-h2", { scale: 1, filter: "blur(0px)" }, { scale: 0.8, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 5.3);
+      tl.fromTo(".f04-il-compose-h2", { opacity: 1 }, { opacity: 0, duration: 0.2, ease: recedeEase }, 5.3);
+      tl.fromTo(".f04-il-compose-h3", { scale: 1.25, filter: "blur(10px)" }, { scale: 1, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 5.5);
+      tl.fromTo(".f04-il-compose-h3", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: arriveEase }, 5.5);
+
+      tl.fromTo(".f04-il-compose-progress-fill", { scaleX: 2 / 3 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut", immediateRender: false }, 5.5);
+
+      // mono line
+      tl.fromTo(".f04-il-compose-mono", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 6.0);
+
+      // stamp grammar: 1.35 → 1, 0 → 0.9 in 0.22 s, then a 2 px settle down and back in 0.12 s
+      tl.fromTo(".f04-il-compose-stamp", { scale: 1.35, opacity: 0, rotation: -8, y: 0 }, { scale: 1, opacity: 0.9, rotation: -8, y: 0, duration: 0.22, ease: "power3.out" }, 6.0);
+      tl.fromTo(".f04-il-compose-stamp", { y: 0 }, { y: 2, duration: 0.06, ease: "power1.out", immediateRender: false }, 6.22);
+      tl.fromTo(".f04-il-compose-stamp", { y: 2 }, { y: 0, duration: 0.06, ease: "power1.inOut", immediateRender: false }, 6.28);
+
+      // ===== time-driven layer: tap ripples, discrete type-on, caret =====
+      var SEQ = [
+        [0.0, ""],
+        [2.9, "S"],
+        [2.98, "Sa"],
+        [3.05, "Sau"],
+        [3.13, "Sauc"],
+        [3.2, "Sauce"],
+        [3.3, "Sauce "],
+        [3.52, "Sauce à"],
+        [3.62, "Sauce à "],
+        [3.78, "Sauce à p"],
+        [3.85, "Sauce à pa"],
+        [3.92, "Sauce à par"],
+        [3.99, "Sauce à part"],
+        [4.08, "Sauce à part "],
+        [4.22, "Sauce à part s"],
+        [4.3, "Sauce à part sv"],
+        [4.38, "Sauce à part svp"]
+      ];
+      function textAt(t) {
+        for (var i = SEQ.length - 1; i >= 0; i--) {
+          if (t >= SEQ[i][0]) return SEQ[i][1];
+        }
+        return "";
+      }
+      function caretOn(t) {
+        if (t >= 2.9 && t < 4.45) return true; // solid while typing
+        var ref = t < 2.9 ? 2.4 : 4.45;
+        var ph = (((t - ref) % 0.9) + 0.9) % 0.9;
+        return ph < 0.5;
+      }
+
+      var noteText = q(".f04-il-compose-note-text");
+      var caret = q(".f04-il-compose-caret");
+      var ripples = [
+        { ring: q(".f04-il-compose-ring-a"), dot: q(".f04-il-compose-tapdot-a"), t0: 0.9 },
+        { ring: q(".f04-il-compose-ring-b"), dot: q(".f04-il-compose-tapdot-b"), t0: 1.4 },
+        { ring: q(".f04-il-compose-ring-c"), dot: q(".f04-il-compose-tapdot-c"), t0: 5.0 }
+      ];
+      function ripple(r, t) {
+        var u = (t - r.t0) / 0.5;
+        if (u <= 0 || u >= 1) {
+          r.ring.style.opacity = "0";
+          r.dot.style.opacity = "0";
+          return;
+        }
+        var e = 1 - Math.pow(1 - u, 3);
+        r.ring.style.transform = "scale(" + (0.3 + 0.7 * e).toFixed(4) + ")";
+        r.ring.style.opacity = (0.95 * (1 - u)).toFixed(3);
+        var d = u < 0.1 ? u / 0.1 : Math.max(0, 1 - (u - 0.1) / 0.5);
+        r.dot.style.transform = "scale(" + (0.6 + 0.4 * e).toFixed(4) + ")";
+        r.dot.style.opacity = (0.5 * d).toFixed(3);
+      }
+
+      var lastText = null;
+      function render(t) {
+        var s = textAt(t);
+        if (s !== lastText) {
+          noteText.textContent = s;
+          lastText = s;
+        }
+        caret.style.opacity = caretOn(t) ? "1" : "0";
+        for (var i = 0; i < ripples.length; i++) ripple(ripples[i], t);
+      }
+
+      var drv = { t: 0 };
+      tl.fromTo(drv, { t: 0 }, {
+        t: 8,
+        duration: 8,
+        ease: "none",
+        onUpdate: function () { render(drv.t); }
+      }, 0);
+      render(0);
+
+      window.__timelines[ID] = tl;
+    })();
+  </script>
+</template>

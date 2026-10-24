@@ -1,0 +1,665 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+    }
+
+    /* full-bleed green ground (gravity frame) */
+    [id="02-la-promesse-bg"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      background: #1f4d3a;
+    }
+
+    /* camera layer: everything that moves sits in here */
+    [id="02-la-promesse-stage"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      container-type: size;
+      font-optical-sizing: auto;
+    }
+
+    /* ---------- printer slot + ticket (right, x centre 1260) ---------- */
+    [id="02-la-promesse-slot"] {
+      position: absolute;
+      left: 1050px;
+      top: 82px;
+      width: 420px;
+      height: 46px;
+      background: #0c1613;
+      border-radius: 8px;
+    }
+    [id="02-la-promesse-slit"] {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 9px;
+      height: 6px;
+      background: #173b2d;
+      border-radius: 3px;
+    }
+
+    [id="02-la-promesse-ticket"] {
+      position: absolute;
+      left: 1080px;
+      top: 108px;
+      width: 360px;
+      height: 680px;
+    }
+    [id="02-la-promesse-paper"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 360px;
+      height: 660px;
+      background: #e7dcc6;
+      clip-path: inset(0px 0px 540px 0px);
+    }
+    [id="02-la-promesse-edge"] {
+      position: absolute;
+      left: 0;
+      top: -1px;
+      width: 360px;
+      height: 14px;
+      display: block;
+    }
+
+    [class~="02-la-promesse-tline"] {
+      position: absolute;
+      left: 0;
+      width: 360px;
+      white-space: nowrap;
+      color: #0c1613;
+      font-family: "JetBrains Mono", monospace;
+      text-transform: uppercase;
+    }
+    [id="02-la-promesse-l1"] {
+      top: 288px;
+      font-weight: 700;
+      font-size: 34px;
+      line-height: 40px;
+      letter-spacing: 0.18em;
+      text-indent: 0.18em;
+      text-align: center;
+    }
+    [id="02-la-promesse-l2"] {
+      top: 376px;
+      font-weight: 700;
+      font-size: 40px;
+      line-height: 48px;
+      letter-spacing: 0.06em;
+      text-indent: 0.06em;
+      text-align: center;
+    }
+    [id="02-la-promesse-l3"] {
+      top: 432px;
+      font-weight: 500;
+      font-size: 22px;
+      line-height: 28px;
+      letter-spacing: 0.08em;
+      text-indent: 0.08em;
+      text-align: center;
+    }
+    [id="02-la-promesse-l4"],
+    [id="02-la-promesse-l5"] {
+      font-weight: 500;
+      font-size: 22px;
+      line-height: 32px;
+      letter-spacing: 0.04em;
+      padding-left: 28px;
+    }
+    [id="02-la-promesse-l4"] {
+      top: 510px;
+    }
+    [id="02-la-promesse-l5"] {
+      top: 550px;
+    }
+    [id="02-la-promesse-l6"] {
+      top: 604px;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 28px;
+      letter-spacing: 0.02em;
+      padding-left: 28px;
+    }
+    [class~="02-la-promesse-rule"] {
+      position: absolute;
+      left: 26px;
+      width: 308px;
+      height: 0;
+      border-top: 2px dashed #0c1613;
+    }
+    [id="02-la-promesse-r1"] {
+      top: 352px;
+    }
+    [id="02-la-promesse-r2"] {
+      top: 486px;
+    }
+
+    /* logo printed on the ticket header + its stamp ring */
+    [id="02-la-promesse-logo"] {
+      position: absolute;
+      left: 100px;
+      top: 76px;
+      width: 160px;
+      height: 160px;
+    }
+    [id="02-la-promesse-logo"] svg {
+      display: block;
+      width: 160px;
+      height: 160px;
+    }
+    [class~="02-la-promesse-ringshape"] {
+      position: absolute;
+      left: 70px;
+      top: 46px;
+      width: 220px;
+      height: 220px;
+      box-sizing: border-box;
+      border: 4px solid #b9822a;
+      border-radius: 50%;
+    }
+
+    /* ---------- copy column (left, x 120 to 760) ---------- */
+    [id="02-la-promesse-headline"] {
+      position: absolute;
+      left: 120px;
+      top: 318px;
+      width: 680px;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      font-size: 4.4cqw;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: #f4efe6;
+    }
+    [class~="02-la-promesse-hline"] {
+      display: block;
+      white-space: nowrap;
+    }
+    [class~="02-la-promesse-word"] {
+      display: inline-block;
+    }
+    [class~="02-la-promesse-gold"] {
+      color: #e0a33a;
+    }
+
+    [id="02-la-promesse-wordmark"] {
+      position: absolute;
+      left: 120px;
+      top: 268px;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      font-size: 11.5cqw;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: #f4efe6;
+      white-space: nowrap;
+    }
+    [id="02-la-promesse-tagline"] {
+      position: absolute;
+      left: 120px;
+      top: 497px;
+      font-family: "Source Serif 4", serif;
+      font-weight: 400;
+      font-size: 2.6cqw;
+      line-height: 1.2;
+      color: #f4efe6;
+      white-space: nowrap;
+    }
+    [id="02-la-promesse-mono"] {
+      position: absolute;
+      left: 120px;
+      top: 601px;
+      height: 30px;
+      min-width: 640px;
+      display: flex;
+      align-items: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 30px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e0a33a;
+    }
+    [id="02-la-promesse-typed"] {
+      white-space: pre;
+    }
+    [id="02-la-promesse-cursor"] {
+      display: inline-block;
+      width: 13px;
+      height: 24px;
+      margin-left: 2px;
+      background: #e0a33a;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="02-la-promesse"
+    data-start="0"
+    data-duration="6.5"
+    data-width="1920"
+    data-height="1080"
+  >
+    <div
+      id="02-la-promesse-bg"
+      class="clip"
+      data-start="0"
+      data-duration="6.5"
+      data-track-index="0"
+    ></div>
+
+    <div
+      id="02-la-promesse-stage"
+      class="clip"
+      data-start="0"
+      data-duration="6.5"
+      data-track-index="1"
+    >
+      <!-- the kitchen ticket (feeds out under the slot) -->
+      <div id="02-la-promesse-ticket">
+        <div id="02-la-promesse-paper">
+          <div id="02-la-promesse-ring" class="02-la-promesse-ringshape"></div>
+          <div id="02-la-promesse-echo" class="02-la-promesse-ringshape"></div>
+          <div id="02-la-promesse-logo">
+            <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect
+                id="02-la-promesse-logo-fill"
+                width="512"
+                height="512"
+                rx="112"
+                fill="#1F4D3A"
+                fill-opacity="0"
+              />
+              <rect
+                id="02-la-promesse-logo-outline"
+                x="6"
+                y="6"
+                width="500"
+                height="500"
+                rx="106"
+                fill="none"
+                stroke="#1F4D3A"
+                stroke-width="12"
+              />
+              <circle
+                id="02-la-promesse-logo-plate"
+                cx="256"
+                cy="276"
+                r="132"
+                fill="none"
+                stroke="#FFFFFF"
+                stroke-width="28"
+              />
+              <circle
+                id="02-la-promesse-logo-centre"
+                cx="256"
+                cy="276"
+                r="74"
+                fill="#E0A33A"
+                fill-opacity="0"
+              />
+              <circle
+                id="02-la-promesse-logo-centre-outline"
+                cx="256"
+                cy="276"
+                r="66"
+                fill="none"
+                stroke="#E0A33A"
+                stroke-width="16"
+              />
+              <path
+                id="02-la-promesse-logo-fork"
+                d="M118 96v84a30 30 0 0 0 60 0V96"
+                fill="none"
+                stroke="#FFFFFF"
+                stroke-width="22"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                id="02-la-promesse-logo-stem"
+                d="M148 96v300"
+                fill="none"
+                stroke="#FFFFFF"
+                stroke-width="22"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                id="02-la-promesse-logo-knife"
+                d="M394 96c-34 18-46 64-46 110h46v190"
+                fill="none"
+                stroke="#FFFFFF"
+                stroke-width="22"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+
+          <div id="02-la-promesse-l1" class="02-la-promesse-tline">ATABLE</div>
+          <div id="02-la-promesse-r1" class="02-la-promesse-rule"></div>
+          <div id="02-la-promesse-l2" class="02-la-promesse-tline">TABLE 4</div>
+          <div id="02-la-promesse-l3" class="02-la-promesse-tline">COMMANDE N°&nbsp;001</div>
+          <div id="02-la-promesse-r2" class="02-la-promesse-rule"></div>
+          <div id="02-la-promesse-l4" class="02-la-promesse-tline">1 × TACOS 2 VIANDES</div>
+          <div id="02-la-promesse-l5" class="02-la-promesse-tline">1 × LIMONADE</div>
+          <div id="02-la-promesse-l6" class="02-la-promesse-tline">NOTE&nbsp;: SAUCE À PART SVP</div>
+        </div>
+        <svg
+          id="02-la-promesse-edge"
+          viewBox="0 0 360 14"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            fill="#E7DCC6"
+            d="M0 0 H360 V2 L354 14 L348 2 L342 14 L336 2 L330 14 L324 2 L318 14 L312 2 L306 14 L300 2 L294 14 L288 2 L282 14 L276 2 L270 14 L264 2 L258 14 L252 2 L246 14 L240 2 L234 14 L228 2 L222 14 L216 2 L210 14 L204 2 L198 14 L192 2 L186 14 L180 2 L174 14 L168 2 L162 14 L156 2 L150 14 L144 2 L138 14 L132 2 L126 14 L120 2 L114 14 L108 2 L102 14 L96 2 L90 14 L84 2 L78 14 L72 2 L66 14 L60 2 L54 14 L48 2 L42 14 L36 2 L30 14 L24 2 L18 14 L12 2 L6 14 L0 2 Z"
+          />
+        </svg>
+      </div>
+
+      <!-- the printer slot sits above the paper -->
+      <div id="02-la-promesse-slot"><div id="02-la-promesse-slit"></div></div>
+
+      <!-- Scene 2 headline -->
+      <div id="02-la-promesse-headline">
+        <div class="02-la-promesse-hline"><span class="02-la-promesse-word">Et</span> <span class="02-la-promesse-word">si</span> <span class="02-la-promesse-word">chaque</span></div>
+        <div class="02-la-promesse-hline"><span class="02-la-promesse-word">table</span> <span class="02-la-promesse-word">commandait</span></div>
+        <div class="02-la-promesse-hline"><span class="02-la-promesse-word 02-la-promesse-gold">toute</span> <span class="02-la-promesse-word"><span class="02-la-promesse-gold">seule</span>&nbsp;?</span></div>
+      </div>
+
+      <!-- Scene 3 + 4 lockup -->
+      <div id="02-la-promesse-wordmark">Atable</div>
+      <div id="02-la-promesse-tagline">La commande à table.</div>
+      <div id="02-la-promesse-mono"><span id="02-la-promesse-typed"></span><span id="02-la-promesse-cursor"></span></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      var ID = "02-la-promesse";
+      var DURATION = 6;
+      function el(name) {
+        return document.getElementById(ID + "-" + name);
+      }
+
+      var tl = gsap.timeline({ paused: true });
+
+      // ---------- macro camera: a slow push underneath the whole shot ----------
+      tl.fromTo(
+        el("stage"),
+        { scale: 1, transformOrigin: "960px 450px" },
+        { scale: 1.02, duration: DURATION, ease: "none" },
+        0
+      );
+
+      // ---------- Scene 1 (0.0-1.6s): the ticket feeds down in short steps ----------
+      var paper = el("paper");
+      var edge = el("edge");
+      var PAPER_H = 660;
+      function inset(reveal) {
+        return "inset(0px 0px " + (PAPER_H - reveal) + "px 0px)";
+      }
+      // [start, duration, reveal edge (px from paper top)]
+      var FEED = [
+        [0.02, 0.14, 272], // header (logo space) feeds out
+        [0.2, 0.1, 336], // ATABLE
+        [0.4, 0.06, 362], // rule
+        [0.6, 0.1, 428], // TABLE 4
+        [1.0, 0.08, 466], // COMMANDE N° 001
+        [1.1, 0.06, 496], // rule
+        [1.2, 0.08, 546], // 1 × TACOS 2 VIANDES
+        [1.4, 0.08, 586], // 1 × LIMONADE
+        [1.6, 0.1, 636], // NOTE : SAUCE À PART SVP
+        [1.74, 0.18, 660] // last feed, torn edge hangs free
+      ];
+      var prev = 120;
+      FEED.forEach(function (s, i) {
+        tl.fromTo(
+          paper,
+          { clipPath: inset(prev) },
+          { clipPath: inset(s[2]), duration: s[1], ease: "power2.out", immediateRender: i === 0 },
+          s[0]
+        );
+        tl.fromTo(
+          edge,
+          { y: prev },
+          { y: s[2], duration: s[1], ease: "power2.out", immediateRender: i === 0 },
+          s[0]
+        );
+        prev = s[2];
+      });
+
+      // thermal ink darkens as each row is burned
+      [
+        ["l1", 0.2],
+        ["r1", 0.4],
+        ["l2", 0.6],
+        ["l3", 1.0],
+        ["r2", 1.1],
+        ["l4", 1.2],
+        ["l5", 1.4],
+        ["l6", 1.6]
+      ].forEach(function (p) {
+        tl.fromTo(
+          el(p[0]),
+          { opacity: 0.35 },
+          { opacity: 1, duration: 0.16, ease: "power1.out" },
+          p[1] + 0.02
+        );
+      });
+
+      // the freed ticket swings once under the slot, then hangs still
+      var ticket = el("ticket");
+      var SWAY = [
+        [1.92, 0.26, 0, 0.8],
+        [2.18, 0.32, 0.8, -0.5],
+        [2.5, 0.32, -0.5, 0.22],
+        [2.82, 0.3, 0.22, 0]
+      ];
+      SWAY.forEach(function (s, i) {
+        tl.fromTo(
+          ticket,
+          { rotation: s[2], transformOrigin: "180px 0px" },
+          { rotation: s[3], duration: s[1], ease: "sine.inOut", immediateRender: i === 0 },
+          s[0]
+        );
+      });
+
+      // ---------- Scene 2 (1.6-3.0s): the headline rises word by word ----------
+      var words = el("headline").querySelectorAll('[class~="02-la-promesse-word"]');
+      var WORD_T = [1.6, 1.73, 1.86, 2.0, 2.15, 2.4, 2.6];
+      for (var w = 0; w < words.length; w++) {
+        tl.fromTo(
+          words[w],
+          { y: 42, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" },
+          WORD_T[w]
+        );
+      }
+
+      // ---------- Scene 3 (3.0-4.6s): the logo prints itself, the lockup lands ----------
+      // gold stamp-ring hits at 3.0 (stamp entrance + 2px settle), then one pulse
+      var ring = el("ring");
+      var echo = el("echo");
+      tl.fromTo(
+        ring,
+        { scale: 1.35, opacity: 0 },
+        { scale: 1, opacity: 0.9, duration: 0.22, ease: "power3.out" },
+        3.0
+      );
+      tl.fromTo(ring, { y: 0 }, { y: 2, duration: 0.06, ease: "power1.out" }, 3.22);
+      tl.fromTo(
+        ring,
+        { y: 2 },
+        { y: 0, duration: 0.06, ease: "power1.in", immediateRender: false },
+        3.28
+      );
+      tl.fromTo(echo, { scale: 1 }, { scale: 1.45, duration: 0.6, ease: "power2.out" }, 3.18);
+      tl.fromTo(echo, { opacity: 0 }, { opacity: 0.8, duration: 0.04, ease: "none" }, 3.18);
+      tl.fromTo(
+        echo,
+        { opacity: 0.8 },
+        { opacity: 0, duration: 0.56, ease: "power1.out", immediateRender: false },
+        3.22
+      );
+
+      // svg-path-draw: measure each stroke, one dash = the whole path
+      function prep(node, fallback) {
+        var len = fallback;
+        try {
+          var m = node.getTotalLength();
+          if (m > 0) len = m;
+        } catch (e) {}
+        len = len * 1.02 + 2;
+        node.style.strokeDasharray = len + " " + len * 2;
+        return len;
+      }
+      function draw(name, fallback, start, dur) {
+        var node = el(name);
+        var len = prep(node, fallback);
+        tl.fromTo(
+          node,
+          { strokeDashoffset: len },
+          { strokeDashoffset: 0, duration: dur, ease: "power2.out" },
+          start
+        );
+      }
+      function fill(name, start, dur) {
+        tl.fromTo(
+          el(name),
+          { fillOpacity: 0 },
+          { fillOpacity: 1, duration: dur, ease: "power1.out" },
+          start
+        );
+      }
+      draw("logo-outline", 1818, 3.0, 0.4); // green tile outline
+      fill("logo-fill", 3.28, 0.24); // tile fills in
+      draw("logo-plate", 829.4, 3.3, 0.44); // white plate ring
+      draw("logo-centre-outline", 414.7, 3.66, 0.3); // gold centre
+      fill("logo-centre", 3.9, 0.22);
+      draw("logo-fork", 262.3, 3.62, 0.3); // fork tines
+      draw("logo-stem", 300, 3.84, 0.28); // fork handle
+      draw("logo-knife", 362, 4.02, 0.34); // knife
+      // the mark grows into place as it is printed
+      tl.fromTo(
+        el("logo"),
+        { scale: 0.88 },
+        { scale: 1, duration: 1.4, ease: "power2.out" },
+        3.0
+      );
+
+      // headline clears upward (cut-the-curve: power4.in out / power4.out in, same path)
+      var headline = el("headline");
+      tl.fromTo(headline, { y: 0 }, { y: -230, duration: 0.3, ease: "power4.in" }, 3.2);
+      tl.fromTo(headline, { opacity: 1 }, { opacity: 0, duration: 0.22, ease: "power1.in" }, 3.26);
+
+      // wordmark lands at the cut, continuing the same upward motion
+      var wordmark = el("wordmark");
+      tl.fromTo(wordmark, { y: 230 }, { y: 0, duration: 0.3, ease: "power4.out" }, 3.5);
+      tl.fromTo(wordmark, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "power2.out" }, 3.5);
+
+      tl.fromTo(
+        el("tagline"),
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" },
+        3.68
+      );
+
+      // ---------- Scene 4 (4.6-6.0s): mono line types on, then the frame holds ----------
+      var FULL = "QR CODE · NFC · SANS APPLI · SANS COMPTE";
+      var T0 = 4.62;
+      var CHAR = 0.017;
+      var PAUSE = 0.06;
+      var SEQUENCE = [{ t: 0, text: "" }];
+      var t = T0;
+      for (var c = 0; c < FULL.length; c++) {
+        SEQUENCE.push({ t: t, text: FULL.slice(0, c + 1) });
+        t += CHAR;
+        if (FULL.charAt(c) === "·") t += PAUSE;
+      }
+      var T_DONE = SEQUENCE[SEQUENCE.length - 1].t;
+
+      function textAt(time) {
+        for (var i = SEQUENCE.length - 1; i >= 0; i--) {
+          if (time >= SEQUENCE[i].t) return SEQUENCE[i].text;
+        }
+        return "";
+      }
+
+      var typed = el("typed");
+      var cursor = el("cursor");
+      function cursorAt(time) {
+        if (time < T0 - 0.04) return "0";
+        if (time < T_DONE + 0.05) return "1";
+        // blink on the 120 bpm beat (0.5 s period), deterministic square wave
+        return Math.sin(((time - T_DONE - 0.05) / 0.5) * Math.PI * 2 + Math.PI / 2) > 0 ? "1" : "0";
+      }
+      typed.textContent = "";
+      cursor.style.opacity = "0";
+
+      var driver = { t: 0 };
+      tl.fromTo(
+        driver,
+        { t: 0 },
+        {
+          t: DURATION,
+          duration: DURATION,
+          ease: "none",
+          onUpdate: function () {
+            var txt = textAt(driver.t);
+            if (typed.textContent !== txt) typed.textContent = txt;
+            cursor.style.opacity = cursorAt(driver.t);
+          }
+        },
+        0
+      );
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines[ID] = tl;
+    })();
+  </script>
+</template>

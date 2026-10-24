@@ -1,0 +1,321 @@
+<template>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+    }
+
+    /* full-bleed green ground (gravity frame), its own clip layer */
+    [id="11-atable-ground"] {
+      position: absolute;
+      inset: 0;
+      background: #1F4D3A;
+    }
+
+    /* the end card — frame container (container law: type in cqw) */
+    [id="11-atable-card"] {
+      position: absolute;
+      inset: 0;
+      container-type: size;
+      color: #F4EFE6;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      font-optical-sizing: auto;
+    }
+
+    /* logo mark: authored at 280px, settles to 200px (scale 0.7143) — downscale keeps strokes crisp */
+    [id="11-atable-mark"] {
+      position: absolute;
+      left: 820px;
+      top: -6px;
+      width: 280px;
+      height: 280px;
+      transform-origin: 50% 50%;
+    }
+    [id="11-atable-mark"] svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* wordmark — display-hero, cream */
+    [id="11-atable-wordmark"] {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 222px;
+      text-align: center;
+      font-size: 11.5cqw;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: #F4EFE6;
+      white-space: nowrap;
+    }
+
+    /* the promise — two headline lines, per-word reveal */
+    [class~="11-atable-line"] {
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 4.4cqw;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    [id="11-atable-line1"] {
+      top: 452px;
+      color: #F4EFE6;
+    }
+    [id="11-atable-line2"] {
+      top: 542px;
+      color: #E0A33A;
+    }
+    [class~="11-atable-word"] {
+      display: inline-block;
+    }
+
+    /* CTA pill — gold fill, ink text, flat */
+    [id="11-atable-cta-row"] {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 678px;
+      height: 92px;
+      display: flex;
+      justify-content: center;
+    }
+    [id="11-atable-cta"] {
+      height: 92px;
+      padding: 0 60px;
+      border-radius: 46px;
+      background: #E0A33A;
+      color: #0C1613;
+      display: flex;
+      align-items: center;
+      font-size: 2.3cqw;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      transform-origin: 50% 50%;
+    }
+
+    /* mono footline — caption-mono, types on */
+    [id="11-atable-mono"] {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 806px;
+      height: 30px;
+      text-align: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 30px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #F4EFE6;
+      white-space: pre;
+    }
+    [class~="11-atable-ch"] {
+      position: relative;
+      display: inline-block;
+    }
+    [class~="11-atable-sep"] {
+      color: #E0A33A;
+    }
+    [class~="11-atable-caret"] {
+      position: absolute;
+      left: 100%;
+      top: 1px;
+      width: 3px;
+      height: 28px;
+      background: #E0A33A;
+    }
+
+    /* final-frame fade to ink */
+    [id="11-atable-fade"] {
+      position: absolute;
+      inset: 0;
+      background: #0C1613;
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+
+  <div id="root" data-composition-id="11-atable" data-width="1920" data-height="1080">
+    <div id="11-atable-ground" class="clip" data-start="0" data-duration="6" data-track-index="0"></div>
+
+    <div id="11-atable-card" class="clip" data-start="0" data-duration="6" data-track-index="1">
+      <div id="11-atable-mark">
+        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-label="Atable">
+          <rect width="512" height="512" rx="112" fill="#1F4D3A" />
+          <circle
+            id="11-atable-ring"
+            cx="256"
+            cy="276"
+            r="132"
+            fill="none"
+            stroke="#FFFFFF"
+            stroke-width="28"
+            transform="rotate(-90 256 276)"
+          />
+          <circle id="11-atable-centre" cx="256" cy="276" r="74" fill="#E0A33A" />
+          <g fill="none" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+            <path id="11-atable-fork" d="M118 96v84a30 30 0 0 0 60 0V96" />
+            <path id="11-atable-handle" d="M148 96v300" />
+            <path id="11-atable-knife" d="M394 96c-34 18-46 64-46 110h46v190" />
+          </g>
+        </svg>
+      </div>
+
+      <div id="11-atable-wordmark">Atable</div>
+
+      <div id="11-atable-line1" class="11-atable-line"><span class="11-atable-word">Vos</span> <span class="11-atable-word">clients</span> <span class="11-atable-word">commandent.</span></div>
+      <div id="11-atable-line2" class="11-atable-line"><span class="11-atable-word">Votre</span> <span class="11-atable-word">équipe</span> <span class="11-atable-word">sert.</span></div>
+
+      <div id="11-atable-cta-row">
+        <div id="11-atable-cta">Demandez une démo</div>
+      </div>
+
+      <div id="11-atable-mono">QR CODE · NFC · PAIEMENT AU COMPTOIR</div>
+    </div>
+
+    <div id="11-atable-fade" class="clip" data-start="0" data-duration="6" data-track-index="2"></div>
+  </div>
+
+  <script>
+    (function () {
+      var FRAME = "11-atable";
+      var byId = function (name) {
+        return document.getElementById(FRAME + "-" + name);
+      };
+      var tl = gsap.timeline({ paused: true });
+
+      // ---------- setup (deterministic, measured geometry) ----------
+      var mark = byId("mark");
+      var ring = byId("ring");
+      var fork = byId("fork");
+      var handle = byId("handle");
+      var knife = byId("knife");
+      var centre = byId("centre");
+      var wordmark = byId("wordmark");
+      var words1 = byId("line1").querySelectorAll('[class~="11-atable-word"]');
+      var words2 = byId("line2").querySelectorAll('[class~="11-atable-word"]');
+      var cta = byId("cta");
+      var mono = byId("mono");
+      var fade = byId("fade");
+
+      // stroke-dasharray = measured length; the gap is longer than the path and the
+      // start offset overshoots, so no round-cap dot shows before a stroke begins.
+      function dashLength(el) {
+        var len = el.getTotalLength();
+        el.style.strokeDasharray = len + " " + (len + 80);
+        return len;
+      }
+      var ringLen = dashLength(ring);
+      var forkLen = dashLength(fork);
+      var handleLen = dashLength(handle);
+      var knifeLen = dashLength(knife);
+
+      // mono line: split into per-character cells (layout stays at its final centred
+      // position), each cell carrying its own caret that sits right after it.
+      var text = mono.textContent;
+      mono.textContent = "";
+      function cell(ch) {
+        var s = document.createElement("span");
+        s.className = FRAME + "-ch" + (ch === "·" ? " " + FRAME + "-sep" : "");
+        s.textContent = ch;
+        var c = document.createElement("span");
+        c.className = FRAME + "-caret";
+        s.appendChild(c);
+        mono.appendChild(s);
+        return { el: s, caret: c };
+      }
+      var lead = cell(""); // empty lead cell: caret at the line start before typing
+      var cells = [];
+      for (var i = 0; i < text.length; i++) cells.push(cell(text.charAt(i)));
+      var carets = [lead.caret].concat(cells.map(function (c) { return c.caret; }));
+      carets.forEach(function (c) {
+        tl.fromTo(c, { opacity: 0 }, { opacity: 0, duration: 0.001 }, 0);
+      });
+
+      // ---------- Scene 1 (0.0–1.0s): the mark draws itself centred, then settles ----------
+      var DRAW_Y = 310; // drawn at the vertical centre of the content area, then rises to the lockup
+      var SETTLE_SCALE = 200 / 280;
+
+      tl.fromTo(mark, { y: DRAW_Y, scale: 1 }, { y: 0, scale: SETTLE_SCALE, duration: 0.34, ease: "power3.inOut" }, 0.54);
+
+      // plate ring from 12 o'clock
+      tl.fromTo(ring, { strokeDashoffset: ringLen + 40 }, { strokeDashoffset: 0, duration: 0.36, ease: "power2.out" }, 0.04);
+      // then fork and knife
+      tl.fromTo(fork, { strokeDashoffset: forkLen + 40 }, { strokeDashoffset: 0, duration: 0.26, ease: "power2.out" }, 0.28);
+      tl.fromTo(knife, { strokeDashoffset: knifeLen + 40 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, 0.28);
+      tl.fromTo(handle, { strokeDashoffset: handleLen + 40 }, { strokeDashoffset: 0, duration: 0.24, ease: "power2.out" }, 0.33);
+      // then the gold centre fills out from its middle
+      tl.fromTo(
+        centre,
+        { scale: 0, svgOrigin: "256 276" },
+        { scale: 1, svgOrigin: "256 276", duration: 0.32, ease: "power3.out" },
+        0.44
+      );
+
+      // the wordmark lands below the settled mark on the 1.0s hit
+      tl.fromTo(wordmark, { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.26, ease: "power3.out" }, 0.76);
+
+      // ---------- Scene 2 (1.0–2.5s): the promise, per word ----------
+      Array.prototype.forEach.call(words1, function (w, k) {
+        tl.fromTo(w, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 1.5 + k * 0.08);
+      });
+      Array.prototype.forEach.call(words2, function (w, k) {
+        tl.fromTo(w, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 2.0 + k * 0.08);
+      });
+
+      // ---------- Scene 3 (2.5–6.0s): CTA pill, mono line types on, hold, fade ----------
+      tl.fromTo(cta, { scale: 0, opacity: 0, y: 14 }, { scale: 1, opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 2.5);
+
+      // caret appears at the line start, then rides each typed character
+      var CARET_ON = 2.8;
+      var TYPE_AT = 3.0;
+      var STEP = 0.03;
+      tl.to(lead.caret, { opacity: 1, duration: 0.001 }, CARET_ON);
+      cells.forEach(function (c, k) {
+        var t = TYPE_AT + k * STEP;
+        tl.fromTo(c.el, { opacity: 0 }, { opacity: 1, duration: 0.001, ease: "none" }, t);
+        tl.to(carets[k], { opacity: 0, duration: 0.001 }, t);
+        tl.to(c.caret, { opacity: 1, duration: 0.001 }, t);
+      });
+      var typedEnd = TYPE_AT + cells.length * STEP;
+      var lastCaret = cells[cells.length - 1].caret;
+      tl.to(lastCaret, { opacity: 0, duration: 0.001 }, typedEnd + 0.24);
+      tl.to(lastCaret, { opacity: 1, duration: 0.001 }, typedEnd + 0.48);
+      tl.to(lastCaret, { opacity: 0, duration: 0.001 }, typedEnd + 0.72);
+
+      // hold still — then the whole card fades out over the last 0.4s (final frame)
+      tl.fromTo(fade, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.inOut" }, 5.6);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines[FRAME] = tl;
+    })();
+  </script>
+</template>

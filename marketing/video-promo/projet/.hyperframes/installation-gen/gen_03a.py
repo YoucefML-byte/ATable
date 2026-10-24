@@ -1,0 +1,634 @@
+# Plan 03a « La salle » (8 s + 0,5 s de fondu, three.js) — retour au vendredi soir dans un restaurant 3D
+# (diorama, cel-shading, contours encre) : vue de dessus = le plan de salle qui prend vie, plongée 3D,
+# la table 4, un client prend son téléphone et scanne la plaque ; la caméra entre dans l'écran.
+# Voix (temps plan) : « Retour au vendredi soir. » 0.34–1.6 · « À la table quatre, » 2.14–2.95 ·
+# « un client sort son téléphone, » 3.45–4.6 · « et vise la plaque. » 4.99–5.8
+import os, sys
+from common import FONTS, INK, CREAM, CREAM2, GREEN, GOLD, GOLD_DEEP
+
+P = "03a-la-salle"
+D = 8.5
+OUT = sys.argv[1]
+QR = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "qr_rows.txt")).read().strip()
+
+JS = r"""
+(function () {
+  var ID = "__ID__", D = __D__, W = 1920, H = 1080;
+  var INK = "#0C1613", CREAM = "#F4EFE6", CREAM2 = "#E7DCC6", GREEN = "#1F4D3A", GREEN_DEEP = "#173B2D",
+      GREEN_LITE = "#2A6049", GOLD = "#E0A33A", GOLD_DEEP = "#B9822A", ROSE = "#D9A193", SILVER = "#C3C8CD",
+      PLATE_GOLD = "#D6AE57", OK_GREEN = "#047857";
+  var QR = "__QR__".split(",");
+  function $(s) { return document.getElementById(ID + "-" + s); }
+
+  /* ================= temps : tout est une fonction pure de t (rendu identique à chaque seek) ================= */
+  function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+  function lerp(a, b, k) { return a + (b - a) * k; }
+  function seg(t, a, b) { return clamp((t - a) / (b - a), 0, 1); }
+  function ease(k) { k = clamp(k, 0, 1); return k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
+  function easeOut(k) { k = clamp(k, 0, 1); return 1 - Math.pow(1 - k, 3); }
+  function bump(t, a, b, r) { return ease(seg(t, a, a + r)) * (1 - ease(seg(t, b - r, b))); }
+  function monotone(xs, ys) {  // interpolation cubique monotone (Fritsch–Carlson) : vitesse continue, sans arrêts
+    var n = xs.length, d = [], m = [0], i;
+    for (i = 0; i < n - 1; i++) d.push((ys[i + 1] - ys[i]) / (xs[i + 1] - xs[i]));
+    for (i = 1; i < n - 1; i++) m.push(d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2);
+    m.push(0);
+    for (i = 0; i < n - 1; i++) {
+      if (d[i] === 0) { m[i] = m[i + 1] = 0; continue; }
+      var a = m[i] / d[i], b = m[i + 1] / d[i], s = a * a + b * b;
+      if (s > 9) { var q = 3 / Math.sqrt(s); m[i] = q * a * d[i]; m[i + 1] = q * b * d[i]; }
+    }
+    return function (x) {
+      if (x <= xs[0]) return ys[0];
+      if (x >= xs[n - 1]) return ys[n - 1];
+      var j = 0; while (x > xs[j + 1]) j++;
+      var h = xs[j + 1] - xs[j], u = (x - xs[j]) / h, u2 = u * u, u3 = u2 * u;
+      return (2 * u3 - 3 * u2 + 1) * ys[j] + (u3 - 2 * u2 + u) * h * m[j] + (-2 * u3 + 3 * u2) * ys[j + 1] + (u3 - u2) * h * m[j + 1];
+    };
+  }
+  var V = function (x, y, z) { return new THREE.Vector3(x, y, z); };
+
+  /* ================= rendu ================= */
+  var cv = $("cv");
+  var renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(1);
+  renderer.setSize(W, H, false);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color(GREEN);
+  var camera = new THREE.PerspectiveCamera(32, W / H, 0.01, 120);
+
+  scene.add(new THREE.HemisphereLight(0xfff4e2, 0xb9a57e, 1.25));
+  var sun = new THREE.DirectionalLight(0xffffff, 1.9);
+  sun.position.set(5, 10, 7);
+  scene.add(sun);
+
+  // cel-shading : 3 paliers
+  var gm = new THREE.DataTexture(new Uint8Array([118, 118, 118, 255, 196, 196, 196, 255, 255, 255, 255, 255]), 3, 1);
+  gm.minFilter = THREE.NearestFilter; gm.magFilter = THREE.NearestFilter; gm.needsUpdate = true;
+  var MATS = {};
+  function toon(c) { return MATS["t" + c] || (MATS["t" + c] = new THREE.MeshToonMaterial({ color: c, gradientMap: gm })); }
+  function flat(c) { return MATS["f" + c] || (MATS["f" + c] = new THREE.MeshBasicMaterial({ color: c })); }
+
+  // contour encre à épaisseur constante à l'écran (coque inversée extrudée en espace clip)
+  var OUTLINE = new THREE.ShaderMaterial({
+    uniforms: { thickness: { value: 2.1 }, resolution: { value: new THREE.Vector2(W, H) }, color: { value: new THREE.Color(INK) } },
+    vertexShader: [
+      "attribute vec3 onormal;",
+      "uniform float thickness; uniform vec2 resolution;",
+      "void main() {",
+      "  vec4 clip = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "  vec3 nv = normalize(normalMatrix * onormal);",
+      "  vec2 d = (projectionMatrix * vec4(nv, 0.0)).xy;",
+      "  float l = length(d); d = l > 1e-5 ? d / l : vec2(0.0);",
+      "  clip.xy += d * thickness * 2.0 / resolution * clip.w;",
+      "  gl_Position = clip;",
+      "}"].join("\n"),
+    fragmentShader: "uniform vec3 color; void main() { gl_FragColor = vec4(color, 1.0); }",
+    side: THREE.BackSide
+  });
+  function onormal(geo) {
+    var smooth = !/Box|Cylinder|Cone|Plane/.test(geo.type);
+    var p = geo.getAttribute("position"), n = geo.getAttribute("normal"), arr = new Float32Array(p.count * 3);
+    geo.computeBoundingBox();
+    var c = new THREE.Vector3(), h = new THREE.Vector3(), v = new THREE.Vector3();
+    geo.boundingBox.getCenter(c); geo.boundingBox.getSize(h).multiplyScalar(0.5);
+    for (var i = 0; i < p.count; i++) {
+      if (smooth) v.set(n.getX(i), n.getY(i), n.getZ(i));
+      else v.set((p.getX(i) - c.x) / Math.max(h.x, 1e-4), (p.getY(i) - c.y) / Math.max(h.y, 1e-4), (p.getZ(i) - c.z) / Math.max(h.z, 1e-4));
+      v.normalize(); arr[3 * i] = v.x; arr[3 * i + 1] = v.y; arr[3 * i + 2] = v.z;
+    }
+    geo.setAttribute("onormal", new THREE.BufferAttribute(arr, 3));
+  }
+  function mesh(geo, mat, parent, outline) {
+    var m = new THREE.Mesh(geo, mat);
+    if (outline !== false) {
+      if (!geo.getAttribute("onormal")) onormal(geo);
+      m.add(new THREE.Mesh(geo, OUTLINE));
+    }
+    (parent || scene).add(m);
+    return m;
+  }
+  var UP = V(0, 1, 0), _d = V(0, 0, 0);
+  function link(m, a, b) {  // oriente un cylindre/capsule (axe Y) entre deux points
+    m.position.copy(a).add(b).multiplyScalar(0.5);
+    _d.copy(b).sub(a);
+    if (_d.lengthSq() > 1e-10) m.quaternion.setFromUnitVectors(UP, _d.normalize());
+  }
+
+  /* ================= textures dessinées (synchrones) ================= */
+  function canvas(w, h) { var c = document.createElement("canvas"); c.width = w; c.height = h; return c; }
+  function tex(c) { var t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; }
+  function rr(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+  function drawQR(g, x, y, s) {
+    var m = s / 29;
+    g.fillStyle = CREAM; g.fillRect(x - 2 * m, y - 2 * m, s + 4 * m, s + 4 * m);
+    g.fillStyle = INK;
+    for (var r = 0; r < 29; r++) for (var c = 0; c < 29; c++) if (QR[r].charAt(c) === "1") g.fillRect(x + c * m, y + r * m, m + 0.4, m + 0.4);
+  }
+  var MONO = '"JetBrains Mono", monospace';
+  function drawPlate(g, x, y, w, h, num) {  // la plaque dorée vue de dessus (même dessin que 02a–02c)
+    var k = w / 560;
+    rr(g, x, y, w, h, 26 * k); g.fillStyle = "#D6AE57"; g.fill();
+    g.save(); rr(g, x, y, w, h, 26 * k); g.clip();
+    g.fillStyle = "#E4C373"; g.beginPath(); g.moveTo(x + w * 0.09, y); g.lineTo(x + w * 0.27, y); g.lineTo(x + w * 0.12, y + h); g.lineTo(x - w * 0.06, y + h); g.fill();
+    g.fillStyle = "#F2D893"; g.beginPath(); g.moveTo(x + w * 0.31, y); g.lineTo(x + w * 0.34, y); g.lineTo(x + w * 0.19, y + h); g.lineTo(x + w * 0.16, y + h); g.fill();
+    g.fillStyle = "#C79E48"; g.beginPath(); g.moveTo(x + w * 0.8, y); g.lineTo(x + w, y); g.lineTo(x + w, y + h); g.lineTo(x + w * 0.66, y + h); g.fill();
+    g.lineWidth = 10 * k; g.strokeStyle = "#A9832F"; rr(g, x + 5 * k, y + 5 * k, w - 10 * k, h - 10 * k, 22 * k); g.stroke();
+    g.restore();
+    g.lineWidth = Math.max(2, 4 * k); g.strokeStyle = INK; rr(g, x, y, w, h, 26 * k); g.stroke();
+    var sw = 220 * k, sh = 250 * k, sx = x + (w - sw) / 2, sy = y + 34 * k;
+    rr(g, sx, sy, sw, sh, 14 * k); g.fillStyle = CREAM; g.fill(); g.lineWidth = Math.max(2, 3 * k); g.strokeStyle = INK; g.stroke();
+    drawQR(g, sx + 25 * k, sy + 20 * k, 170 * k);
+    g.fillStyle = INK; g.font = "700 " + Math.round(20 * k) + "px " + MONO; g.textAlign = "center"; g.textBaseline = "middle";
+    g.fillText("TABLE " + num, x + w / 2, sy + 222 * k);
+    g.fillStyle = "#584313"; g.font = "700 " + Math.round(15 * k) + "px " + MONO; g.fillText("A T A B L E", x + w / 2, y + 312 * k);
+  }
+
+  // parquet
+  var fc = canvas(1024, 1024), fg = fc.getContext("2d");
+  fg.fillStyle = CREAM; fg.fillRect(0, 0, 1024, 1024);
+  fg.fillStyle = "#E3D7C2";
+  for (var row = 0; row < 16; row++) {
+    fg.fillRect(0, row * 64, 1024, 3);
+    var off = (row * 397) % 256;
+    for (var col = -1; col < 5; col++) fg.fillRect(off + col * 256, row * 64, 3, 64);
+  }
+  var floorTex = tex(fc); floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping; floorTex.repeat.set(5, 3.5);
+
+  // vitres de nuit
+  var wc = canvas(256, 200), wg = wc.getContext("2d");
+  wg.fillStyle = GREEN_DEEP; wg.fillRect(0, 0, 256, 200);
+  wg.fillStyle = "#24503F"; wg.fillRect(0, 120, 256, 80);
+  var lights = [[20, 70], [44, 70], [20, 96], [92, 50], [116, 50], [92, 76], [170, 84], [194, 84], [218, 60], [218, 110], [150, 130], [60, 140]];
+  wg.fillStyle = GOLD; lights.forEach(function (p) { wg.fillRect(p[0], p[1], 12, 14); });
+  var winTex = tex(wc);
+
+  // enseigne (logo Atable)
+  var sc = canvas(512, 512), sg = sc.getContext("2d");
+  rr(sg, 0, 0, 512, 512, 112); sg.fillStyle = GREEN; sg.fill();
+  sg.lineWidth = 28; sg.strokeStyle = "#FFFFFF"; sg.beginPath(); sg.arc(256, 276, 132, 0, Math.PI * 2); sg.stroke();
+  sg.fillStyle = GOLD; sg.beginPath(); sg.arc(256, 276, 74, 0, Math.PI * 2); sg.fill();
+  sg.lineWidth = 22; sg.lineCap = "round"; sg.lineJoin = "round";
+  sg.stroke(new Path2D("M118 96v84a30 30 0 0 0 60 0V96M148 96v300M394 96c-34 18-46 64-46 110h46v190"));
+  var signTex = tex(sc);
+  var wmc = canvas(1024, 192), wmTex = tex(wmc);
+  function drawWordmark() {
+    var g = wmc.getContext("2d");
+    g.fillStyle = GREEN; g.fillRect(0, 0, 1024, 192);
+    g.fillStyle = CREAM; g.font = "700 104px " + MONO; g.textAlign = "center"; g.textBaseline = "middle";
+    g.fillText("A T A B L E", 512, 100);
+    wmTex.needsUpdate = true;
+  }
+  drawWordmark();
+
+  // écran de la tablette (salle)
+  var tc = canvas(640, 400), tg = tc.getContext("2d");
+  tg.fillStyle = "#F6F7F9"; tg.fillRect(0, 0, 640, 400);
+  tg.fillStyle = "#1A2420"; tg.fillRect(0, 0, 110, 400);
+  [["#B45309", 130], ["#1D4ED8", 300], ["#047857", 470]].forEach(function (c) {
+    tg.fillStyle = c[0]; tg.fillRect(c[1], 26, 150, 10);
+    for (var i = 0; i < 3; i++) { tg.fillStyle = "#FFFFFF"; tg.fillRect(c[1], 50 + i * 110, 150, 96); tg.strokeStyle = "#D8DCE0"; tg.lineWidth = 3; tg.strokeRect(c[1], 50 + i * 110, 150, 96); tg.fillStyle = c[0]; tg.fillRect(c[1] + 12, 120 + i * 110, 60, 14); }
+  });
+  var tabTex = tex(tc);
+
+  // plaques des 6 tables
+  var plateCanv = [], plateTex = [];
+  function drawPlates() {
+    for (var i = 0; i < 6; i++) {
+      var c = plateCanv[i] || (plateCanv[i] = canvas(560, 360));
+      var g = c.getContext("2d"); g.clearRect(0, 0, 560, 360);
+      drawPlate(g, 0, 0, 560, 360, i + 1);
+      if (plateTex[i]) plateTex[i].needsUpdate = true; else plateTex[i] = tex(c);
+    }
+  }
+  drawPlates();
+
+  // écran du téléphone (viseur de l'appareil photo), redessiné à chaque image
+  var pc = canvas(512, 1100), pg = pc.getContext("2d"), phoneTex = tex(pc);
+
+  /* ================= décor : salle en diorama ================= */
+  var FX0 = -6.6, FX1 = 6.6, FZ0 = -4.6, FZ1 = 4.6;
+  var slab = new THREE.Mesh(new THREE.BoxGeometry(FX1 - FX0 + 0.15, 0.3, FZ1 - FZ0 + 0.15),
+    [flat(GREEN_DEEP), flat(GREEN_DEEP), new THREE.MeshBasicMaterial({ map: floorTex }), flat(GREEN_DEEP), flat(GREEN_DEEP), flat(GREEN_DEEP)]);
+  slab.position.set((FX0 + FX1) / 2 - 0.075, -0.15, (FZ0 + FZ1) / 2 - 0.075);
+  scene.add(slab);
+  function box(w, h, d, mat, x, y, z, parent, outline) { var m = mesh(new THREE.BoxGeometry(w, h, d), mat, parent, outline); m.position.set(x, y, z); return m; }
+  // murs (fond + gauche), soubassement vert, cimaise crème
+  box(FX1 - FX0 + 0.3, 3.0, 0.15, flat(CREAM2), 0, 1.5, FZ0 - 0.075, null, true);
+  box(0.15, 3.0, FZ1 - FZ0 + 0.15, flat(CREAM2), FX0 - 0.075, 1.5, (FZ0 + FZ1) / 2 - 0.075, null, true);
+  box(FX1 - FX0, 1.0, 0.03, flat(GREEN), 0, 0.5, FZ0 + 0.015, null, false);
+  box(0.03, 1.0, FZ1 - FZ0, flat(GREEN), FX0 + 0.015, 0.5, 0, null, false);
+  box(FX1 - FX0, 0.05, 0.06, flat(CREAM), 0, 1.02, FZ0 + 0.03, null, false);
+  box(0.06, 0.05, FZ1 - FZ0, flat(CREAM), FX0 + 0.03, 1.02, 0, null, false);
+  // fenêtres de nuit
+  [-2.6, 1.9].forEach(function (x) {
+    box(1.56, 1.26, 0.05, flat(CREAM), x, 1.95, FZ0 + 0.03, null, true);
+    var pane = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 1.1), new THREE.MeshBasicMaterial({ map: winTex }));
+    pane.position.set(x, 1.95, FZ0 + 0.06); scene.add(pane);
+    box(0.05, 1.1, 0.03, flat(CREAM), x, 1.95, FZ0 + 0.075, null, false);
+    box(1.4, 0.05, 0.03, flat(CREAM), x, 1.95, FZ0 + 0.075, null, false);
+  });
+  // enseigne Atable
+  var sign = new THREE.Mesh(new THREE.PlaneGeometry(0.85, 0.85), new THREE.MeshBasicMaterial({ map: signTex, transparent: true }));
+  sign.position.set(-0.35, 2.05, FZ0 + 0.04); scene.add(sign);
+  var wm = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.28), new THREE.MeshBasicMaterial({ map: wmTex }));
+  wm.position.set(-0.35, 1.38, FZ0 + 0.04); scene.add(wm);
+  // plantes
+  function plant(x, z, s) {
+    var g = new THREE.Group(); g.position.set(x, 0, z); g.scale.setScalar(s); scene.add(g);
+    var pot = mesh(new THREE.CylinderGeometry(0.22, 0.17, 0.42, 20), toon(CREAM2), g); pot.position.y = 0.21;
+    [[0, 0.78, 0, 0.32], [0.16, 0.62, 0.08, 0.24], [-0.14, 0.66, -0.06, 0.23], [0.02, 1.02, -0.04, 0.2]].forEach(function (b) {
+      var f = mesh(new THREE.IcosahedronGeometry(b[3], 1), toon(GREEN_LITE), g); f.position.set(b[0], b[1], b[2]);
+    });
+  }
+  plant(-6.05, -4.05, 1.15); plant(-6.1, 0.1, 0.9); plant(6.05, -0.6, 1.0);
+
+  /* ================= comptoir, étagère, tablette du personnel ================= */
+  var counter = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.02, 0.6), [toon(GREEN), toon(GREEN), toon(CREAM2), toon(GREEN), toon(GREEN), toon(GREEN)]);
+  onormal(counter.geometry); counter.add(new THREE.Mesh(counter.geometry, OUTLINE));
+  counter.position.set(4.9, 0.51, -3.45); scene.add(counter);
+  box(2.2, 0.04, 0.25, toon(CREAM2), 4.9, 1.75, FZ0 + 0.13);
+  for (var b = 0; b < 7; b++) {
+    var bt = mesh(new THREE.CylinderGeometry(0.04, 0.045, 0.26, 12), toon([GREEN_LITE, GOLD, ROSE, CREAM, GREEN_LITE, GOLD_DEEP, SILVER][b]));
+    bt.position.set(3.95 + b * 0.3, 1.9, FZ0 + 0.13);
+  }
+  var tablet = new THREE.Group(); tablet.position.set(4.35, 1.14, -3.35); tablet.rotation.set(0.55, Math.PI, 0); scene.add(tablet);
+  box(0.36, 0.25, 0.018, toon(INK), 0, 0, 0, tablet);
+  var tscreen = new THREE.Mesh(new THREE.PlaneGeometry(0.33, 0.21), new THREE.MeshBasicMaterial({ map: tabTex }));
+  tscreen.position.z = 0.011; tablet.add(tscreen);
+  box(0.04, 0.16, 0.04, toon(INK), 4.35, 1.06, -3.32);
+
+  /* ================= tables, chaises, plaques, couverts, suspensions ================= */
+  var TABLES = [[-3.4, -1.6, -1], [0, -1.6, 1], [3.4, -1.6, -1], [-3.4, 1.6, 1], [0, 1.6, -1], [3.4, 1.6, 1]];  // x, z, côté plaque
+  var SERVED = [true, true, true, false, true, true];
+  var platePos = [];
+  var CHAIR_SEAT = new THREE.BoxGeometry(0.42, 0.05, 0.42), CHAIR_BACK = new THREE.BoxGeometry(0.42, 0.3, 0.045), CHAIR_LEG = new THREE.BoxGeometry(0.035, 0.45, 0.035);
+  var DISH = new THREE.CylinderGeometry(0.11, 0.1, 0.014, 28), FOOD = new THREE.SphereGeometry(0.055, 16, 10), GLASS = new THREE.CylinderGeometry(0.032, 0.028, 0.1, 16);
+  var SHADE = new THREE.ConeGeometry(0.2, 0.17, 28), BULB = new THREE.SphereGeometry(0.065, 16, 10), CORD = new THREE.CylinderGeometry(0.006, 0.006, 1.2, 6);
+  var PLATE = new THREE.BoxGeometry(0.24, 0.012, 0.155);
+  function chair(x, z, side) {  // side +1 : chaise devant la table (dossier vers +z)
+    var g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+    mesh(CHAIR_SEAT, toon(GREEN), g).position.set(0, 0.45, 0);
+    mesh(CHAIR_BACK, toon(GREEN), g).position.set(0, 0.625, side * 0.19);
+    [[-0.18, -0.18], [0.18, -0.18], [-0.18, 0.18], [0.18, 0.18]].forEach(function (l) { mesh(CHAIR_LEG, toon(GREEN_DEEP), g).position.set(l[0], 0.225, l[1]); });
+  }
+  TABLES.forEach(function (T, i) {
+    var x = T[0], z = T[1];
+    box(1.3, 0.04, 0.8, toon(CREAM2), x, 0.73, z);
+    [[-0.58, -0.33], [0.58, -0.33], [-0.58, 0.33], [0.58, 0.33]].forEach(function (l) {
+      var leg = mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.71, 10), toon(GREEN_DEEP)); leg.position.set(x + l[0], 0.355, z + l[1]);
+    });
+    [-1, 1].forEach(function (side) { [-1, 1].forEach(function (slot) {
+      if (i === 3 && side > 0 && slot < 0) return;  // table 4 : pas de chaise vide entre la caméra et le client
+      chair(x + slot * 0.35, z + side * 0.57, side);
+    }); });
+    // plaque QR au bout de la table
+    var px = x + T[2] * 0.49;
+    var pm = new THREE.Mesh(PLATE, [toon(PLATE_GOLD), toon(PLATE_GOLD), new THREE.MeshBasicMaterial({ map: plateTex[i] }), toon(PLATE_GOLD), toon(PLATE_GOLD), toon(PLATE_GOLD)]);
+    onormal(PLATE); pm.add(new THREE.Mesh(PLATE, OUTLINE));
+    pm.position.set(px, 0.756, z); if (T[2] < 0) pm.rotation.y = Math.PI; scene.add(pm);
+    platePos.push(V(px, 0.762, z));
+    // couverts : servis ou non
+    if (SERVED[i]) {
+      [[-0.32, -1], [0.32, -1], [-0.32, 1], [0.32, 1]].forEach(function (d, k) {
+        if ((i + k) % 4 === 3) return;
+        var dx = x + d[0] * (T[2] > 0 ? 0.85 : 0.85) - T[2] * 0.06, dz = z + d[1] * 0.22;
+        mesh(DISH, toon(CREAM), null).position.set(dx, 0.757, dz);
+        mesh(FOOD, toon([GOLD, GREEN_LITE, ROSE, GOLD_DEEP][(i + k) % 4]), null).position.set(dx, 0.775, dz);
+        mesh(GLASS, toon("#D6DADE"), null).position.set(dx + 0.13 * -T[2], 0.8, dz - d[1] * 0.1);
+      });
+    } else {
+      mesh(GLASS, toon("#D6DADE"), null).position.set(x - 0.32, 0.8, z + 0.1);
+      mesh(GLASS, toon("#D6DADE"), null).position.set(x + 0.05, 0.8, z - 0.1);
+    }
+    // suspension
+    mesh(SHADE, toon(GOLD)).position.set(x, 2.2, z);
+    mesh(BULB, flat("#FFF4D6"), null, false).position.set(x, 2.1, z);
+    var cord = new THREE.Mesh(CORD, flat(INK)); cord.position.set(x, 2.88, z); scene.add(cord);
+  });
+
+  /* ================= personnages ================= */
+  var TORSO = new THREE.LatheGeometry([V(0, 0, 0), V(0.12, 0, 0), V(0.165, 0.06, 0), V(0.178, 0.2, 0), V(0.168, 0.34, 0), V(0.125, 0.44, 0), V(0.05, 0.485, 0), V(0, 0.49, 0)].map(function (p) { return new THREE.Vector2(p.x, p.y); }), 20);
+  var HEAD = new THREE.SphereGeometry(0.115, 24, 16), NECK = new THREE.CylinderGeometry(0.042, 0.042, 0.09, 12);
+  var HAIRCAP = new THREE.SphereGeometry(0.123, 24, 12, 0, Math.PI * 2, 0, Math.PI * 0.52);
+  var BUN = new THREE.SphereGeometry(0.055, 14, 10), LONG = new THREE.CylinderGeometry(0.108, 0.1, 0.2, 18);
+  var EYE = new THREE.SphereGeometry(0.0125, 8, 6);
+  var UPPER = new THREE.CapsuleGeometry(0.045, 0.27, 4, 10), FORE = new THREE.CapsuleGeometry(0.04, 0.25, 4, 10), HAND = new THREE.SphereGeometry(0.048, 12, 8);
+  var THIGH = new THREE.CapsuleGeometry(0.066, 0.4, 4, 10), SHIN = new THREE.CapsuleGeometry(0.056, 0.42, 4, 10), SHOE = new THREE.BoxGeometry(0.1, 0.07, 0.18);
+  var LEGSTAND = new THREE.CapsuleGeometry(0.07, 0.72, 4, 10);
+  var L1 = 0.27, L2 = 0.25;
+
+  function person(o) {
+    var root = new THREE.Group(); scene.add(root);
+    var spine = new THREE.Group(); root.add(spine);
+    mesh(TORSO, toon(o.shirt), spine);
+    if (o.apron) { var ap = mesh(new THREE.CylinderGeometry(0.182, 0.17, 0.3, 20, 1, false, -0.9, 1.8), toon(o.apron), spine); ap.position.set(0, 0.16, 0); }
+    var neck = mesh(NECK, toon(o.skin), spine, false); neck.position.y = 0.5;
+    var hp = new THREE.Group(); hp.position.y = 0.52; spine.add(hp);
+    var head = mesh(HEAD, toon(o.skin), hp); head.position.y = 0.11;
+    var cap = mesh(HAIRCAP, toon(o.hair), hp); cap.position.y = 0.115; cap.rotation.x = -0.42;
+    if (o.style === "bun") mesh(BUN, toon(o.hair), hp).position.set(0, 0.215, -0.08);
+    if (o.style === "long") mesh(LONG, toon(o.hair), hp).position.set(0, 0.06, -0.05);
+    [-1, 1].forEach(function (s) { mesh(EYE, flat(INK), hp, false).position.set(s * 0.04, 0.125, 0.106); });
+    var legs = [];
+    if (o.seated) {
+      [-1, 1].forEach(function (s) {
+        link(mesh(THIGH, toon(o.pants), root), V(s * 0.085, 0.02, 0.02), V(s * 0.09, 0.0, 0.42));
+        link(mesh(SHIN, toon(o.pants), root), V(s * 0.09, 0.0, 0.42), V(s * 0.095, -0.42, 0.45));
+        mesh(SHOE, toon(INK), root).position.set(s * 0.095, -0.44, 0.49);
+      });
+    } else {
+      [-1, 1].forEach(function (s) {
+        var piv = new THREE.Group(); piv.position.set(s * 0.09, 0.02, 0); root.add(piv);
+        mesh(LEGSTAND, toon(o.pants), piv).position.y = -0.43;
+        mesh(SHOE, toon(INK), piv).position.set(0, -0.88, 0.04);
+        legs.push(piv);
+      });
+    }
+    var arms = {};
+    [["L", 1], ["R", -1]].forEach(function (a) {
+      arms[a[0]] = { s: a[1], up: mesh(UPPER, toon(o.shirt)), fo: mesh(FORE, toon(o.sleeve || o.skin)), hand: mesh(HAND, toon(o.skin)) };
+    });
+    return { o: o, root: root, spine: spine, hp: hp, legs: legs, arms: arms };
+  }
+  var _S = V(0, 0, 0), _T = V(0, 0, 0), _E = V(0, 0, 0), _P = V(0, 0, 0), _dir = V(0, 0, 0), _pp = V(0, 0, 0);
+  function poseArm(p, side, targetWorld, poleLocal) {
+    var a = p.arms[side];
+    _S.set(a.s * 0.172, 0.405, 0.0); p.spine.localToWorld(_S);
+    _P.copy(poleLocal); p.root.localToWorld(_P).sub(p.root.getWorldPosition(_pp));
+    _dir.copy(targetWorld).sub(_S);
+    var dist = clamp(_dir.length(), 0.05, L1 + L2 - 0.002); _dir.normalize();
+    _T.copy(_S).addScaledVector(_dir, dist);
+    var la = (L1 * L1 - L2 * L2 + dist * dist) / (2 * dist), h = Math.sqrt(Math.max(L1 * L1 - la * la, 0));
+    _pp.copy(_P).addScaledVector(_dir, -_P.dot(_dir)); if (_pp.lengthSq() < 1e-8) _pp.set(0, -1, 0); _pp.normalize();
+    _E.copy(_S).addScaledVector(_dir, la).addScaledVector(_pp, h);
+    link(a.up, _S, _E); link(a.fo, _E, _T); a.hand.position.copy(_T);
+  }
+  function localToWorld(p, x, y, z) { return p.root.localToWorld(V(x, y, z)); }
+
+  var SK = ["#F2CDB0", "#E0AC86", "#C68B62", "#9C6644", "#6F4A33"];
+  var HR = [INK, "#5A3A22", "#8C5A2B", "#C9A26A", "#3B2A1E"];
+  var SH = [GOLD, ROSE, SILVER, GREEN_LITE, CREAM2, GOLD_DEEP, "#4D6B8A", ROSE];
+  var PA = [INK, "#3E454C", GREEN_DEEP];
+  var STY = ["short", "bun", "long", "short", "long", "bald", "bun"];
+  // [table, côté (+1 devant / −1 derrière), place (−1 gauche / +1 droite), type de geste]
+  var SEATS = [[0, -1, -1, "talk"], [0, -1, 1, "drink"], [1, -1, -1, "drink"], [1, 1, 1, "talk"], [2, -1, 1, "talk"], [2, 1, -1, "drink"],
+               [4, -1, -1, "talk"], [4, -1, 1, "drink"], [4, 1, -1, "talk"], [5, -1, -1, "drink"], [5, 1, 1, "talk"]];
+  var diners = SEATS.map(function (s, k) {
+    var T = TABLES[s[0]];
+    var p = person({ seated: true, skin: SK[(k * 3) % 5], hair: HR[(k * 2 + 1) % 5], style: STY[k % 7], shirt: SH[k % 8], pants: PA[k % 3] });
+    p.root.position.set(T[0] + s[2] * 0.35, 0.475, T[1] + s[1] * 0.57); p.root.rotation.y = s[1] > 0 ? Math.PI : 0;
+    p.kind = s[3]; p.phase = k * 1.37; p.seat = s;
+    if (p.kind === "drink") { p.glass = mesh(GLASS, toon("#D6DADE")); }
+    return p;
+  });
+  // la table 4 : le client (devant, à droite, côté plaque) et son amie (derrière, à gauche)
+  var T4 = TABLES[3];
+  var hero = person({ seated: true, skin: SK[1], hair: INK, style: "short", shirt: GREEN_LITE, sleeve: GREEN_LITE, pants: INK });
+  hero.root.position.set(T4[0] + 0.35, 0.475, T4[1] + 0.57); hero.root.rotation.y = Math.PI;
+  var friend = person({ seated: true, skin: SK[3], hair: HR[0], style: "bun", shirt: GOLD, pants: GREEN_DEEP });
+  friend.root.position.set(T4[0] - 0.35, 0.475, T4[1] - 0.57);
+  // serveur (plateau) et serveuse au comptoir
+  var waiter = person({ seated: false, skin: SK[2], hair: HR[1], style: "short", shirt: CREAM, sleeve: CREAM, pants: INK, apron: GREEN });
+  var tray = new THREE.Group(); scene.add(tray);
+  mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.018, 28), toon(SILVER), tray);
+  mesh(DISH, toon(CREAM), tray).position.set(-0.06, 0.016, 0.03);
+  mesh(FOOD, toon(GOLD), tray).position.set(-0.06, 0.035, 0.03);
+  mesh(GLASS, toon("#D6DADE"), tray).position.set(0.1, 0.06, -0.06);
+  var staff = person({ seated: false, skin: SK[0], hair: HR[3], style: "long", shirt: GREEN, sleeve: GREEN, pants: INK, apron: CREAM2 });
+  staff.root.position.set(4.55, 0.93, -4.15);
+
+  // téléphone du client
+  var phone = new THREE.Group(); hero.root.add(phone);
+  var PHONE_BODY = new THREE.BoxGeometry(0.075, 0.009, 0.155);
+  mesh(PHONE_BODY, toon(INK), phone);
+  var pscreen = new THREE.Mesh(new THREE.PlaneGeometry(0.068, 0.146), new THREE.MeshBasicMaterial({ map: phoneTex }));
+  pscreen.rotation.x = -Math.PI / 2; pscreen.rotation.z = Math.PI; pscreen.position.y = 0.0048; phone.add(pscreen);
+
+  // faisceau de scan + onde sur la plaque
+  var beam = new THREE.Mesh(new THREE.ConeGeometry(1, 1, 4, 1, true), new THREE.MeshBasicMaterial({ color: GOLD, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+  scene.add(beam);
+  var ring = new THREE.Mesh(new THREE.RingGeometry(0.15, 0.162, 48), new THREE.MeshBasicMaterial({ color: GOLD, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }));
+  ring.rotation.x = -Math.PI / 2; scene.add(ring);
+
+  /* ================= chorégraphie ================= */
+  var Q = new THREE.Quaternion(), Q2 = new THREE.Quaternion(), EU = new THREE.Euler();
+  function qe(x, y, z) { EU.set(x, y, z, "YXZ"); return new THREE.Quaternion().setFromEuler(EU); }
+  // poses du téléphone, dans le repère du client (avant = +z, droite = −x)
+  var PH = [
+    { t: 3.85, p: V(-0.05, 0.2895, 0.23), q: qe(0, 0.35, 0) },
+    { t: 4.55, p: V(-0.03, 0.47, 0.29), q: qe(-1.0, 0.0, 0) },
+    { t: 4.85, p: V(-0.035, 0.475, 0.30), q: qe(-0.98, 0.0, 0) },
+    { t: 5.45, p: V(-0.12, 0.47, 0.5), q: qe(-0.35, 0.0, 0) }
+  ];
+  function phonePose(t) {
+    var i = 0; while (i < PH.length - 1 && t > PH[i + 1].t) i++;
+    if (t <= PH[0].t) { phone.position.copy(PH[0].p); phone.quaternion.copy(PH[0].q); return; }
+    if (i >= PH.length - 1) { phone.position.copy(PH[PH.length - 1].p); phone.quaternion.copy(PH[PH.length - 1].q); }
+    else { var k = ease(seg(t, PH[i].t, PH[i + 1].t)); phone.position.lerpVectors(PH[i].p, PH[i + 1].p, k); phone.quaternion.copy(PH[i].q).slerp(PH[i + 1].q, k); }
+    if (t > 5.45) { phone.position.x += 0.0012 * Math.sin(t * 7.1); phone.position.y += 0.0009 * Math.sin(t * 5.3 + 1); }  // tenue à la main
+  }
+  var HERO_HIP = hero.root.position.clone();
+  function heroW(x, y, z) { return V(HERO_HIP.x - x, HERO_HIP.y + y, HERO_HIP.z - z); }
+  var AIM = heroW(-0.12, 0.47, 0.5), N_AIM = V(0, Math.cos(-0.35), -Math.sin(-0.35)), TOP_AIM = V(0, -Math.sin(-0.35), -Math.cos(-0.35));
+  // caméra : vue de dessus (le plan de salle) -> plongée 3D -> table 4 -> par-dessus l'épaule -> dans l'écran
+  var CK = [
+    { t: 0.0, p: V(0.0, 19.5, 0.35), l: V(0, 0, 0.3), u: V(0, 0, -1), f: 34 },
+    { t: 0.9, p: V(0.4, 18.0, 1.9), l: V(0, 0, 0.25), u: V(0, 0.2, -1), f: 34 },
+    { t: 2.4, p: V(6.8, 6.6, 9.8), l: V(-0.8, 0.5, 0.2), u: V(0, 1, 0), f: 30 },
+    { t: 3.7, p: V(-0.5, 2.35, 5.0), l: V(-3.15, 0.92, 1.85), u: V(0, 1, 0), f: 30 },
+    { t: 5.0, p: V(-2.15, 1.75, 2.95), l: V(-2.98, 0.88, 1.7), u: V(0, 1, 0), f: 32 },
+    { t: 6.2, p: AIM.clone().addScaledVector(N_AIM, 0.36).add(V(0.3, 0.12, 0.04)), l: AIM.clone(), u: V(0, 0.75, -0.66), f: 32 },
+    { t: 7.9, p: AIM.clone().addScaledVector(N_AIM, 0.072), l: AIM.clone(), u: TOP_AIM.clone(), f: 32 }
+  ];
+  var camU = monotone(CK.map(function (k) { return k.t; }), CK.map(function (k, i) { return i / (CK.length - 1); }));
+  var cPos = new THREE.CatmullRomCurve3(CK.map(function (k) { return k.p; }), false, "centripetal");
+  var cLook = new THREE.CatmullRomCurve3(CK.map(function (k) { return k.l; }), false, "centripetal");
+  var cUp = new THREE.CatmullRomCurve3(CK.map(function (k) { return k.u.clone().normalize(); }), false, "catmullrom");
+  var _look = V(0, 0, 0), _up = V(0, 0, 0);
+
+  function seatedIdle(p, t) {
+    var ph = p.phase;
+    p.spine.rotation.x = 0.06 + 0.025 * Math.sin(t * 1.3 + ph);
+    p.spine.rotation.z = 0.025 * Math.sin(t * 0.9 + ph);
+    p.hp.rotation.y = 0.35 * Math.sin(t * 0.6 + ph) ;
+    p.hp.rotation.x = 0.06 * Math.sin(t * 2.3 + ph * 2);
+    p.root.updateMatrixWorld(true);
+    var L = localToWorld(p, 0.16, 0.29, 0.33), R = localToWorld(p, -0.16, 0.29, 0.33);
+    if (p.kind === "talk") {
+      var g = 0.5 + 0.5 * Math.sin(t * 2.1 + ph);
+      R = localToWorld(p, -0.2, 0.3 + 0.13 * g, 0.3 - 0.04 * g);
+    } else {
+      var w = bump(((t + ph * 1.7) % 6.0), 1.2, 3.0, 0.55);
+      var rest = localToWorld(p, -0.13, 0.33, 0.36), mouth = localToWorld(p, -0.05, 0.6, 0.17);
+      R = rest.clone().lerp(mouth, w);
+      if (p.glass) p.glass.position.copy(R).add(V(0, 0.035, 0));
+    }
+    poseArm(p, "L", L, V(1, -1, -0.4));
+    poseArm(p, "R", R, V(-1, -1, -0.4));
+  }
+
+  var fontsDone = false;
+  function draw(t) {
+    if (!fontsDone && document.fonts && document.fonts.check('700 40px "JetBrains Mono"')) { drawPlates(); drawWordmark(); fontsDone = true; }
+
+    // --- convives
+    diners.forEach(function (p) { seatedIdle(p, t); });
+    friend.phase = 2.2; friend.kind = "talk";
+    seatedIdle(friend, t);
+    friend.hp.rotation.y = lerp(0.15 * Math.sin(t * 0.8), -0.3, ease(seg(t, 4.0, 4.6)));
+
+    // --- le client de la table 4
+    var lean = lerp(0.05, 0.2, ease(seg(t, 4.75, 5.45)));
+    hero.spine.rotation.x = lean + 0.015 * Math.sin(t * 1.4);
+    hero.spine.rotation.z = 0;
+    var look = t < 3.35 ? 0 : 1;
+    hero.hp.rotation.y = lerp(0.12 * Math.sin(t * 1.1) + 0.05, 0, ease(seg(t, 3.25, 3.6)));
+    hero.hp.rotation.x = lerp(0.04, 0.5, ease(seg(t, 3.3, 3.75))) - 0.22 * ease(seg(t, 4.0, 4.55)) + 0.25 * ease(seg(t, 4.85, 5.4));
+    phonePose(t);
+    hero.root.updateMatrixWorld(true);
+    var grip = phone.localToWorld(V(0.0, -0.052, -0.06));  // la main sous le téléphone, jamais à travers l'écran
+    var restR = localToWorld(hero, -0.16, 0.29, 0.33);
+    var R = t < 3.35 ? restR : (t < 3.85 ? restR.clone().lerp(grip, ease(seg(t, 3.35, 3.85))) : grip);
+    poseArm(hero, "R", R, V(-1, -1.2, -0.3));
+    poseArm(hero, "L", localToWorld(hero, 0.15, 0.29, 0.34), V(1, -1, -0.4));
+
+    // --- serveur : traverse l'allée avec son plateau
+    var wk = ease(seg(t, 0.0, 6.0)), wx = lerp(5.6, -1.4, wk);
+    var dist = (5.6 - wx), phase = dist / 1.25 * Math.PI * 2;
+    var moving = seg(t, 0, 0.3) * (1 - seg(t, 5.6, 6.0));
+    waiter.root.position.set(wx, 0.93 + 0.022 * Math.abs(Math.sin(phase)) * moving, 0.0);
+    waiter.root.rotation.y = -Math.PI / 2;
+    waiter.legs[0].rotation.x = 0.42 * Math.sin(phase) * moving;
+    waiter.legs[1].rotation.x = -0.42 * Math.sin(phase) * moving;
+    waiter.spine.rotation.x = 0.03;
+    waiter.hp.rotation.y = 0.15 * Math.sin(t * 0.7);
+    waiter.root.updateMatrixWorld(true);
+    var trayHand = localToWorld(waiter, -0.24, 0.47, 0.22);
+    poseArm(waiter, "R", trayHand, V(-1, -1, -0.6));
+    poseArm(waiter, "L", localToWorld(waiter, 0.23, -0.02, 0.1 * Math.sin(phase + Math.PI) * moving), V(1, 0, -0.3));
+    tray.position.copy(trayHand).add(V(0, 0.055, 0));
+
+    // --- serveuse : regarde la tablette, tape de temps en temps
+    staff.spine.rotation.x = 0.12; staff.hp.rotation.x = 0.35; staff.hp.rotation.y = 0.05 * Math.sin(t);
+    staff.root.updateMatrixWorld(true);
+    var tap = bump(t % 2.6, 0.6, 1.5, 0.3);
+    poseArm(staff, "R", localToWorld(staff, -0.15, 0.2 + 0.05 * tap, 0.62 + 0.08 * tap), V(-1, -1, -0.3));
+    poseArm(staff, "L", localToWorld(staff, 0.22, 0.12, 0.42), V(1, -1, -0.3));
+
+    // --- faisceau et onde de scan
+    var pw = phone.getWorldPosition(V(0, 0, 0));
+    var beamA = seg(t, 5.05, 5.3) * (1 - seg(t, 6.0, 6.5)) * (0.22 + 0.2 * bump(t, 5.5, 5.9, 0.12));
+    beam.material.opacity = beamA;
+    beam.visible = beamA > 0.001;
+    if (beam.visible) {
+      var top = pw.clone().add(V(0, -0.006, 0)), base = platePos[3].clone();
+      var dir = top.clone().sub(base), len = dir.length();
+      beam.position.copy(top).add(base).multiplyScalar(0.5);
+      beam.quaternion.setFromUnitVectors(UP, dir.normalize()).multiply(Q2.setFromAxisAngle(UP, Math.PI / 4));
+      beam.scale.set(0.15, len, 0.1);
+    }
+    var rk = seg(t, 5.6, 6.25);
+    ring.position.copy(platePos[3]).add(V(0, 0.004, 0));
+    ring.scale.setScalar(1 + 0.45 * easeOut(rk));
+    ring.material.opacity = rk > 0 && rk < 1 ? 0.9 * (1 - rk) : 0;
+
+    // --- écran du téléphone : éteint, puis viseur cadré sur la plaque, scan, détection
+    var g = pg;
+    if (t < 3.95) { g.fillStyle = "#0E1A16"; g.fillRect(0, 0, 512, 1100); g.fillStyle = "#1B2B25"; g.fillRect(0, 0, 512, 6); }
+    else {
+      g.fillStyle = CREAM2; g.fillRect(0, 0, 512, 1100);
+      var settle = ease(seg(t, 4.75, 5.45));
+      var oy = lerp(-430, 0, settle), ox = lerp(150, 0, settle), sc = lerp(0.75, 1.0, settle);
+      var w = 440 * sc, h = 283 * sc;
+      drawPlate(g, 256 - w / 2 + ox, 550 - h / 2 + oy, w, h, 4);
+      var okk = t >= 5.6;
+      var bs = 230 + 14 * (1 - seg(t, 4.95, 5.25)), bx = 256 - bs / 2, by = 550 - h / 2 + oy + 30 * sc - 16;
+      if (t > 4.95) {
+        g.strokeStyle = okk ? OK_GREEN : INK; g.lineWidth = 8; g.lineCap = "round";
+        [[0, 0, 1, 1], [1, 0, -1, 1], [0, 1, 1, -1], [1, 1, -1, -1]].forEach(function (c) {
+          var cx = bx + c[0] * bs, cy = by + c[1] * bs, L = 46;
+          g.beginPath(); g.moveTo(cx, cy + c[3] * L); g.lineTo(cx, cy); g.lineTo(cx + c[2] * L, cy); g.stroke();
+        });
+      }
+      if (t > 5.05 && t < 5.6) { var sy = by + bs * seg(t, 5.05, 5.55); g.fillStyle = GOLD; g.fillRect(bx + 10, sy - 3, bs - 20, 6); }
+      if (t > 5.7) {
+        var a = ease(seg(t, 5.7, 6.0)); g.globalAlpha = a;
+        rr(g, 76, 800 + 20 * (1 - a), 360, 64, 32); g.fillStyle = CREAM; g.fill(); g.lineWidth = 3; g.strokeStyle = INK; g.stroke();
+        g.fillStyle = OK_GREEN; g.beginPath(); g.arc(112, 832 + 20 * (1 - a), 10, 0, Math.PI * 2); g.fill();
+        g.fillStyle = INK; g.font = "700 26px " + MONO; g.textAlign = "left"; g.textBaseline = "middle";
+        g.fillText("atable · Table 4", 136, 833 + 20 * (1 - a));
+        g.globalAlpha = 1;
+      }
+      g.fillStyle = "rgba(12,22,19,0.85)"; g.fillRect(0, 0, 512, 70); g.fillRect(0, 1030, 512, 70);
+      g.fillStyle = CREAM; g.beginPath(); g.arc(256, 1065, 22, 0, Math.PI * 2); g.fill();
+    }
+    phoneTex.needsUpdate = true;
+
+    // --- caméra
+    var u = camU(t);
+    cPos.getPoint(u, camera.position); cLook.getPoint(u, _look); cUp.getPoint(u, _up);
+    var j = 0; while (j < CK.length - 2 && t > CK[j + 1].t) j++;
+    camera.fov = lerp(CK[j].f, CK[j + 1].f, ease(seg(t, CK[j].t, CK[j + 1].t)));
+    camera.up.copy(_up.normalize()); camera.lookAt(_look); camera.updateProjectionMatrix();
+    renderer.render(scene, camera);
+
+    // --- étiquette « TABLE 4 » épinglée au-dessus de la table (projection 3D -> écran)
+    var tg4 = V(T4[0], 1.5, T4[1]).project(camera);
+    var tag = $("tag");
+    tag.style.left = ((tg4.x * 0.5 + 0.5) * W - 70).toFixed(1) + "px";
+    tag.style.top = ((-tg4.y * 0.5 + 0.5) * H - 46).toFixed(1) + "px";
+  }
+
+  var state = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.fromTo(state, { t: 0 }, { t: D, duration: D, ease: "none", onUpdate: function () { draw(state.t); } }, 0);
+  // repère « VENDREDI · 20:34 », puis l'étiquette de la table 4
+  tl.fromTo([$("lbl-a"), $("lbl-b"), $("lbl-c")], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", stagger: 0.12 }, 0.25);
+  tl.to($("label"), { opacity: 0, duration: 0.4, ease: "power1.in" }, 4.4);
+  tl.fromTo($("tag"), { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.out" }, 2.2);
+  tl.to($("tag"), { opacity: 0, duration: 0.25, ease: "power1.in" }, 4.55);
+  draw(0);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[ID] = tl;
+})();
+"""
+
+JS = JS.replace("__ID__", P).replace("__D__", str(D)).replace("__QR__", QR)
+
+html = f"""<template>
+  <style>
+{FONTS}
+    #root {{ position: relative; width: 1920px; height: 1080px; overflow: hidden; }}
+    [id="{P}-bg"] {{ position: absolute; inset: 0; background: {GREEN}; }}
+    [id="{P}-cv"] {{ position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: block; }}
+    [id="{P}-ovl"] {{ position: absolute; inset: 0; }}
+    [id="{P}-label"] {{
+      position: absolute; left: 96px; top: 64px; height: 44px; display: flex; gap: 14px; align-items: center;
+      padding: 0 16px; box-sizing: border-box; background: {CREAM2}; border: 2px solid {INK}; border-radius: 6px;
+      font-family: "JetBrains Mono"; font-weight: 700; font-size: 22px; letter-spacing: 0.16em; color: {INK}; white-space: nowrap;
+    }}
+    [id="{P}-label"] span {{ display: inline-block; }}
+    [id="{P}-tag"] {{
+      position: absolute; left: 0; top: 0; width: 140px; height: 40px; box-sizing: border-box; transform-origin: 50% 100%;
+      background: {CREAM2}; border: 2px solid {INK}; border-radius: 6px; opacity: 0;
+      font-family: "JetBrains Mono"; font-weight: 700; font-size: 18px; line-height: 36px; text-align: center; color: {INK}; white-space: nowrap;
+    }}
+  </style>
+
+  <div id="root" data-composition-id="{P}" data-width="1920" data-height="1080" data-duration="{D}">
+    <div id="{P}-bg" class="clip" data-start="0" data-duration="{D}" data-track-index="0"></div>
+    <canvas id="{P}-cv" class="clip" data-start="0" data-duration="{D}" data-track-index="1" width="1920" height="1080"></canvas>
+    <div id="{P}-ovl" class="clip" data-start="0" data-duration="{D}" data-track-index="2">
+      <div id="{P}-label"><span id="{P}-lbl-a">VENDREDI</span><span id="{P}-lbl-b">·</span><span id="{P}-lbl-c">20:34</span></div>
+      <div id="{P}-tag" data-layout-allow-overflow>TABLE 4</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script>{JS}  </script>
+</template>
+"""
+open(OUT, "w").write(html)
+print("ok", OUT, len(html) // 1024, "Ko")

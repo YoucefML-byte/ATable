@@ -1,0 +1,515 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+    }
+
+    /* ── ground (full-bleed clip, lowest track) ── */
+    [id="07-une-equipe-bg"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      background: #f4efe6;
+    }
+
+    /* ── full-frame layers ── */
+    [id="07-une-equipe-stage"],
+    [id="07-une-equipe-rail"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+    }
+
+    /* ── ticket rail (film invariant) ── */
+    [id="07-une-equipe-logo"] {
+      position: absolute;
+      left: 96px;
+      top: 44px;
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+    [id="07-une-equipe-wordmark"] {
+      position: absolute;
+      left: 150px;
+      top: 53px;
+      height: 22px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 22px;
+      letter-spacing: 0.18em;
+      color: #0c1613;
+      white-space: nowrap;
+    }
+    [id="07-une-equipe-line"] {
+      position: absolute;
+      left: 640px;
+      top: 63px;
+      width: 1000px;
+      height: 2px;
+      background: #0c1613;
+    }
+    [class~="07-une-equipe-dot"] {
+      position: absolute;
+      top: 57px;
+      width: 14px;
+      height: 14px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 50%;
+      background: #f4efe6;
+      overflow: hidden;
+    }
+    [class~="07-une-equipe-dot-past"] {
+      background: #0c1613;
+    }
+    [id="07-une-equipe-dot4-fill"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #e0a33a;
+    }
+    [class~="07-une-equipe-st"] {
+      position: absolute;
+      top: 83px;
+      width: 200px;
+      height: 18px;
+      box-sizing: border-box;
+      padding-left: 0.14em;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 15px;
+      line-height: 18px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-align: center;
+      color: #0c1613;
+      white-space: nowrap;
+    }
+    [class~="07-une-equipe-st-future"] {
+      opacity: 0.45;
+    }
+    [id="07-une-equipe-tag"] {
+      position: absolute;
+      left: 1190px;
+      top: 16px;
+      width: 92px;
+      height: 30px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 6px;
+      background: #e7dcc6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      color: #0c1613;
+      white-space: nowrap;
+      will-change: transform;
+    }
+
+    /* ── headline ── */
+    [id="07-une-equipe-headline"] {
+      position: absolute;
+      left: 0;
+      top: 144px;
+      width: 1920px;
+      height: 92px;
+      text-align: center;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      font-size: 96px;
+      line-height: 0.96;
+      letter-spacing: -0.02em;
+      color: #1f4d3a;
+      white-space: nowrap;
+      will-change: transform, opacity;
+    }
+    [id="07-une-equipe-accent"] {
+      color: #b9822a;
+    }
+
+    /* ── the two wings: full-frame groups sharing one vanishing point ── */
+    [class~="07-une-equipe-side"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      perspective: 1800px;
+      perspective-origin: 50% 50%;
+      will-change: transform;
+    }
+    [class~="07-une-equipe-label"] {
+      position: absolute;
+      top: 268px;
+      width: 820px;
+      height: 30px;
+      box-sizing: border-box;
+      padding-left: 0.18em;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 26px;
+      line-height: 30px;
+      letter-spacing: 0.18em;
+      text-align: center;
+      color: #1f4d3a;
+      white-space: nowrap;
+      will-change: transform, opacity;
+    }
+    [class~="07-une-equipe-card"] {
+      position: absolute;
+      top: 316px;
+      width: 820px;
+      height: 520px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f6f7f9;
+      transform-origin: 50% 50%;
+      will-change: transform, opacity;
+    }
+    [class~="07-une-equipe-shot"] {
+      position: absolute;
+      display: block;
+      max-width: none;
+    }
+    /* pro-pin crop [430,20,1250,420] → scale 816/820 */
+    [id="07-une-equipe-shot-pin"] {
+      left: -427.9px;
+      top: 23.88px;
+      width: 1910.63px;
+      height: 1194.15px;
+    }
+    /* pro-tables crop around the table tiles → scale 816/1292 */
+    [id="07-une-equipe-shot-tables"] {
+      left: -229.89px;
+      top: -63.16px;
+      width: 1212.63px;
+      height: 757.89px;
+    }
+
+    /* ── inner-edge pill badges ── */
+    [class~="07-une-equipe-badge"] {
+      position: absolute;
+      top: 808px;
+      height: 56px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 26px 0 22px;
+      border: 2px solid #0c1613;
+      border-radius: 28px;
+      background: #e7dcc6;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      font-size: 28px;
+      line-height: 1;
+      color: #0c1613;
+      white-space: nowrap;
+      will-change: transform, opacity;
+    }
+    [id="07-une-equipe-badge-l"] {
+      right: 1032px;
+      transform-origin: 100% 50%;
+    }
+    [id="07-une-equipe-badge-r"] {
+      left: 1032px;
+      transform-origin: 0% 50%;
+    }
+    [class~="07-une-equipe-dots"] {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    [class~="07-une-equipe-sdot"] {
+      display: block;
+      flex: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      transform-origin: 50% 50%;
+    }
+    [id="07-une-equipe-sdot-green"] {
+      background: #047857;
+    }
+    [id="07-une-equipe-sdot-orange"] {
+      background: #b45309;
+    }
+    [id="07-une-equipe-sdot-blue"] {
+      background: #1d4ed8;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="07-une-equipe"
+    data-width="1920"
+    data-height="1080"
+    data-duration="4.4"
+  >
+    <!-- cream ground -->
+    <div
+      id="07-une-equipe-bg"
+      class="clip"
+      data-start="0"
+      data-duration="4.4"
+      data-track-index="0"
+    ></div>
+
+    <!-- headline + the two cards -->
+    <div
+      id="07-une-equipe-stage"
+      class="clip"
+      data-start="0"
+      data-duration="4.4"
+      data-track-index="1"
+    >
+      <div id="07-une-equipe-headline">Chacun son <span id="07-une-equipe-accent">rôle</span>.</div>
+
+      <!-- left wing: team login by personal code -->
+      <div id="07-une-equipe-side-l" class="07-une-equipe-side">
+        <div id="07-une-equipe-label-l" class="07-une-equipe-label" style="left: 96px">UN CODE PAR PERSONNE</div>
+        <div id="07-une-equipe-card-l" class="07-une-equipe-card" style="left: 96px">
+          <img
+            id="07-une-equipe-shot-pin"
+            class="07-une-equipe-shot"
+            src="assets/pro-pin.png"
+            alt=""
+          />
+        </div>
+        <div id="07-une-equipe-badge-l" class="07-une-equipe-badge">
+          <span id="07-une-equipe-sdot-green" class="07-une-equipe-sdot"></span>
+          <span>Tablette autorisée</span>
+        </div>
+      </div>
+
+      <!-- right wing: the live table map (focal) -->
+      <div id="07-une-equipe-side-r" class="07-une-equipe-side">
+        <div id="07-une-equipe-label-r" class="07-une-equipe-label" style="left: 1004px">CHAQUE TABLE, SON ÉTAT</div>
+        <div id="07-une-equipe-card-r" class="07-une-equipe-card" style="left: 1004px">
+          <img
+            id="07-une-equipe-shot-tables"
+            class="07-une-equipe-shot"
+            src="assets/pro-tables.png"
+            alt=""
+          />
+        </div>
+        <div id="07-une-equipe-badge-r" class="07-une-equipe-badge">
+          <span class="07-une-equipe-dots">
+            <span id="07-une-equipe-sdot-orange" class="07-une-equipe-sdot"></span>
+            <span id="07-une-equipe-sdot-blue" class="07-une-equipe-sdot"></span>
+          </span>
+          <span>Qui attend quoi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ticket rail: station 04 ÉQUIPE -->
+    <div
+      id="07-une-equipe-rail"
+      class="clip"
+      data-start="0"
+      data-duration="4.4"
+      data-track-index="2"
+    >
+      <img id="07-une-equipe-logo" src="assets/atable-logo.svg" alt="" />
+      <div id="07-une-equipe-wordmark">ATABLE</div>
+
+      <div id="07-une-equipe-line"></div>
+
+      <div class="07-une-equipe-dot 07-une-equipe-dot-past" style="left: 653px"></div>
+      <div class="07-une-equipe-dot 07-une-equipe-dot-past" style="left: 845px"></div>
+      <div class="07-une-equipe-dot 07-une-equipe-dot-past" style="left: 1037px"></div>
+      <div id="07-une-equipe-dot4" class="07-une-equipe-dot" style="left: 1229px">
+        <div id="07-une-equipe-dot4-fill"></div>
+      </div>
+      <div class="07-une-equipe-dot" style="left: 1421px"></div>
+      <div class="07-une-equipe-dot" style="left: 1613px"></div>
+
+      <div class="07-une-equipe-st" style="left: 560px">01 CLIENT</div>
+      <div class="07-une-equipe-st" style="left: 752px">02 SALLE</div>
+      <div class="07-une-equipe-st" style="left: 944px">03 CUISINE</div>
+      <div id="07-une-equipe-st4" class="07-une-equipe-st 07-une-equipe-st-future" style="left: 1136px">04 ÉQUIPE</div>
+      <div class="07-une-equipe-st 07-une-equipe-st-future" style="left: 1328px">05 PATRON</div>
+      <div class="07-une-equipe-st 07-une-equipe-st-future" style="left: 1520px">06 PLATEFORME</div>
+
+      <div id="07-une-equipe-tag">TABLE 4</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      var P = "07-une-equipe-";
+      function el(id) {
+        return document.getElementById(P + id);
+      }
+
+      var tl = gsap.timeline({ paused: true });
+
+      // ── Rail: ticket tag slides 03 CUISINE (x 1044) → 04 ÉQUIPE (x 1236); dot turns gold at 0.45 s
+      tl.fromTo(el("tag"), { x: -192 }, { x: 0, duration: 0.6, ease: "power3.out" }, 0);
+      tl.fromTo(
+        el("dot4-fill"),
+        { scale: 0 },
+        { scale: 1, duration: 0.18, ease: "power3.out" },
+        0.45,
+      );
+      tl.fromTo(
+        el("st4"),
+        { opacity: 0.45 },
+        { opacity: 1, duration: 0.2, ease: "power1.out" },
+        0.45,
+      );
+
+      // ── Scene 1 (0.0–1.6 s): split-tilt entry — mirrored book-open wings, then settle flat
+      tl.fromTo(
+        el("card-l"),
+        { x: -460, rotateY: 26, scale: 0.85, opacity: 0 },
+        { x: 0, rotateY: 14, scale: 1, opacity: 1, duration: 0.85, ease: "power3.out" },
+        0.1,
+      );
+      tl.fromTo(
+        el("card-r"),
+        { x: 460, rotateY: -26, scale: 0.85, opacity: 0 },
+        { x: 0, rotateY: -14, scale: 1, opacity: 1, duration: 0.85, ease: "power3.out" },
+        0.3,
+      );
+      tl.fromTo(
+        el("card-l"),
+        { rotateY: 14 },
+        { rotateY: 0, duration: 0.5, ease: "power2.inOut", immediateRender: false },
+        0.95,
+      );
+      tl.fromTo(
+        el("card-r"),
+        { rotateY: -14 },
+        { rotateY: 0, duration: 0.5, ease: "power2.inOut", immediateRender: false },
+        1.15,
+      );
+
+      // headline slides down from just above (T-shape against the side-arriving cards)
+      tl.fromTo(
+        el("headline"),
+        { y: -44, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" },
+        0.5,
+      );
+
+      // mono labels fade up during the cards' settle
+      tl.fromTo(
+        el("label-l"),
+        { y: 14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" },
+        0.85,
+      );
+      tl.fromTo(
+        el("label-r"),
+        { y: 14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" },
+        1.05,
+      );
+
+      // ── Scene 2 (1.6–4.0 s): inner-edge pill badges spring-pop (smooth), then hold
+      tl.fromTo(
+        el("badge-l"),
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" },
+        1.6,
+      );
+      tl.fromTo(
+        el("sdot-green"),
+        { scale: 0 },
+        { scale: 1, duration: 0.32, ease: "power3.out" },
+        1.72,
+      );
+      tl.fromTo(
+        el("badge-r"),
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" },
+        1.9,
+      );
+      tl.fromTo(
+        el("sdot-orange"),
+        { scale: 0 },
+        { scale: 1, duration: 0.32, ease: "power3.out" },
+        2.02,
+      );
+      tl.fromTo(
+        el("sdot-blue"),
+        { scale: 0 },
+        { scale: 1, duration: 0.32, ease: "power3.out" },
+        2.08,
+      );
+
+      // breather: barely-there counter-phase float on the two wings (left up, right down)
+      tl.fromTo(
+        el("side-l"),
+        { y: 0 },
+        { y: -3, duration: 1.2, ease: "sine.inOut" },
+        1.6,
+      );
+      tl.fromTo(
+        el("side-r"),
+        { y: 0 },
+        { y: 3, duration: 1.2, ease: "sine.inOut" },
+        1.6,
+      );
+      tl.fromTo(
+        el("side-l"),
+        { y: -3 },
+        { y: 0, duration: 1.15, ease: "sine.inOut", immediateRender: false },
+        2.8,
+      );
+      tl.fromTo(
+        el("side-r"),
+        { y: 3 },
+        { y: 0, duration: 1.15, ease: "sine.inOut", immediateRender: false },
+        2.8,
+      );
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["07-une-equipe"] = tl;
+    })();
+  </script>
+</template>

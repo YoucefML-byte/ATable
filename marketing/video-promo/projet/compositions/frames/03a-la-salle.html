@@ -1,0 +1,62 @@
+<template>
+  <style>
+    @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+
+    #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+    [id="03a-la-salle-bg"] { position: absolute; inset: 0; background: #1F4D3A; }
+    [id="03a-la-salle-vid"] { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; display: block; }
+    [id="03a-la-salle-ovl"] { position: absolute; inset: 0; }
+    [id="03a-la-salle-label"] {
+      position: absolute; left: 96px; top: 64px; height: 44px; display: flex; gap: 14px; align-items: center;
+      padding: 0 16px; box-sizing: border-box; background: #E7DCC6; border: 2px solid #0C1613; border-radius: 6px;
+      font-family: "JetBrains Mono"; font-weight: 700; font-size: 22px; letter-spacing: 0.16em; color: #0C1613; white-space: nowrap;
+    }
+    [id="03a-la-salle-label"] span { display: inline-block; }
+    [id="03a-la-salle-tag"] {
+      position: absolute; left: 0; top: 0; width: 140px; height: 40px; box-sizing: border-box; transform-origin: 50% 100%;
+      background: #E7DCC6; border: 2px solid #0C1613; border-radius: 6px; opacity: 0;
+      font-family: "JetBrains Mono"; font-weight: 700; font-size: 18px; line-height: 36px; text-align: center; color: #0C1613; white-space: nowrap;
+    }
+  </style>
+
+  <div id="root" data-composition-id="03a-la-salle" data-width="1920" data-height="1080" data-duration="8.5">
+    <div id="03a-la-salle-bg" class="clip" data-start="0" data-duration="8.5" data-track-index="0"></div>
+    <!-- Rendu Blender 4.5 / Cycles (scène et pipeline : .hyperframes/salle-3d/) -->
+    <video id="03a-la-salle-vid" class="clip" data-start="0" data-duration="8.5" data-track-index="1"
+      src="assets/video/03a-la-salle.mp4" muted playsinline preload="auto"></video>
+    <div id="03a-la-salle-ovl" class="clip" data-start="0" data-duration="8.5" data-track-index="2">
+      <div id="03a-la-salle-label"><span id="03a-la-salle-lbl-a">VENDREDI</span><span id="03a-la-salle-lbl-b">·</span><span id="03a-la-salle-lbl-c">20:34</span></div>
+      <div id="03a-la-salle-tag" data-layout-allow-overflow>TABLE 4</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+(function () {
+  var ID = "03a-la-salle", D = 8.5, FPS = 30;
+  function $(s) { return document.getElementById(ID + "-" + s); }
+  // position écran (px, 1920×1080) du point situé 1,5 m au-dessus de la table 4, image par image (caméra Blender)
+  var TX = [626.3,626.2,625.9,625.5,624.9,624.2,623.4,622.5,621.5,620.4,619.3,618.1,616.8,615.5,614.2,612.8,611.3,609.8,608.3,606.7,605.0,603.3,601.5,599.7,598.0,596.2,594.5,592.9,588.8,584.3,579.4,574.2,568.8,563.1,557.2,551.2,545.2,539.0,532.9,526.7,520.7,514.7,508.9,503.3,497.9,492.8,487.9,483.3,478.9,474.8,471.1,468.3,466.5,465.7,465.8,466.8,468.7,471.2,474.4,478.2,482.4,487.0,491.8,496.8,501.8,506.8,511.7,516.3,520.6,524.4,527.7,530.3,532.2,537.3,542.8,548.5,554.7,561.1,567.9,575.0,582.5,590.4,598.7,607.3,616.4,625.9,635.9,646.3,657.2,668.5,680.4,692.7,705.5,718.8,732.6,746.9,761.5,776.6,792.0,807.7,823.5,839.4,855.2,870.7,885.7,899.9,913.0,924.6,934.2,941.4,945.7,946.4,945.6,944.5,943.2,941.6,939.7,937.6,935.1,932.4,929.4,926.0,922.3,918.4,914.1,909.5,904.5,899.2,893.6,887.7,881.4,874.8,867.8,860.3,852.3,843.8,834.8,825.2,815.1,804.3,792.9,780.7,767.9,754.2,739.8,724.5,708.2,691.0,672.8,653.5,633.0,616.1,597.8,578.2,557.2,534.6,510.5,484.7,457.2,428.0,396.9,363.9,328.9,291.9,252.7,211.4,167.8,121.9,73.7,23.0,-30.2,-86.1,-144.6,-205.9,-270.2,-337.5,-408.2,-482.5,-560.7,-643.1,-730.3,-822.8,-921.4,-1026.8,-1140.3,-1262.9,-1396.2,-1503.0,-1618.0,-1742.2,-1876.7,-2022.9,-2182.4,-2357.0,-2549.2,-2761.6,-2997.8,-3262.0,-3559.4,-3897.0,-4283.4,-4730.4,-5253.6,-5874.6,-6624.1,-7547.6,-8714.6,-10238.3,-12314.8,-15317.2,-20053.5,-28661.1,-49246.5,-165008.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+  var TY = [667.2,667.2,667.3,667.3,667.4,667.4,667.5,667.6,667.7,667.8,667.9,668.0,668.1,668.2,668.3,668.4,668.5,668.6,668.6,668.7,668.7,668.7,668.7,668.6,668.5,668.4,668.3,668.1,667.9,667.4,666.7,665.6,664.2,662.3,660.0,657.2,653.9,650.0,645.6,640.5,634.8,628.4,621.4,613.7,605.4,596.5,587.0,576.9,566.4,555.5,544.2,532.7,521.0,509.3,497.7,486.3,475.3,464.7,454.6,445.0,436.0,427.7,420.0,413.0,406.6,400.8,395.6,391.0,386.9,383.2,380.0,377.0,374.4,373.3,372.4,371.7,371.1,370.6,370.2,369.9,369.7,369.5,369.4,369.2,369.0,368.8,368.5,368.0,367.5,366.7,365.8,364.6,363.1,361.4,359.3,356.8,353.9,350.5,346.7,342.3,337.3,331.7,325.5,318.7,311.2,303.0,294.2,284.8,274.9,264.5,253.8,242.9,237.0,230.8,224.4,217.7,210.8,203.6,196.2,188.6,180.7,172.6,164.3,155.8,147.1,138.1,129.1,119.8,110.4,100.9,91.2,81.3,71.0,60.0,48.4,36.3,23.4,10.0,-4.1,-18.9,-34.3,-50.5,-67.4,-85.0,-103.3,-122.5,-142.4,-163.2,-184.9,-207.5,-231.1,-246.7,-262.7,-279.1,-295.8,-313.0,-330.5,-348.5,-366.8,-385.6,-404.8,-424.5,-444.5,-465.0,-486.0,-507.4,-529.4,-551.8,-574.8,-598.4,-622.6,-647.6,-673.4,-700.1,-727.8,-756.6,-786.8,-818.5,-852.0,-887.5,-925.3,-965.8,-1009.4,-1056.6,-1107.9,-1164.1,-1225.8,-1255.6,-1289.1,-1326.7,-1369.1,-1416.7,-1470.2,-1530.5,-1598.5,-1675.4,-1762.7,-1862.2,-1976.2,-2107.6,-2260.2,-2439.2,-2651.2,-2905.6,-3215.9,-3601.7,-4093.4,-4740.2,-5627.4,-6917.4,-8962.0,-12691.5,-21634.9,-72010.2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+  var tag = $("tag");
+  function pin(t) {
+    var f = t * FPS, i = Math.max(0, Math.min(TX.length - 1, Math.floor(f))), j = Math.min(TX.length - 1, i + 1), k = f - i;
+    if (TX[i] === null || TX[j] === null) return;
+    var x = TX[i] + (TX[j] - TX[i]) * k, y = TY[i] + (TY[j] - TY[i]) * k;
+    tag.style.left = (x - 70).toFixed(1) + "px";
+    tag.style.top = (y - 46).toFixed(1) + "px";
+  }
+  var state = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.fromTo(state, { t: 0 }, { t: D, duration: D, ease: "none", onUpdate: function () { pin(state.t); } }, 0);
+  // repère « VENDREDI · 20:34 », puis l'étiquette de la table 4
+  tl.fromTo([$("lbl-a"), $("lbl-b"), $("lbl-c")], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", stagger: 0.12 }, 0.25);
+  tl.to($("label"), { opacity: 0, duration: 0.4, ease: "power1.in" }, 4.4);
+  tl.fromTo(tag, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.out" }, 2.2);
+  tl.to(tag, { opacity: 0, duration: 0.25, ease: "power1.in" }, 4.55);
+  pin(0);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[ID] = tl;
+})();
+  </script>
+</template>

@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #F4EFE6;
+      }
+      .scene {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="96"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div
+        id="el-01-vendredi-soir"
+        class="scene"
+        data-composition-id="01-vendredi-soir"
+        data-composition-src="compositions/frames/01-vendredi-soir.html"
+        data-start="0"
+        data-duration="6.4"
+        data-track-index="0"
+      ></div>
+
+      <div
+        id="el-02-la-promesse"
+        class="scene"
+        data-composition-id="02-la-promesse"
+        data-composition-src="compositions/frames/02-la-promesse.html"
+        data-start="6"
+        data-duration="6.5"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="el-02a-la-plaque"
+        class="scene"
+        data-composition-id="02a-la-plaque"
+        data-composition-src="compositions/frames/02a-la-plaque.html"
+        data-start="12"
+        data-duration="6"
+        data-track-index="0"
+      ></div>
+
+      <div
+        id="el-02b-la-table"
+        class="scene"
+        data-composition-id="02b-la-table"
+        data-composition-src="compositions/frames/02b-la-table.html"
+        data-start="18"
+        data-duration="8"
+        data-track-index="2"
+      ></div>
+
+      <div
+        id="el-02c-la-tablette"
+        class="scene"
+        data-composition-id="02c-la-tablette"
+        data-composition-src="compositions/frames/02c-la-tablette.html"
+        data-start="26"
+        data-duration="6.5"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="el-03a-la-salle"
+        class="scene"
+        data-composition-id="03a-la-salle"
+        data-composition-src="compositions/frames/03a-la-salle.html"
+        data-start="32"
+        data-duration="8.5"
+        data-track-index="2"
+      ></div>
+
+      <div
+        id="el-03-un-scan"
+        class="scene"
+        data-composition-id="03-un-scan"
+        data-composition-src="compositions/frames/03-un-scan.html"
+        data-start="40"
+        data-duration="6.5"
+        data-track-index="0"
+      ></div>
+
+      <div
+        id="el-04-il-compose"
+        class="scene"
+        data-composition-id="04-il-compose"
+        data-composition-src="compositions/frames/04-il-compose.html"
+        data-start="46"
+        data-duration="8.5"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="el-05-en-salle"
+        class="scene"
+        data-composition-id="05-en-salle"
+        data-composition-src="compositions/frames/05-en-salle.html"
+        data-start="54"
+        data-duration="6.5"
+        data-track-index="0"
+      ></div>
+
+      <div
+        id="el-06-la-cuisine"
+        class="scene"
+        data-composition-id="06-la-cuisine"
+        data-composition-src="compositions/frames/06-la-cuisine.html"
+        data-start="60"
+        data-duration="6.5"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="el-07-une-equipe"
+        class="scene"
+        data-composition-id="07-une-equipe"
+        data-composition-src="compositions/frames/07-une-equipe.html"
+        data-start="66"
+        data-duration="4.4"
+        data-track-index="0"
+      ></div>
+
+      <div
+        id="el-08-vous-pilotez"
+        class="scene"
+        data-composition-id="08-vous-pilotez"
+        data-composition-src="compositions/frames/08-vous-pilotez.html"
+        data-start="70"
+        data-duration="8.5"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="el-09-les-chiffres"
+        class="scene"
+        data-composition-id="09-les-chiffres"
+        data-composition-src="compositions/frames/09-les-chiffres.html"
+        data-start="78"
+        data-duration="6.6"
+        data-track-index="0"
+      ></div>
+
+      <div
+        id="el-10-en-confiance"
+        class="scene"
+        data-composition-id="10-en-confiance"
+        data-composition-src="compositions/frames/10-en-confiance.html"
+        data-start="84"
+        data-duration="6.4"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="el-11-atable"
+        class="scene"
+        data-composition-id="11-atable"
+        data-composition-src="compositions/frames/11-atable.html"
+        data-start="90"
+        data-duration="6"
+        data-track-index="0"
+      ></div>
+
+      <!-- BGM -->
+      <audio
+        id="el-bgm"
+        src="assets/audio/soundtrack-vo.wav"
+        data-start="0"
+        data-duration="96"
+        data-track-index="11"
+        data-volume="1"
+      ></audio>
+
+      <!-- Voix off -->
+      <audio
+        id="el-voiceover"
+        src="assets/audio/voiceover.wav"
+        data-start="0"
+        data-duration="96"
+        data-track-index="12"
+        data-volume="1"
+      ></audio>
+
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+      // ── frame transitions (injected by transitions.mjs) ──
+      (function () { var tl = window.__timelines["main"];
+        tl.to("#el-01-vendredi-soir", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 6);
+        tl.fromTo("#el-02-la-promesse", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 6);
+        tl.to("#el-02-la-promesse", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 12);
+        tl.fromTo("#el-02a-la-plaque", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 12);
+        tl.to("#el-02c-la-tablette", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 32);
+        tl.fromTo("#el-03a-la-salle", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 32);
+        tl.to("#el-03a-la-salle", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 40);
+        tl.fromTo("#el-03-un-scan", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 40);
+        tl.to("#el-03-un-scan", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 46);
+        tl.fromTo("#el-04-il-compose", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 46);
+        tl.to("#el-04-il-compose", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 54);
+        tl.fromTo("#el-05-en-salle", { x: 1920, opacity: 1 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.inOut" }, 54);
+        tl.to("#el-05-en-salle", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 60);
+        tl.fromTo("#el-06-la-cuisine", { x: 1920, opacity: 1 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.inOut" }, 60);
+        tl.to("#el-06-la-cuisine", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 66);
+        tl.fromTo("#el-07-une-equipe", { x: 1920, opacity: 1 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.inOut" }, 66);
+        tl.to("#el-07-une-equipe", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 70);
+        tl.fromTo("#el-08-vous-pilotez", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 70);
+        tl.to("#el-08-vous-pilotez", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 78);
+        tl.fromTo("#el-09-les-chiffres", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 78);
+        tl.to("#el-09-les-chiffres", { filter: "blur(10px)", scale: 1.03, opacity: 0, duration: 0.6, ease: "power2.inOut" }, 84);
+        tl.fromTo("#el-10-en-confiance", { filter: "blur(10px)", scale: 0.97, opacity: 0 }, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.6, ease: "power2.inOut" }, 84);
+        tl.to("#el-10-en-confiance", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 90);
+        tl.fromTo("#el-11-atable", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 90);
+        tl.to({}, { duration: 96 }, 0); // full-span anchor — main.duration() == composition total (Studio master duration)
+      })();
+    </script>
+  </body>
+</html>

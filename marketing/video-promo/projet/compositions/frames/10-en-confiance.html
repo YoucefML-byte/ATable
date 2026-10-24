@@ -1,0 +1,636 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+    }
+
+    /* ---------- ground + stage ---------- */
+    [class~="10-en-confiance-ground"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      background: #f4efe6;
+    }
+    [class~="10-en-confiance-stage"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      container-type: size;
+      color: #0c1613;
+    }
+
+    /* ---------- ticket rail (film invariant) ---------- */
+    [class~="10-en-confiance-logo"] {
+      position: absolute;
+      left: 96px;
+      top: 44px;
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+    [class~="10-en-confiance-wordmark"] {
+      position: absolute;
+      left: 148px;
+      top: 54px;
+      height: 20px;
+      line-height: 20px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.18em;
+      color: #0c1613;
+      white-space: nowrap;
+    }
+    [class~="10-en-confiance-railline"] {
+      position: absolute;
+      left: 640px;
+      top: 63px;
+      width: 1000px;
+      height: 2px;
+      background: #0c1613;
+    }
+    [class~="10-en-confiance-dot"] {
+      position: absolute;
+      top: 57px;
+      width: 14px;
+      height: 14px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 50%;
+      background: #0c1613;
+    }
+    [class~="10-en-confiance-railabel"] {
+      position: absolute;
+      top: 84px;
+      width: 200px;
+      height: 16px;
+      line-height: 16px;
+      text-align: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0.14em;
+      text-indent: 0.14em;
+      text-transform: uppercase;
+      color: #0c1613;
+      white-space: nowrap;
+    }
+    [class~="10-en-confiance-tag"] {
+      position: absolute;
+      left: 1382px; /* centred on station 05 (x = 1428); slides +192 to station 06 (x = 1620) */
+      top: 16px; /* centre y = 31 */
+      width: 92px;
+      height: 30px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 6px;
+      background: #e7dcc6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-indent: 0.08em;
+      color: #0c1613;
+      white-space: nowrap;
+      z-index: 5;
+    }
+
+    /* ---------- desktop card (background, dimmed) ---------- */
+    [class~="10-en-confiance-desk"] {
+      position: absolute;
+      left: 1390px;
+      top: 140px;
+      width: 900px;
+      height: 601px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f6f7f9;
+      opacity: 0.6;
+      z-index: 1;
+    }
+    [class~="10-en-confiance-deskbar"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 896px;
+      height: 40px;
+      box-sizing: border-box;
+      border-bottom: 2px solid #0c1613;
+      background: #e7dcc6;
+    }
+    [class~="10-en-confiance-deskdot"] {
+      position: absolute;
+      top: 14px;
+      width: 10px;
+      height: 10px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 50%;
+    }
+    [class~="10-en-confiance-deskurl"] {
+      position: absolute;
+      left: 96px;
+      top: 0;
+      height: 38px;
+      line-height: 38px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      color: #0c1613;
+      white-space: nowrap;
+    }
+    [class~="10-en-confiance-deskscreen"] {
+      position: absolute;
+      left: 0;
+      top: 40px;
+      width: 896px;
+      height: 557px;
+      overflow: hidden;
+      background: #f6f7f9;
+    }
+    [class~="10-en-confiance-deskscreen"] img {
+      position: absolute;
+      left: 24px;
+      top: 0;
+      width: 1116px; /* 1800×1125 at 0.62 — the desktop-window screen scale */
+      height: auto;
+      display: block;
+    }
+
+    /* ---------- phone (pinned anchor — never moves) ---------- */
+    [class~="10-en-confiance-phone"] {
+      position: absolute;
+      left: 1030px; /* centre x = 1250 */
+      top: 120px;
+      width: 440px;
+      height: 748px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 56px;
+      background: #e7dcc6;
+      z-index: 3;
+    }
+    [class~="10-en-confiance-screen"] {
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      width: 420px;
+      height: 728px;
+      border-radius: 46px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    [class~="10-en-confiance-skin"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 420px;
+      height: 728px;
+    }
+    [class~="10-en-confiance-skin"] img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 420px; /* 1170×1992 at 0.359 → 420×715 */
+      height: auto;
+      display: block;
+    }
+    [class~="10-en-confiance-skin-a"] {
+      background: #ffffff;
+      opacity: 1;
+    }
+    [class~="10-en-confiance-skin-b"] {
+      background: #121212;
+      opacity: 0;
+    }
+    [class~="10-en-confiance-plabel"] {
+      position: absolute;
+      left: 1050px;
+      top: 878px;
+      width: 400px;
+      height: 16px;
+      line-height: 16px;
+      text-align: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0.14em;
+      text-indent: 0.14em;
+      text-transform: uppercase;
+      color: #0c1613;
+      white-space: nowrap;
+      z-index: 3;
+    }
+    [class~="10-en-confiance-plabel-b"] {
+      opacity: 0;
+    }
+
+    /* ---------- copy column (x 120–760) ---------- */
+    [class~="10-en-confiance-anchor"] {
+      position: absolute;
+      left: 120px;
+      top: 236px;
+      width: 640px;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      font-size: 96px;
+      line-height: 0.96;
+      letter-spacing: -0.02em;
+      color: #1f4d3a;
+      z-index: 2;
+    }
+    [class~="10-en-confiance-line"] {
+      display: block;
+      white-space: nowrap;
+    }
+    [class~="10-en-confiance-word"] {
+      display: inline-block;
+    }
+
+    [class~="10-en-confiance-slot"] {
+      position: absolute;
+      left: 120px;
+      top: 560px;
+      width: 640px;
+      height: 160px;
+      z-index: 2;
+    }
+    [class~="10-en-confiance-rowgate"],
+    [class~="10-en-confiance-resgate"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 640px;
+      height: 160px;
+    }
+    [class~="10-en-confiance-row"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 640px;
+      height: 110px;
+      transform-origin: 0% 50%;
+    }
+    [class~="10-en-confiance-check"] {
+      position: absolute;
+      left: 0;
+      top: 5px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #e0a33a;
+      transform-origin: 50% 50%;
+    }
+    [class~="10-en-confiance-check"] svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 44px;
+      height: 44px;
+      display: block;
+    }
+    [class~="10-en-confiance-trust"] {
+      position: absolute;
+      left: 64px;
+      top: 0;
+      min-width: 520px; /* ≥ widest state (500px) — no edge jitter */
+      font-family: "Source Serif 4", serif;
+      font-weight: 400;
+      font-size: 44px;
+      line-height: 1.18;
+      color: #0c1613;
+      white-space: pre;
+    }
+    [class~="10-en-confiance-goldrule"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 474px;
+      height: 2px;
+      background: #e0a33a;
+      transform-origin: 0% 50%;
+    }
+    [class~="10-en-confiance-resolve"] {
+      position: absolute;
+      left: 0;
+      top: 24px;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      font-size: 64px;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: #1f4d3a;
+      white-space: nowrap;
+      transform-origin: 0% 50%;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="10-en-confiance"
+    data-start="0"
+    data-duration="6.4"
+    data-width="1920"
+    data-height="1080"
+  >
+    <div
+      class="10-en-confiance-ground clip"
+      data-start="0"
+      data-duration="6.4"
+      data-track-index="0"
+    ></div>
+
+    <div
+      class="10-en-confiance-stage clip"
+      data-start="0"
+      data-duration="6.4"
+      data-track-index="1"
+    >
+      <!-- Ticket rail: station 06 PLATEFORME becomes current -->
+      <img class="10-en-confiance-logo" src="assets/atable-logo.svg" alt="" />
+      <div class="10-en-confiance-wordmark">ATABLE</div>
+      <div class="10-en-confiance-railline"></div>
+      <div class="10-en-confiance-dot" style="left: 653px"></div>
+      <div class="10-en-confiance-dot" style="left: 845px"></div>
+      <div class="10-en-confiance-dot" style="left: 1037px"></div>
+      <div class="10-en-confiance-dot" style="left: 1229px"></div>
+      <div id="10-en-confiance-dot5" class="10-en-confiance-dot" style="left: 1421px; background: #e0a33a"></div>
+      <div id="10-en-confiance-dot6" class="10-en-confiance-dot" style="left: 1613px; background: #f4efe6"></div>
+      <div class="10-en-confiance-railabel" style="left: 560px">01 CLIENT</div>
+      <div class="10-en-confiance-railabel" style="left: 752px">02 SALLE</div>
+      <div class="10-en-confiance-railabel" style="left: 944px">03 CUISINE</div>
+      <div class="10-en-confiance-railabel" style="left: 1136px">04 ÉQUIPE</div>
+      <div class="10-en-confiance-railabel" style="left: 1328px">05 PATRON</div>
+      <div id="10-en-confiance-label6" class="10-en-confiance-railabel" style="left: 1520px; opacity: 0.45">06 PLATEFORME</div>
+      <div id="10-en-confiance-tag" class="10-en-confiance-tag">TABLE 4</div>
+
+      <!-- Desktop card: platform console, dimmed, partly behind the phone, cropped by the frame edge -->
+      <div id="10-en-confiance-desk" class="10-en-confiance-desk" data-layout-ignore>
+        <div class="10-en-confiance-deskbar">
+          <span class="10-en-confiance-deskdot" style="left: 16px"></span>
+          <span class="10-en-confiance-deskdot" style="left: 32px"></span>
+          <span class="10-en-confiance-deskdot" style="left: 48px"></span>
+          <span class="10-en-confiance-deskurl">console.atable.fr</span>
+        </div>
+        <div class="10-en-confiance-deskscreen">
+          <img src="assets/console-commerces.png" alt="" />
+        </div>
+      </div>
+
+      <!-- Pinned phone: the theme morphs inside the screen, the device never moves -->
+      <div class="10-en-confiance-phone">
+        <div class="10-en-confiance-screen">
+          <div id="10-en-confiance-skin-a" class="10-en-confiance-skin 10-en-confiance-skin-a">
+            <img src="assets/client-carte.png" alt="" />
+          </div>
+          <div id="10-en-confiance-skin-b" class="10-en-confiance-skin 10-en-confiance-skin-b">
+            <img src="assets/client-lounge.png" alt="" />
+          </div>
+        </div>
+      </div>
+      <div id="10-en-confiance-plabel-a" class="10-en-confiance-plabel 10-en-confiance-plabel-a">LE BISTROT DÉMO</div>
+      <div id="10-en-confiance-plabel-b" class="10-en-confiance-plabel 10-en-confiance-plabel-b">LE LOUNGE DÉMO</div>
+
+      <!-- Anchor line (pinned once landed) -->
+      <div class="10-en-confiance-anchor">
+        <span class="10-en-confiance-line"><span class="10-en-confiance-word">Un</span> <span class="10-en-confiance-word">outil.</span></span>
+        <span class="10-en-confiance-line"><span class="10-en-confiance-word">Tous</span> <span class="10-en-confiance-word">vos</span></span>
+        <span class="10-en-confiance-line"><span class="10-en-confiance-word">commerces.</span></span>
+      </div>
+
+      <!-- Cycling slot under the anchor -->
+      <div class="10-en-confiance-slot">
+        <div id="10-en-confiance-rowgate" class="10-en-confiance-rowgate" style="opacity: 0">
+          <div id="10-en-confiance-row" class="10-en-confiance-row">
+            <div id="10-en-confiance-check" class="10-en-confiance-check">
+              <svg viewBox="0 0 44 44" aria-hidden="true">
+                <polyline
+                  points="13,23 19.5,29.5 31.5,16"
+                  fill="none"
+                  stroke="#173B2D"
+                  stroke-width="4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <div id="10-en-confiance-trust" class="10-en-confiance-trust"></div>
+          </div>
+        </div>
+        <div id="10-en-confiance-resgate" class="10-en-confiance-resgate" style="opacity: 0">
+          <div id="10-en-confiance-goldrule" class="10-en-confiance-goldrule"></div>
+          <div id="10-en-confiance-resolve" class="10-en-confiance-resolve">Sécurisé<br />par conception.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      var ID = "10-en-confiance";
+      var P = ID + "-";
+      var byId = function (s) {
+        return document.getElementById(P + s);
+      };
+      var scope = document.querySelector('[data-composition-id="' + ID + '"]') || document;
+      var all = function (cls) {
+        return Array.prototype.slice.call(scope.querySelectorAll('[class~="' + P + cls + '"]'));
+      };
+
+      var INK = "#0C1613";
+      var GOLD = "#E0A33A";
+      var CREAM = "#F4EFE6";
+      var DURATION = 6;
+
+      var tl = gsap.timeline({ paused: true });
+
+      // ---------- Scene 1 (0.0–1.0): rail tag 05 → 06, desk card, anchor per-word ----------
+      tl.fromTo(byId("tag"), { x: 0 }, { x: 192, duration: 0.6, ease: "power3.out" }, 0);
+      tl.fromTo(
+        byId("dot5"),
+        { backgroundColor: GOLD },
+        { backgroundColor: INK, duration: 0.15, ease: "none" },
+        0.45,
+      );
+      tl.fromTo(
+        byId("dot6"),
+        { backgroundColor: CREAM },
+        { backgroundColor: GOLD, duration: 0.15, ease: "none" },
+        0.45,
+      );
+      tl.fromTo(byId("label6"), { opacity: 0.45 }, { opacity: 1, duration: 0.2, ease: "none" }, 0.45);
+
+      tl.fromTo(byId("desk"), { opacity: 0 }, { opacity: 0.6, duration: 0.6, ease: "power2.out" }, 0.3);
+
+      // Anchor « Un outil. Tous vos commerces. » — word-by-word build from 0.2 s, then pinned.
+      tl.fromTo(
+        all("word"),
+        { opacity: 0, y: 56, filter: "blur(8px)" },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.55,
+          ease: "power3.out",
+          stagger: 0.08,
+        },
+        0.2,
+      );
+
+      // ---------- Scene 2 (1.0–1.6): theme-crossfade-morph, Bistrot → Lounge ----------
+      var MORPH_AT = 1.0;
+      var MORPH_DUR = 0.4;
+      tl.fromTo(
+        byId("skin-b"),
+        { opacity: 0 },
+        { opacity: 1, duration: MORPH_DUR, ease: "power2.inOut" },
+        MORPH_AT,
+      );
+      tl.fromTo(
+        byId("skin-a"),
+        { opacity: 1 },
+        { opacity: 0, duration: MORPH_DUR, ease: "power2.inOut", immediateRender: false },
+        MORPH_AT,
+      );
+      tl.fromTo(
+        byId("plabel-b"),
+        { opacity: 0 },
+        { opacity: 1, duration: MORPH_DUR, ease: "power2.inOut" },
+        MORPH_AT,
+      );
+      tl.fromTo(
+        byId("plabel-a"),
+        { opacity: 1 },
+        { opacity: 0, duration: MORPH_DUR, ease: "power2.inOut", immediateRender: false },
+        MORPH_AT,
+      );
+
+      // ---------- Scene 3 (2.0–5.5): discrete-text-sequence, hard-cut swaps ----------
+      var SEQUENCE = [
+        { t: 0.0, text: "" },
+        { t: 2.0, text: "Chaque commerce,\nses données." },
+        { t: 3.0, text: "Les prix calculés\npar le serveur." },
+        { t: 4.0, text: "Double authentification\npour les patrons." },
+        { t: 5.0, text: "Paiement au comptoir." },
+        { t: 5.5, text: "" },
+      ];
+      var RESOLVE_AT = 5.5;
+      var POP_DUR = 0.22;
+
+      function stateAt(time) {
+        for (var i = SEQUENCE.length - 1; i >= 0; i--) {
+          if (time >= SEQUENCE[i].t) return SEQUENCE[i];
+        }
+        return SEQUENCE[0];
+      }
+
+      var trustEl = byId("trust");
+      var checkEl = byId("check");
+      var rowGate = byId("rowgate");
+      var resGate = byId("resgate");
+
+      // Pure function of time — identical frame under any seek order.
+      function render(time) {
+        var st = stateAt(time);
+        if (trustEl.textContent !== st.text) trustEl.textContent = st.text;
+        var on = st.text !== "";
+        rowGate.style.opacity = on ? "1" : "0";
+        // Gold check stamps on every swap (scale 1.3 → 1, power3.out over POP_DUR).
+        var p = on ? Math.min(1, Math.max(0, (time - st.t) / POP_DUR)) : 1;
+        var s = 1.3 - 0.3 * (1 - Math.pow(1 - p, 3));
+        checkEl.style.transform = "scale(" + s.toFixed(4) + ")";
+        resGate.style.opacity = time >= RESOLVE_AT ? "1" : "0";
+      }
+
+      var driver = { t: 0 };
+      tl.to(
+        driver,
+        {
+          t: DURATION,
+          duration: DURATION,
+          ease: "none",
+          onUpdate: function () {
+            render(driver.t);
+          },
+        },
+        0,
+      );
+      render(0);
+
+      // ---------- Scene 4 (5.0–6.0): inverse zoom-through into the resolve ----------
+      // Exit: « Paiement au comptoir. » recedes (wrapper-level blur, text scale).
+      tl.fromTo(
+        byId("row"),
+        { scale: 1, filter: "blur(0px)" },
+        { scale: 0.8, filter: "blur(10px)", duration: 0.2, ease: "power3.in", immediateRender: false },
+        RESOLVE_AT - 0.2,
+      );
+      tl.fromTo(
+        byId("row"),
+        { opacity: 1 },
+        { opacity: 0.15, duration: 0.2, ease: "none", immediateRender: false },
+        RESOLVE_AT - 0.2,
+      );
+      // Hard cut at 5.5 (gates flip in render) — the resolve arrives oversized and retracts.
+      tl.fromTo(
+        byId("resolve"),
+        { opacity: 0.15, scale: 1.25, filter: "blur(10px)" },
+        { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "expo.out" },
+        RESOLVE_AT,
+      );
+      // Gold rule draws from the left, landing before the frame ends; then hold.
+      tl.fromTo(
+        byId("goldrule"),
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.35, ease: "power3.out" },
+        RESOLVE_AT + 0.05,
+      );
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines[ID] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,591 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #f4efe6;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+    }
+
+    /* ---------- layers ---------- */
+    [id="09-les-chiffres-ground"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      background: #1f4d3a;
+    }
+    [id="09-les-chiffres-rail"],
+    [id="09-les-chiffres-copy"],
+    [id="09-les-chiffres-device"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+    }
+    [id="09-les-chiffres-device"] {
+      perspective: 2000px;
+      perspective-origin: 1280px 510px;
+    }
+
+    /* ---------- ticket rail (film invariant, cream on green) ---------- */
+    [id="09-les-chiffres-logo"] {
+      position: absolute;
+      left: 96px;
+      top: 44px;
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+    [id="09-les-chiffres-wordmark"] {
+      position: absolute;
+      left: 150px;
+      top: 52px;
+      height: 24px;
+      line-height: 24px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.18em;
+      color: #f4efe6;
+      white-space: nowrap;
+    }
+    [id="09-les-chiffres-line"] {
+      position: absolute;
+      left: 640px;
+      top: 63px;
+      width: 1000px;
+      height: 2px;
+      background: #f4efe6;
+    }
+    [class~="09-les-chiffres-dot"] {
+      position: absolute;
+      top: 57px;
+      width: 14px;
+      height: 14px;
+      box-sizing: border-box;
+      border: 2px solid #f4efe6;
+      border-radius: 50%;
+      background: #f4efe6;
+    }
+    [class~="09-les-chiffres-dot-current"] {
+      background: #e0a33a;
+    }
+    [class~="09-les-chiffres-dot-future"] {
+      background: #1f4d3a;
+    }
+    [class~="09-les-chiffres-station"] {
+      position: absolute;
+      top: 92px;
+      transform: translate(-50%, -50%);
+      padding-left: 0.14em;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 15px;
+      line-height: 18px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #f4efe6;
+      white-space: nowrap;
+    }
+    [class~="09-les-chiffres-station-future"] {
+      opacity: 0.45;
+    }
+    [id="09-les-chiffres-ticket"] {
+      position: absolute;
+      left: 1382px;
+      top: 16px;
+      width: 92px;
+      height: 30px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 6px;
+      background: #e7dcc6;
+      color: #0c1613;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 26px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* ---------- copy column (x 120 → 680) ---------- */
+    [id="09-les-chiffres-headline"] {
+      position: absolute;
+      left: 120px;
+      top: 250px;
+      width: 560px;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      font-size: 84px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: #f4efe6;
+    }
+    [class~="09-les-chiffres-hl-line"] {
+      display: block;
+      white-space: nowrap;
+    }
+    [class~="09-les-chiffres-word"] {
+      display: inline-block;
+    }
+    [id="09-les-chiffres-rule"] {
+      position: absolute;
+      left: 120px;
+      top: 488px;
+      width: 560px;
+      height: 2px;
+      background: #e0a33a;
+      transform-origin: 0% 50%;
+    }
+    [class~="09-les-chiffres-fig"] {
+      position: absolute;
+      left: 120px;
+      top: 518px;
+      width: 560px;
+    }
+    [class~="09-les-chiffres-row"] {
+      display: flex;
+      align-items: baseline;
+      width: max-content;
+      transform-origin: 0% 100%;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      color: #f4efe6;
+      white-space: nowrap;
+    }
+    [class~="09-les-chiffres-numgrid"] {
+      display: inline-grid;
+      justify-items: end;
+      font-size: 124px;
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+    [class~="09-les-chiffres-ghost"],
+    [class~="09-les-chiffres-live"] {
+      grid-area: 1 / 1;
+    }
+    [class~="09-les-chiffres-ghost"] {
+      visibility: hidden;
+    }
+    [class~="09-les-chiffres-unit"] {
+      font-size: 62px;
+      line-height: 0.92;
+      letter-spacing: 0;
+    }
+    [class~="09-les-chiffres-label"] {
+      margin-top: 26px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 26px;
+      line-height: 31px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #e0a33a;
+      white-space: nowrap;
+    }
+    [id="09-les-chiffres-foot"] {
+      position: absolute;
+      left: 120px;
+      top: 846px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 22px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #e7dcc6;
+      white-space: nowrap;
+    }
+
+    /* ---------- desktop window (film invariant) ---------- */
+    [id="09-les-chiffres-window"] {
+      position: absolute;
+      left: 720px;
+      top: 140px;
+      width: 1120px;
+      height: 740px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #e7dcc6;
+    }
+    [id="09-les-chiffres-titlebar"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1116px;
+      height: 38px;
+      background: #e7dcc6;
+    }
+    [class~="09-les-chiffres-tdot"] {
+      position: absolute;
+      top: 14px;
+      width: 10px;
+      height: 10px;
+      box-sizing: border-box;
+      border: 2px solid #0c1613;
+      border-radius: 50%;
+    }
+    [id="09-les-chiffres-address"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1116px;
+      height: 38px;
+      line-height: 38px;
+      text-align: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 14px;
+      color: #0c1613;
+      white-space: nowrap;
+    }
+    [id="09-les-chiffres-screen"] {
+      position: absolute;
+      left: 0;
+      top: 38px;
+      width: 1116px;
+      height: 698px;
+      overflow: hidden;
+      background: #f6f7f9;
+    }
+    [id="09-les-chiffres-zoom-outer"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1116px;
+      height: 698px;
+      transform-origin: 50% 50%;
+    }
+    [id="09-les-chiffres-zoom-inner"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1800px;
+      height: 3099px;
+    }
+    [id="09-les-chiffres-shot"] {
+      display: block;
+      width: 1800px;
+      height: 3099px;
+    }
+    [id="09-les-chiffres-overlay"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1116px;
+      height: 698px;
+    }
+    /* heatmap cells Ven–Sam × 19 h–21 h at the rush view (S 0.68): x 527.74–592.34, y 374.16–417 */
+    [id="09-les-chiffres-ring"] {
+      position: absolute;
+      left: 517.74px;
+      top: 364.16px;
+      width: 84.6px;
+      height: 62.84px;
+      box-sizing: border-box;
+      border: 4px solid #e0a33a;
+      border-radius: 10px;
+      transform-origin: 50% 50%;
+    }
+    [id="09-les-chiffres-leader"] {
+      position: absolute;
+      left: 602.34px;
+      top: 394.58px;
+      width: 43.66px;
+      height: 2px;
+      background: #e0a33a;
+      transform-origin: 0% 50%;
+    }
+    [id="09-les-chiffres-callout"] {
+      position: absolute;
+      left: 646px;
+      top: 373.58px;
+      height: 44px;
+      box-sizing: border-box;
+      padding: 0 16px 0 19px;
+      border: 2px solid #0c1613;
+      border-radius: 6px;
+      background: #e7dcc6;
+      color: #0c1613;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 40px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+  </style>
+
+  <div id="root" data-composition-id="09-les-chiffres" data-width="1920" data-height="1080" data-duration="6.6">
+    <div id="09-les-chiffres-ground" class="clip" data-start="0" data-duration="6.6" data-track-index="0"></div>
+
+    <div id="09-les-chiffres-rail" class="clip" data-start="0" data-duration="6.6" data-track-index="1">
+      <img id="09-les-chiffres-logo" src="assets/atable-logo.svg" width="40" height="40" alt="" />
+      <div id="09-les-chiffres-wordmark">ATABLE</div>
+      <div id="09-les-chiffres-line"></div>
+      <div class="09-les-chiffres-dot" style="left: 653px"></div>
+      <div class="09-les-chiffres-dot" style="left: 845px"></div>
+      <div class="09-les-chiffres-dot" style="left: 1037px"></div>
+      <div class="09-les-chiffres-dot" style="left: 1229px"></div>
+      <div class="09-les-chiffres-dot 09-les-chiffres-dot-current" style="left: 1421px"></div>
+      <div class="09-les-chiffres-dot 09-les-chiffres-dot-future" style="left: 1613px"></div>
+      <div class="09-les-chiffres-station" style="left: 660px">01 CLIENT</div>
+      <div class="09-les-chiffres-station" style="left: 852px">02 SALLE</div>
+      <div class="09-les-chiffres-station" style="left: 1044px">03 CUISINE</div>
+      <div class="09-les-chiffres-station" style="left: 1236px">04 ÉQUIPE</div>
+      <div class="09-les-chiffres-station" style="left: 1428px">05 PATRON</div>
+      <div class="09-les-chiffres-station 09-les-chiffres-station-future" style="left: 1620px">06 PLATEFORME</div>
+      <div id="09-les-chiffres-ticket">TABLE 4</div>
+    </div>
+
+    <div id="09-les-chiffres-copy" class="clip" data-start="0" data-duration="6.6" data-track-index="2">
+      <div id="09-les-chiffres-headline">
+        <span class="09-les-chiffres-hl-line"><span class="09-les-chiffres-word">Les</span> <span class="09-les-chiffres-word">chiffres</span></span>
+        <span class="09-les-chiffres-hl-line"><span class="09-les-chiffres-word">qui</span> <span class="09-les-chiffres-word">comptent.</span></span>
+      </div>
+      <div id="09-les-chiffres-rule"></div>
+
+      <div id="09-les-chiffres-fig-a" class="09-les-chiffres-fig">
+        <div id="09-les-chiffres-row-a" class="09-les-chiffres-row">
+          <span class="09-les-chiffres-numgrid"><span class="09-les-chiffres-ghost" aria-hidden="true">27&#8239;019,10</span><span id="09-les-chiffres-num-a" class="09-les-chiffres-live">0,00</span></span><span class="09-les-chiffres-unit">&#160;€</span>
+        </div>
+        <div id="09-les-chiffres-label-a" class="09-les-chiffres-label">MONTANT COMMANDÉ · 30 JOURS</div>
+      </div>
+
+      <div id="09-les-chiffres-fig-b" class="09-les-chiffres-fig">
+        <div id="09-les-chiffres-row-b" class="09-les-chiffres-row">
+          <span class="09-les-chiffres-numgrid"><span class="09-les-chiffres-ghost" aria-hidden="true">30,05</span><span id="09-les-chiffres-num-b" class="09-les-chiffres-live">0,00</span></span><span class="09-les-chiffres-unit">&#160;€</span>
+        </div>
+        <div class="09-les-chiffres-label">PANIER MOYEN</div>
+      </div>
+
+      <div id="09-les-chiffres-foot">EXEMPLE · DONNÉES DE DÉMONSTRATION</div>
+    </div>
+
+    <div id="09-les-chiffres-device" class="clip" data-start="0" data-duration="6.6" data-track-index="3">
+      <div id="09-les-chiffres-window">
+        <div id="09-les-chiffres-titlebar">
+          <div class="09-les-chiffres-tdot" style="left: 16px"></div>
+          <div class="09-les-chiffres-tdot" style="left: 32px"></div>
+          <div class="09-les-chiffres-tdot" style="left: 48px"></div>
+          <div id="09-les-chiffres-address">pro.atable.fr/bistrot/tableau-de-bord</div>
+        </div>
+        <div id="09-les-chiffres-screen">
+          <div id="09-les-chiffres-zoom-outer">
+            <div id="09-les-chiffres-zoom-inner">
+              <img id="09-les-chiffres-shot" src="assets/patron-tableau-de-bord.png" width="1800" height="3099" alt="" />
+            </div>
+          </div>
+          <div id="09-les-chiffres-overlay">
+            <div id="09-les-chiffres-ring"></div>
+            <div id="09-les-chiffres-leader"></div>
+            <div id="09-les-chiffres-callout">VOS HEURES DE RUSH</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      var ID = "09-les-chiffres";
+      function el(name) {
+        return document.getElementById(ID + "-" + name);
+      }
+      function els(name) {
+        return Array.prototype.slice.call(document.getElementsByClassName(ID + "-" + name));
+      }
+
+      var tl = gsap.timeline({ paused: true });
+
+      var win = el("window");
+      var outer = el("zoom-outer");
+      var inner = el("zoom-inner");
+      var words = els("word");
+      var rule = el("rule");
+      var figA = el("fig-a");
+      var rowA = el("row-a");
+      var numA = el("num-a");
+      var labelA = el("label-a");
+      var figB = el("fig-b");
+      var rowB = el("row-b");
+      var numB = el("num-b");
+      var ring = el("ring");
+      var leader = el("leader");
+      var callout = el("callout");
+      var foot = el("foot");
+
+      // French money format, always: narrow no-break space thousands, comma decimal, 2 decimals.
+      var NNBSP = " ";
+      function euros(cents) {
+        var c = Math.round(cents);
+        var e = Math.floor(c / 100);
+        var r = c - e * 100;
+        return String(e).replace(/\B(?=(\d{3})+(?!\d))/g, NNBSP) + "," + (r < 10 ? "0" : "") + r;
+      }
+
+      // ---- camera: coordinate-target-zoom, nested wrappers (outer scales around the
+      // screen centre, inner counter-translates T = -offset). Screen 1116x698, centre (558,349).
+      // Targets in screenshot pixels (1800x3099); T does not depend on the scale.
+      var CX = 558;
+      var CY = 349;
+      function view(s, cx, cy) {
+        return { s: s, x: CX - cx, y: CY - cy };
+      }
+      var V = {
+        wide: view(0.62, 900, 562.9), // full width, top of the dashboard
+        wideIn: view(0.645, 900, 562.9), // slow drift-in
+        kpiA: view(1.75, 496.5, 419.5), // KPI « Montant commandé validé » [321,336,672,503]
+        kpiAIn: view(1.78, 496.5, 419.5),
+        kpiB: view(1.78, 1234, 419.5), // KPI « Panier moyen » [1058,336,1410,503]
+        kpiBIn: view(1.81, 1234, 419.5),
+        rush: view(0.68, 1049.5, 1368) // rush heatmap [321,1190,1778,1546]
+      };
+      function move(a, b, at, dur, ease, first) {
+        tl.fromTo(
+          outer,
+          { scale: a.s },
+          { scale: b.s, duration: dur, ease: ease, force3D: false, immediateRender: !!first },
+          at
+        );
+        tl.fromTo(
+          inner,
+          { x: a.x, y: a.y },
+          { x: b.x, y: b.y, duration: dur, ease: ease, force3D: false, immediateRender: !!first },
+          at
+        );
+      }
+      function blurPulse(at, half, peak) {
+        tl.fromTo(
+          outer,
+          { filter: "blur(0px)" },
+          { filter: "blur(" + peak + "px)", duration: half, ease: "power2.in", immediateRender: false },
+          at
+        );
+        tl.fromTo(
+          outer,
+          { filter: "blur(" + peak + "px)" },
+          { filter: "blur(0px)", duration: half, ease: "power2.out", immediateRender: false },
+          at + half
+        );
+      }
+
+      // ---- Scene 1 (0.0–1.0): window enters tilted and flattens; headline at 0.3
+      tl.fromTo(
+        win,
+        { x: 60, rotationY: -12, rotationX: 5, scale: 0.95 },
+        { x: 0, rotationY: 0, rotationX: 0, scale: 1, duration: 0.9, ease: "power3.out" },
+        0
+      );
+      tl.fromTo(win, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0);
+      move(V.wide, V.wideIn, 0, 1.0, "sine.inOut", true);
+      tl.fromTo(
+        words,
+        { y: 36, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: "power3.out", stagger: 0.07 },
+        0.3
+      );
+
+      // ---- Scene 2 (1.0–2.5): push THROUGH onto « Montant commandé validé »; count-up 0 → 27 019,10 €
+      move(V.wideIn, V.kpiA, 1.0, 0.9, "power3.inOut");
+      blurPulse(1.0, 0.45, 3);
+      move(V.kpiA, V.kpiAIn, 1.9, 0.6, "sine.inOut");
+      tl.fromTo(rule, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 0.95);
+
+      var countA = { v: 0 };
+      tl.fromTo(figA, { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power1.out" }, 1.0);
+      tl.fromTo(rowA, { scale: 0.55 }, { scale: 1, duration: 0.85, ease: "power3.out" }, 1.0);
+      tl.fromTo(
+        countA,
+        { v: 0 },
+        {
+          v: 2701910,
+          duration: 0.85,
+          ease: "power3.out",
+          immediateRender: false,
+          onUpdate: function () {
+            numA.textContent = euros(countA.v);
+          }
+        },
+        1.0
+      );
+      tl.fromTo(labelA, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 1.15);
+
+      // ---- Scene 3 (2.5–4.0): pan to « Panier moyen »; overlay swaps leftward with the pan
+      // (cut-the-curve, mirrored power4 halves, cut at the pan's peak velocity 2.8 s)
+      move(V.kpiAIn, V.kpiB, 2.5, 0.6, "power3.inOut");
+      blurPulse(2.5, 0.3, 3);
+      move(V.kpiB, V.kpiBIn, 3.1, 0.9, "sine.inOut");
+
+      tl.fromTo(figA, { x: 0 }, { x: -230, duration: 0.3, ease: "power4.in", immediateRender: false }, 2.5);
+      tl.fromTo(figA, { opacity: 1 }, { opacity: 0, duration: 0.28, ease: "power1.in", immediateRender: false }, 2.5);
+
+      var countB = { v: 0 };
+      tl.fromTo(figB, { x: 230 }, { x: 0, duration: 0.34, ease: "power4.out" }, 2.8);
+      tl.fromTo(figB, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, 2.8);
+      tl.fromTo(rowB, { scale: 0.55 }, { scale: 1, duration: 0.6, ease: "power3.out" }, 2.8);
+      tl.fromTo(
+        countB,
+        { v: 0 },
+        {
+          v: 3005,
+          duration: 0.6,
+          ease: "power3.out",
+          immediateRender: false,
+          onUpdate: function () {
+            numB.textContent = euros(countB.v);
+          }
+        },
+        2.8
+      );
+
+      // ---- Scene 4 (4.0–6.0): pull back + pan down to the rush heatmap; gold ring, callout, footline; hold
+      move(V.kpiBIn, V.rush, 4.0, 0.9, "power3.inOut");
+      blurPulse(4.0, 0.45, 2.5);
+      tl.fromTo(ring, { scale: 1.08, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "power3.out" }, 4.85);
+      tl.fromTo(leader, { scaleX: 0 }, { scaleX: 1, duration: 0.25, ease: "power3.out" }, 5.0);
+      tl.fromTo(callout, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 5.1);
+      tl.fromTo(foot, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 5.3);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines[ID] = tl;
+    })();
+  </script>
+</template>

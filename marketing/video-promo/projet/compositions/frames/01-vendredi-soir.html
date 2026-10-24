@@ -1,0 +1,391 @@
+<template>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("assets/fonts/SourceSerif4-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+      font-display: block;
+    }
+
+    /* tokens: green #1F4D3A · gold (pink) #E0A33A · cream #F4EFE6 · cream-2 #E7DCC6 · ink #0C1613 */
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+    }
+
+    /* full-bleed ground — its own clip on the lowest track; cream, hard-flips to green at 3.5 s */
+    [id="01-vendredi-soir-ground"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      background: #F4EFE6;
+    }
+    [id="01-vendredi-soir-ground-green"] {
+      position: absolute;
+      inset: 0;
+      background: #1F4D3A;
+      opacity: 0;
+    }
+
+    /* content clip + camera wrapper (slow push-in, origin = the line's centre) */
+    [id="01-vendredi-soir-stage"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+    }
+    [id="01-vendredi-soir-camera"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      transform-origin: 960px 468px;
+    }
+
+    /* mono label — top-left of centre, left edge on the « S » of the first line */
+    [id="01-vendredi-soir-label"] {
+      position: absolute;
+      left: 350px;
+      top: 330px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 26px;
+      line-height: 1;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: #1F4D3A;
+    }
+    [class~="01-vendredi-soir-word"] {
+      display: inline-block;
+    }
+
+    /* the in-place statement line (discrete-text-sequence target) */
+    [id="01-vendredi-soir-line-wrap"] {
+      position: absolute;
+      left: 0;
+      top: 358px;
+      width: 1920px;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    [id="01-vendredi-soir-line-enter"],
+    [id="01-vendredi-soir-line-beat1"],
+    [id="01-vendredi-soir-line-beat2"] {
+      display: block;
+      transform-origin: 50% 50%;
+    }
+    [id="01-vendredi-soir-line"] {
+      display: block;
+      font-family: "Source Serif 4", serif;
+      font-weight: 500;
+      font-optical-sizing: auto;
+      white-space: nowrap;
+      text-align: center;
+      letter-spacing: -0.02em;
+      color: #1F4D3A;
+    }
+    /* display-hero — « Salle pleine. » */
+    [id="01-vendredi-soir-line"][data-state="a"] {
+      font-size: 11.5cqw;
+      line-height: 0.92;
+    }
+    /* headline-xl — the 4–6 word lines */
+    [id="01-vendredi-soir-line"][data-state="b"],
+    [id="01-vendredi-soir-line"][data-state="c"] {
+      font-size: 5cqw;
+      line-height: 0.96;
+    }
+    [id="01-vendredi-soir-line"][data-state="c"] {
+      color: #F4EFE6;
+    }
+
+    /* waiting tags — anchor (centre point) > close-in slide > jitter > paper tag (pop) */
+    [class~="01-vendredi-soir-tag-anchor"] {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+    [class~="01-vendredi-soir-tag-close"],
+    [class~="01-vendredi-soir-tag-jit"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+    }
+    [class~="01-vendredi-soir-tag"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      white-space: nowrap;
+      background: #E7DCC6;
+      border: 2px solid #0C1613;
+      border-radius: 6px;
+      padding: 14px 19px 14px 22px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 1.2;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #0C1613;
+      transform-origin: 50% 50%;
+    }
+    [class~="01-vendredi-soir-tag-strong"] {
+      font-weight: 700;
+    }
+
+    /* green phase (t >= 3.5 s): gold label, cream paper tags on the green ground */
+    [id="01-vendredi-soir-camera"][data-phase="green"] [id="01-vendredi-soir-label"] {
+      color: #E0A33A;
+    }
+    [id="01-vendredi-soir-camera"][data-phase="green"] [class~="01-vendredi-soir-tag"] {
+      background: #F4EFE6;
+    }
+  </style>
+
+  <div id="root" data-composition-id="01-vendredi-soir" data-width="1920" data-height="1080" data-duration="6.4">
+    <div id="01-vendredi-soir-ground" class="clip" data-start="0" data-duration="6.4" data-track-index="0">
+      <div id="01-vendredi-soir-ground-green"></div>
+    </div>
+
+    <div id="01-vendredi-soir-stage" class="clip" data-start="0" data-duration="6.4" data-track-index="1">
+      <div id="01-vendredi-soir-camera" data-phase="cream">
+        <div id="01-vendredi-soir-label"><span class="01-vendredi-soir-word" id="01-vendredi-soir-w1">VENDREDI</span> <span class="01-vendredi-soir-word" id="01-vendredi-soir-w2">·</span> <span class="01-vendredi-soir-word" id="01-vendredi-soir-w3">20:30</span></div>
+
+        <div id="01-vendredi-soir-line-wrap">
+          <div id="01-vendredi-soir-line-enter">
+            <div id="01-vendredi-soir-line-beat1">
+              <div id="01-vendredi-soir-line-beat2">
+                <span id="01-vendredi-soir-line" data-state="a">Salle pleine.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="01-vendredi-soir-tag-anchor" style="left: 1370px; top: 336px">
+          <div class="01-vendredi-soir-tag-close" id="01-vendredi-soir-close-1">
+            <div class="01-vendredi-soir-tag-jit" id="01-vendredi-soir-jit-1">
+              <div class="01-vendredi-soir-tag" id="01-vendredi-soir-tag-1"><span class="01-vendredi-soir-tag-strong">TABLE 7</span> — ATTEND 12 MIN</div>
+            </div>
+          </div>
+        </div>
+        <div class="01-vendredi-soir-tag-anchor" style="left: 370px; top: 612px">
+          <div class="01-vendredi-soir-tag-close" id="01-vendredi-soir-close-2">
+            <div class="01-vendredi-soir-tag-jit" id="01-vendredi-soir-jit-2">
+              <div class="01-vendredi-soir-tag" id="01-vendredi-soir-tag-2"><span class="01-vendredi-soir-tag-strong">TERRASSE 2</span> — ATTEND 9 MIN</div>
+            </div>
+          </div>
+        </div>
+        <div class="01-vendredi-soir-tag-anchor" style="left: 1620px; top: 596px">
+          <div class="01-vendredi-soir-tag-close" id="01-vendredi-soir-close-3">
+            <div class="01-vendredi-soir-tag-jit" id="01-vendredi-soir-jit-3">
+              <div class="01-vendredi-soir-tag" id="01-vendredi-soir-tag-3"><span class="01-vendredi-soir-tag-strong">BAR</span> — ATTEND 6 MIN</div>
+            </div>
+          </div>
+        </div>
+        <div class="01-vendredi-soir-tag-anchor" style="left: 420px; top: 262px">
+          <div class="01-vendredi-soir-tag-close" id="01-vendredi-soir-close-4">
+            <div class="01-vendredi-soir-tag-jit" id="01-vendredi-soir-jit-4">
+              <div class="01-vendredi-soir-tag" id="01-vendredi-soir-tag-4"><span class="01-vendredi-soir-tag-strong">TABLE 12</span> — ATTEND 15 MIN</div>
+            </div>
+          </div>
+        </div>
+        <div class="01-vendredi-soir-tag-anchor" style="left: 980px; top: 716px">
+          <div class="01-vendredi-soir-tag-close" id="01-vendredi-soir-close-5">
+            <div class="01-vendredi-soir-tag-jit" id="01-vendredi-soir-jit-5">
+              <div class="01-vendredi-soir-tag" id="01-vendredi-soir-tag-5"><span class="01-vendredi-soir-tag-strong">TABLE 3</span> — «&nbsp;ON PEUT COMMANDER&nbsp;?&nbsp;»</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var P = "01-vendredi-soir-";
+      var byId = function (id) {
+        return document.getElementById(P + id);
+      };
+
+      var DURATION = 6;
+      var FLIP_T = 3.5; // hard cut to the green ground
+      var CLOSE_T = 4.0; // tags close in toward the centre
+      var CENTER = { x: 960, y: 468 };
+      var CLOSE_IN = 0.06; // ~6 % of each tag's offset from the centre
+      var EPS = 1e-6;
+
+      var tl = gsap.timeline({ paused: true });
+
+      var ground = byId("ground-green");
+      var camera = byId("camera");
+      var line = byId("line");
+      var lineEnter = byId("line-enter");
+      var beat1 = byId("line-beat1");
+      var beat2 = byId("line-beat2");
+      var words = [byId("w1"), byId("w2"), byId("w3")];
+
+      // Deterministic tag layout by index: centre point, resting tilt, pop time, jitter phase.
+      var TAGS = [
+        { x: 1370, y: 336, tilt: -2.5, at: 2.0, ph: 0.0 },
+        { x: 370, y: 612, tilt: 2.0, at: 2.5, ph: 1.3 },
+        { x: 1620, y: 596, tilt: 3.0, at: 3.0, ph: 2.6 },
+        { x: 420, y: 262, tilt: -1.5, at: 3.5, ph: 3.9 },
+        { x: 980, y: 716, tilt: 1.5, at: 4.0, ph: 5.2 },
+      ];
+      var tagEls = [];
+      var closeEls = [];
+      var jitEls = [];
+      for (var k = 0; k < TAGS.length; k++) {
+        tagEls.push(byId("tag-" + (k + 1)));
+        closeEls.push(byId("close-" + (k + 1)));
+        jitEls.push(byId("jit-" + (k + 1)));
+      }
+
+      // ---- discrete-text-sequence: whole-line states swapped by hard cut at thresholds ----
+      var SEQUENCE = [
+        { t: 0.0, text: "Salle pleine.", state: "a" },
+        { t: 1.5, text: "Tout le monde vous fait signe.", state: "b" },
+        { t: FLIP_T, text: "Et votre équipe court.", state: "c" },
+      ];
+      function stateAt(time) {
+        for (var i = SEQUENCE.length - 1; i >= 0; i--) {
+          if (time + EPS >= SEQUENCE[i].t) return SEQUENCE[i];
+        }
+        return SEQUENCE[0];
+      }
+
+      var TWO_PI = Math.PI * 2;
+      function renderAt(time) {
+        // line text + per-state type ramp / colour (instant, no transition)
+        var s = stateAt(time);
+        if (line.textContent !== s.text) line.textContent = s.text;
+        if (line.getAttribute("data-state") !== s.state) line.setAttribute("data-state", s.state);
+
+        // synchronized fg/bg hard flip
+        var phase = time + EPS >= FLIP_T ? "green" : "cream";
+        if (camera.getAttribute("data-phase") !== phase) camera.setAttribute("data-phase", phase);
+        ground.style.opacity = phase === "green" ? "1" : "0";
+
+        // subtle nervous jitter on the tags once they close in (zero before CLOSE_T)
+        var ramp = Math.max(0, Math.min(1, (time - CLOSE_T) / 0.4));
+        for (var i = 0; i < jitEls.length; i++) {
+          if (ramp <= 0) {
+            jitEls[i].style.transform = "none";
+            continue;
+          }
+          var ph = TAGS[i].ph;
+          var jx = 1.6 * ramp * (0.6 * Math.sin(TWO_PI * 7.1 * time + ph) + 0.4 * Math.sin(TWO_PI * 12.7 * time + 1.7 * ph));
+          var jy = 1.6 * ramp * (0.6 * Math.sin(TWO_PI * 8.3 * time + 2.1 * ph) + 0.4 * Math.sin(TWO_PI * 13.9 * time + 0.6 * ph));
+          var jr = 0.3 * ramp * Math.sin(TWO_PI * 5.3 * time + ph);
+          jitEls[i].style.transform =
+            "translate(" + jx.toFixed(2) + "px, " + jy.toFixed(2) + "px) rotate(" + jr.toFixed(3) + "deg)";
+        }
+      }
+      renderAt(0);
+
+      var driver = { t: 0 };
+      tl.to(
+        driver,
+        {
+          t: DURATION,
+          duration: DURATION,
+          ease: "none",
+          onUpdate: function () {
+            renderAt(driver.t);
+          },
+        },
+        0,
+      );
+
+      // ---- camera: slow continuous push-in underneath the hard cuts ----
+      tl.fromTo(camera, { scale: 1 }, { scale: 1.03, duration: DURATION, ease: "none" }, 0);
+
+      // ---- Scene 1 (0.0–1.5): label word-by-word, then « Salle pleine. » lands with a smooth settle ----
+      for (var w = 0; w < words.length; w++) {
+        tl.fromTo(
+          words[w],
+          { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" },
+          w * 0.12,
+        );
+      }
+      tl.fromTo(
+        lineEnter,
+        { opacity: 0, scale: 1.1, y: 20, filter: "blur(8px)" },
+        { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 0.75, ease: "expo.out" },
+        0.38,
+      );
+
+      // ---- Scene 2 (1.5): hard-cut swap lands with a tiny scale settle (text itself jumps instantly) ----
+      tl.fromTo(
+        beat1,
+        { scale: 1.04 },
+        { scale: 1, duration: 0.35, ease: "power3.out", immediateRender: false },
+        1.5,
+      );
+
+      // ---- Scene 2–3: the five waiting tags pop in one per beat (2.0, 2.5, 3.0, 3.5, 4.0) ----
+      for (var n = 0; n < TAGS.length; n++) {
+        var tg = TAGS[n];
+        tl.fromTo(
+          tagEls[n],
+          { xPercent: -50, yPercent: -50, scale: 0.6, rotation: tg.tilt * 3, opacity: 0 },
+          { xPercent: -50, yPercent: -50, scale: 1, rotation: tg.tilt, opacity: 1, duration: 0.4, ease: "power3.out" },
+          tg.at,
+        );
+      }
+
+      // ---- Scene 3 (3.5): ground flips green (renderAt), line swaps to cream, same settle ----
+      tl.fromTo(
+        beat2,
+        { scale: 1.04 },
+        { scale: 1, duration: 0.35, ease: "power3.out", immediateRender: false },
+        FLIP_T,
+      );
+
+      // ---- Scene 3 (4.0): tags slide ~6 % inward toward the centre, then hold ----
+      for (var c = 0; c < TAGS.length; c++) {
+        var dx = (CENTER.x - TAGS[c].x) * CLOSE_IN;
+        var dy = (CENTER.y - TAGS[c].y) * CLOSE_IN;
+        tl.fromTo(
+          closeEls[c],
+          { x: 0, y: 0 },
+          { x: dx, y: dy, duration: 0.7, ease: "power3.out" },
+          CLOSE_T,
+        );
+      }
+
+      window.__timelines["01-vendredi-soir"] = tl;
+    })();
+  </script>
+</template>

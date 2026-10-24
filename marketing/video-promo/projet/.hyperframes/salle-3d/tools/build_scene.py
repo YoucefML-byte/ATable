@@ -296,8 +296,10 @@ for k in ("wineglass", "whiteglass", "pint", "highball"):
 # orientation de la chaise : dossier vers +Y (la chaise « regarde » −Y, comme les personnages)
 vs = [v.co for o in AS["chair"].objects for v in o.data.vertices]
 top = [v for v in vs if v.z > 0.62]
-if sum(v.y for v in top) / max(1, len(top)) < 0:
-    for o in AS["chair"].objects: o.data.transform(Matrix.Rotation(math.pi, 4, "Z"))
+bx = sum(v.x for v in top) / max(1, len(top)); by = sum(v.y for v in top) / max(1, len(top))
+turn = math.pi / 2 - math.atan2(by, bx)   # le dossier du modèle Sketchfab est sur le côté (+X) : quart de tour
+for o in AS["chair"].objects: o.data.transform(Matrix.Rotation(turn, 4, "Z"))
+vs = [v.co for o in AS["chair"].objects for v in o.data.vertices]
 zs = sorted(v.z for v in vs if 0.3 < v.z < 0.6 and abs(v.y) < 0.12 and abs(v.x) < 0.12)
 SEAT_H = zs[-1] if zs else 0.46
 print("seat height", round(SEAT_H, 3))
@@ -435,7 +437,11 @@ def sit(char, action, pos, rz):
     arm, body = R.load_char(char)
     arm.name = f"{action}_rig"
     assign(arm, ACT[action])
-    hip, _ = STATS[action]
+    hip = STATS[action][0]
+    fv = STATS[action][2] if len(STATS[action]) > 2 else None
+    if fv and math.hypot(*fv) > 0.08:   # cap réel de l'animation (genoux) ; attendu : −Y
+        d = (-math.pi / 2 - math.atan2(fv[1], fv[0]) + math.pi) % (2 * math.pi) - math.pi
+        if abs(d) > math.radians(60): rz += d   # seulement les animations vraiment retournées
     rot = Matrix.Rotation(rz, 3, "Z")
     back = rot @ Vector((0, 0.05, 0))
     target = Vector((pos.x, pos.y, SEAT_H + 0.07)) + back
@@ -713,14 +719,22 @@ def infl(spans, ramp=0.3):
 
 # ---------- second serveur : il sert la table 1 (deux assiettes posées depuis le plateau)
 sv, svb = R.load_char("eric"); sv.name = "server_rig"; sv.rotation_mode = "XYZ"
-apron(sv, svb); assign(sv, ACT["st_idle_eric"])
+apron(sv, svb)
+# posture debout neutre et immobile : une image de l'attente Renderpeople (hanches centrées), tenue tout le plan ;
+# les bras (IK), la flexion des hanches et le regard sont animés par-dessus
+spose = ACT["st_idle_eric"].copy(); spose.name = "server_pose"
+for fc in spose.fcurves:
+    v = fc.evaluate(125.0)
+    for k in fc.keyframe_points: k.co[1] = v; k.handle_left[1] = v; k.handle_right[1] = v
+    fc.update()
+assign(sv, spose)
 SV_RZ = -math.pi / 2                         # tourné vers −X : face au bout droit de la table 1
 hs = STATS["st_idle_eric"][0]
-sv.rotation_euler = (0, 0, SV_RZ); sv.location = Vector((-2.47, 1.62, 0.0)) - Matrix.Rotation(SV_RZ, 3, "Z") @ Vector((hs[0], hs[1], 0))
+sv.rotation_euler = (0, 0, SV_RZ); sv.location = Vector((-2.58, 1.62, 0.0)) - Matrix.Rotation(SV_RZ, 3, "Z") @ Vector((hs[0], hs[1], 0))
 scn.frame_set(0); bpy.context.view_layer.update()
 SV_F = Vector((-1, 0, 0)); SV_L = Vector((0, -1, 0))   # avant, gauche du serveur
 ch0 = bone_world(sv, "spine_03_05").translation
-tray_c2 = Vector((ch0.x, ch0.y, 1.36)) + SV_L * 0.28 + SV_F * 0.12
+tray_c2 = Vector((ch0.x, ch0.y, 1.19)) + SV_L * 0.21 + SV_F * 0.30   # plateau à hauteur de poitrine, avant-bras horizontal
 tray2 = bpy.data.objects.new("server_tray", None); COL.objects.link(tray2); tray2.location = tray_c2
 lathe("tray_disc", [(0.0, 0.0), (0.2, 0.0), (0.205, 0.012), (0.2, 0.016), (0.19, 0.006), (0.0, 0.006)], (0, 0, 0), M["brass"], parent=tray2)
 lt = bpy.data.objects.new("server_lhand_tgt", None); COL.objects.link(lt)
@@ -729,8 +743,8 @@ add_ik_s(sv, lt, "l", chain=3)
 # deux assiettes : sur le plateau, puis posées devant les clients de droite de la table 1
 T1x, T1y, _ = TABLES[0]
 SERVE = [  # (asset, position sur le plateau, place sur la table, prise, transport, lâcher)
-    ("pasta", tray_c2 + Vector((0.07, 0.05, 0.006)), Vector((T1x + 0.33, T1y + 0.2, TOP_Z)), 0.9, 1.35, 2.25, 2.6),
-    ("pizza", tray_c2 + Vector((-0.05, -0.06, 0.006)), Vector((T1x + 0.33, T1y - 0.2, TOP_Z)), 2.8, 3.25, 4.15, 4.5),
+    ("pasta", tray_c2 + Vector((0.07, 0.05, 0.006)), Vector((T1x + 0.43, T1y + 0.2, TOP_Z)), 0.9, 1.35, 2.25, 2.6),
+    ("pizza", tray_c2 + Vector((-0.05, -0.06, 0.006)), Vector((T1x + 0.46, T1y - 0.09, TOP_Z)), 2.8, 3.25, 4.15, 4.5),
 ]
 plates = []
 for k, (asset, p0, p1, t0, t1, t2, t3) in enumerate(SERVE):
@@ -740,14 +754,41 @@ for k, (asset, p0, p1, t0, t1, t2, t3) in enumerate(SERVE):
         pos = p0.lerp(p1, u) + Vector((0, 0, 0.12 * math.sin(math.pi * u)))
         o.location = pos; o.keyframe_insert("location", frame=f)
     plates.append(o)
+SV_R = -SV_L
+scn.frame_set(0); bpy.context.view_layer.update()
+sv_hip = (sv.matrix_world @ sv.pose.bones["hip_02"].head).copy()
+REST = (Vector((sv_hip.x, sv_hip.y, 0.0)) + SV_R * 0.2 + SV_F * 0.05 + Vector((0, 0, 0.87)), Vector((0, 0, -1)), -SV_R)
+def serve_w(t):
+    return max(ease(seg(t, t0, t0 + 0.4)) * (1 - ease(seg(t, t3 - 0.4, t3))) for (_, _, _, t0, _, _, t3) in SERVE)
 def server_hand(t):
-    # la main droite suit l'assiette en cours (prise par le bord côté serveur, paume dessous) ; repos entre deux
-    for k, (asset, p0, p1, t0, t1, t2, t3) in enumerate(SERVE):
-        if t <= t3 + 0.2 or k == len(SERVE) - 1:
-            u = ease(seg(t, t1, t2)); pos = p0.lerp(p1, u) + Vector((0, 0, 0.12 * math.sin(math.pi * u)))
-            return pos + Vector((0.11, 0.0, -0.02)), SV_F.copy(), Vector((0, 0.15, 1.0)), sv, "r"
+    # main droite : au repos le long du corps ; pendant un service, elle suit l'assiette (prise par le bord, paume dessous)
+    k = 0 if t < 2.7 else 1
+    asset, p0, p1, t0, t1, t2, t3 = SERVE[k]
+    u = ease(seg(t, t1, t2)); pos = p0.lerp(p1, u) + Vector((0, 0, 0.12 * math.sin(math.pi * u)))
+    grip = (pos + Vector((0.11, 0.0, 0.005)), SV_F.copy(), Vector((0, 0.15, 1.0)).normalized())
+    w = serve_w(t)
+    P = (REST[0].lerp(grip[0], w), REST[1].lerp(grip[1], w).normalized(), REST[2].lerp(grip[2], w).normalized())
+    return P[0], P[1], P[2], sv, "r"
 rt = keyed_target("server_rhand_tgt", server_hand)
-add_ik_s(sv, rt, "r", chain=5, keys=infl([(0.9, 2.6), (2.8, 4.5)], 0.4))
+# il se penche par les hanches pour poser l'assiette (dos droit, comme un serveur), puis se redresse
+LEAN = {"spine_01_03": 28, "spine_02_04": 14, "spine_03_05": 8}
+def lean_amt(t):
+    a = 0.0
+    for (t0, t1, t2, t3) in ((1.0, 1.6, 2.25, 2.75), (2.9, 3.5, 4.15, 4.65)):
+        a = max(a, ease(seg(t, t0, t1)) * (1 - ease(seg(t, t2, t3))))
+    return a
+sact = sv.animation_data.action
+for bn, deg_ in LEAN.items():
+    M3 = sv.data.bones[bn].matrix_local.to_3x3().normalized()
+    fcs = [sact.fcurves.find(f'pose.bones["{bn}"].rotation_quaternion', index=i) for i in range(4)]
+    for kp in range(len(fcs[0].keyframe_points)):
+        t = fcs[0].keyframe_points[kp].co[0] / FPS
+        R3 = Matrix.Rotation(math.radians(deg_) * lean_amt(t), 3, "X")   # vers l'avant (−Y armature)
+        qa = Quaternion([fcs[i].keyframe_points[kp].co[1] for i in range(4)])
+        q = (M3.inverted() @ R3 @ M3).to_quaternion() @ qa
+        for i in range(4): fcs[i].keyframe_points[kp].co[1] = q[i]
+    for fc in fcs: fc.update()
+add_ik_s(sv, rt, "r", chain=3)
 # le serveur regarde ce qu'il pose ; les deux clients servis se tournent vers lui
 def look_at(arm, bone, target, keys):
     c = arm.pose.bones[bone].constraints.new("DAMPED_TRACK"); c.target = target; c.track_axis = face_axis(arm, bone)

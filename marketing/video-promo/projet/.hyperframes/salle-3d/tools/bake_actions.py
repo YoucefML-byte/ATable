@@ -60,7 +60,13 @@ def hip_stats(arm, act):
         for b in ("foot_l_076", "foot_r_083"):
             if b in arm.pose.bones: fz.append((arm.matrix_world @ arm.pose.bones[b].head).z)
     m = sum(hs, Vector()) / len(hs)
-    return [m.x, m.y, m.z], min(fz) if fz else 0.0
+    # sens réel du personnage assis : des hanches vers les genoux (projeté au sol), image du milieu
+    bpy.context.scene.frame_set(NF // 2)
+    pb = arm.pose.bones; W = arm.matrix_world
+    kn = [W @ pb[[b.name for b in pb if b.name.startswith(f"lowerleg_{s}_")][0]].head for s in "lr"]
+    hp = W @ pb["hip_02"].head
+    fv = (kn[0] + kn[1]) / 2 - hp; fv.z = 0
+    return [m.x, m.y, m.z], min(fz) if fz else 0.0, [fv.x, fv.y]
 
 def main():
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -128,8 +134,8 @@ def main():
         tm = R.resolve_map(tg); bm = {t: t for t in tm.values() if t in ssrc.data.bones}
         act = R.retarget(ssrc, tg, [(f, start + f) for f in range(NF)], nm, hip_scale=1.0, bmap=bm, hips=("hip_02", "hip_02"))
         act.use_fake_user = True; stats[nm] = hip_stats(tg, act)
-    for nm, ch, start in (("st_text_sophia", "sophia", 300), ("st_text_claudia", "claudia", 100)):
-        tg = rigs.get(ch) or R.load_char(ch)[0]; rigs[ch] = tg
+    for nm, ch, start in (("st_text_sophia", "sophia", 300), ("st_text_claudia", "claudia", 100), ("st_stand_eric", "eric", 150)):
+        tg = eric if ch == "eric" else (rigs.get(ch) or R.load_char(ch)[0]); rigs[ch] = tg
         act = R.retarget(R.load_mixamo("Texting"), tg, [(f, start + f) for f in range(NF)], nm)
         act.use_fake_user = True; stats[nm] = hip_stats(tg, act)
     # second serveur : même marche, décalée d'un demi-cycle

@@ -16,15 +16,25 @@ JOBS = [
     # convives
     ("t1_bl", "carla", "Sitting Talking", lin(30)),
     ("t1_br", "manuel", "Sitting Drinking", lin(140)),
-    ("t2_bl", "sophia", "Sitting Laughing", loop_pp(1, 251, 40)),
+    ("t2_bl", "sophia", "Sitting Talking", lin(300)),
     ("t2_fr", "nathan", "Sitting Talking", lin(420)),
     ("t3_br", "claudia", "Sitting Idle", loop_pp(1, 193, 20)),
     ("t3_fl", "manuel", "Sitting Talking", lin(760)),
     ("t5_bl", "sophia", "Sitting Talking", lin(1000)),
-    ("t5_br", "manuel", "Sitting Laughing", loop_pp(1, 251, 150)),
+    ("t5_br", "manuel", "Sitting Talking", lin(640)),
     ("t5_fl", "carla", "Sitting Drinking", lin(170)),
     ("t6_bl", "carla", "Sitting Idle", loop_pp(1, 193, 90)),
     ("t6_fr", "nathan", "Sitting Drinking", lin(195)),
+    # salle comble : toutes les chaises libres (sauf la table 4)
+    ("t1_fl", "nathan", "Sitting Talking", lin(60)),
+    ("t1_fr", "claudia", "Sitting Talking", lin(240)),
+    ("t2_br", "manuel", "Sitting Idle", loop_pp(1, 193, 30)),
+    ("t2_fl", "carla", "Sitting Idle", loop_pp(1, 193, 70)),
+    ("t3_bl", "sophia", "Sitting Drinking", lin(160)),
+    ("t3_fr", "nathan", "Sitting Talking", lin(880)),
+    ("t5_fr", "claudia", "Sitting Talking", lin(980)),
+    ("t6_br", "manuel", "Sitting Talking", lin(1080)),
+    ("t6_fl", "sophia", "Sitting Idle", loop_pp(1, 193, 140)),
     # table 4
     ("friend", "claudia", "Sitting Talking", lin(560)),
     ("hero", "nathan", "Sitting Idle", loop_pp(1, 193, 60, 0.85)),
@@ -98,7 +108,8 @@ def main():
     bpy.context.view_layer.update()
     eric = rigs.get("eric") or R.load_char("eric")[0]
     tm = R.resolve_map(eric); bm = {t: t for t in tm.values() if t in src.data.bones}
-    act = R.retarget(src, eric, [(f, (f * 1.0) % 67.0) for f in range(NF)], "waiter_walk", hip_scale=1.0, bmap=bm, hips=("hip_02", "hip_02"))
+    # serveur débordé : il presse le pas (cycle de marche joué 1,3 fois plus vite, avancée accordée dans build_scene)
+    act = R.retarget(src, eric, [(f, (f * 1.3) % 67.0) for f in range(NF)], "waiter_walk", hip_scale=1.0, bmap=bm, hips=("hip_02", "hip_02"))
     act.use_fake_user = True
     stats["walk_speed"] = 1.16
     # cliente debout au comptoir : attente naturelle de Sophia (Renderpeople) retargetée sur le squelette réorienté
@@ -110,6 +121,21 @@ def main():
     tm = R.resolve_map(soph); bm = {t: t for t in tm.values() if t in ssrc.data.bones}
     act = R.retarget(ssrc, soph, [(f, 40 + f) for f in range(NF)], "bar_idle", hip_scale=1.0, bmap=bm, hips=("hip_02", "hip_02"))
     act.use_fake_user = True; stats["bar_idle"] = hip_stats(soph, act)
+    # clients debout qui attendent une table (salle comble) : attente Renderpeople ou « Texting » Mixamo
+    for nm, ch, start in (("st_idle_eric", "eric", 60), ("st_idle_nathan", "nathan", 330), ("st_idle_carla", "carla", 120),
+                          ("st_idle_manuel", "manuel", 200), ("st_idle_claudia", "claudia", 260)):
+        tg = eric if ch == "eric" else (rigs.get(ch) or R.load_char(ch)[0]); rigs[ch] = tg
+        tm = R.resolve_map(tg); bm = {t: t for t in tm.values() if t in ssrc.data.bones}
+        act = R.retarget(ssrc, tg, [(f, start + f) for f in range(NF)], nm, hip_scale=1.0, bmap=bm, hips=("hip_02", "hip_02"))
+        act.use_fake_user = True; stats[nm] = hip_stats(tg, act)
+    for nm, ch, start in (("st_text_sophia", "sophia", 300), ("st_text_claudia", "claudia", 100)):
+        tg = rigs.get(ch) or R.load_char(ch)[0]; rigs[ch] = tg
+        act = R.retarget(R.load_mixamo("Texting"), tg, [(f, start + f) for f in range(NF)], nm)
+        act.use_fake_user = True; stats[nm] = hip_stats(tg, act)
+    # second serveur : même marche, décalée d'un demi-cycle
+    act = R.retarget(src, eric, [(f, (f * 1.0 + 33.0) % 67.0) for f in range(NF)], "waiter_walk2", hip_scale=1.0,
+                     bmap={t: t for t in R.resolve_map(eric).values() if t in src.data.bones}, hips=("hip_02", "hip_02"))
+    act.use_fake_user = True
     man = rigs.get("manuel") or R.load_char("manuel")[0]
     act = R.retarget(R.load_mixamo("Texting"), man, [(f, 200 + f) for f in range(NF)], "bar_text")
     act.use_fake_user = True; stats["bar_text"] = hip_stats(man, act)

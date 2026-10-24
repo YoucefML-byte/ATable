@@ -448,7 +448,13 @@ SEATS = [(0, -1, -1, "t1_bl", "carla"), (0, -1, 1, "t1_br", "manuel"),
          (1, -1, -1, "t2_bl", "sophia"), (1, 1, 1, "t2_fr", "nathan"),
          (2, -1, 1, "t3_br", "claudia"), (2, 1, -1, "t3_fl", "manuel"),
          (4, -1, -1, "t5_bl", "sophia"), (4, -1, 1, "t5_br", "manuel"), (4, 1, -1, "t5_fl", "carla"),
-         (5, -1, -1, "t6_bl", "carla"), (5, 1, 1, "t6_fr", "nathan")]
+         (5, -1, -1, "t6_bl", "carla"), (5, 1, 1, "t6_fr", "nathan"),
+         # salle comble : toutes les autres chaises (la table 4 reste à deux pour le gros plan)
+         (0, 1, -1, "t1_fl", "nathan"), (0, 1, 1, "t1_fr", "claudia"),
+         (1, -1, 1, "t2_br", "manuel"), (1, 1, -1, "t2_fl", "carla"),
+         (2, -1, -1, "t3_bl", "sophia"), (2, 1, 1, "t3_fr", "nathan"),
+         (4, 1, 1, "t5_fr", "claudia"),
+         (5, -1, 1, "t6_br", "manuel"), (5, 1, -1, "t6_fl", "sophia")]
 OCC = {(s[0], s[1], s[2]) for s in SEATS} | {(3, 1, 1), (3, -1, -1)}
 RIGS = {}
 for t, side, slot, act, ch in SEATS:
@@ -472,13 +478,24 @@ for ch, act, x in (("sophia", "bar_idle", 4.15), ("manuel", "bar_text", 5.6)):
     hs = STATS[act][0]; rz = math.pi
     r.rotation_euler = (0, 0, rz); r.location = Vector((x, 2.72, 0.0)) - Matrix.Rotation(rz, 3, "Z") @ Vector((hs[0], hs[1], 0))
     RIGS[act] = r
+# salle comble : des clients attendent une table, debout près de l'entrée et au bout du bar ; un de plus au comptoir
+def deg(a): return math.radians(a)
+STANDING = [("nathan", "st_idle_nathan", (4.70, -3.25), deg(90)), ("carla", "st_idle_carla", (5.375, -2.86), deg(-30)),
+            ("sophia", "st_text_sophia", (5.375, -3.64), deg(-150)),
+            ("manuel", "st_idle_manuel", (5.55, 1.2), deg(121)), ("claudia", "st_idle_claudia", (6.05, 1.5), deg(-59)),
+            ("claudia", "st_text_claudia", (4.85, 2.72), math.pi)]
+for ch, act, (x, y), rz in STANDING:
+    r = R.load_char(ch)[0]; r.name = act + "_rig"; assign(r, ACT[act]); r.rotation_mode = "XYZ"
+    hs = STATS[act][0]
+    r.rotation_euler = (0, 0, rz); r.location = Vector((x, y, 0.0)) - Matrix.Rotation(rz, 3, "Z") @ Vector((hs[0], hs[1], 0))
+    RIGS[act] = r
 
 # couverts / plats devant chaque convive
-DRINKERS = {"t1_br", "t5_fl", "t6_fr"}
+DRINKERS = {"t1_br", "t5_fl", "t6_fr", "t3_bl"}
 for t, side, slot, act, ch in SEATS:
     tx, ty, _ = TABLES[t]
     d = Vector((tx + slot * 0.3, ty - side * 0.2, TOP_Z))
-    if True:
+    if act not in ("t1_br", "t1_fr"):   # ces deux-là sont servis pendant le plan par le second serveur
         A.place(AS["pizza"] if (t + slot) % 2 else AS["pasta"], d, rot_z=t * 1.3 + slot, name="dish")
     A.place(AS["fork"], d + Vector((-0.17, 0, 0.002)), rot_z=math.pi / 2, name="fork")
     A.place(AS["knife"], d + Vector((0.17, 0, 0.002)), rot_z=math.pi / 2, name="knife")
@@ -504,11 +521,9 @@ def hand_prop(arm, coll, frame, offset=(0, 0, 0), bone="hand_r_051"):
     c = o.constraints.new("CHILD_OF"); c.target = arm; c.subtarget = bone
     c.inverse_matrix = hw.inverted()
     return o
-for act in ("t1_br", "t5_fl", "t6_fr"):
+for act in sorted(DRINKERS):
     hand_prop(RIGS[act], AS["wineglass"], 20, (0, 0, -0.07))
 
-# ============================================================ le serveur (Eric + marche Renderpeople, plateau)
-waiter, wbody = R.load_char("eric"); waiter.name = "waiter_rig"; waiter.rotation_mode = "XYZ"
 def apron(arm, body):
     """Tablier de garçon de café : feuille pondérée hanche / cuisses (pose de repos, repère de l'armature)."""
     import bmesh
@@ -549,40 +564,6 @@ def apron(arm, body):
     m = mat_flat("apron_cotton", "#ECE8DE", rough=0.85, **{"Sheen Weight": 0.3})
     me.materials.append(m)
     return o
-apron(waiter, wbody)
-waiter.animation_data_create()
-V_WALK = 1.16
-wact = ACT["waiter_walk"]
-assign(waiter, wact)
-scn.frame_set(0); bpy.context.view_layer.update()
-h0 = waiter.matrix_world @ waiter.pose.bones["hip_02"].head
-W_X0, W_Y = 5.9, 0.05
-for f in range(NF):
-    t = f / FPS
-    waiter.location = (W_X0 - V_WALK * t - h0.y, W_Y + h0.x, 0)  # tourné de −90° : il marche vers −X
-    waiter.rotation_euler = (0, 0, -math.pi / 2)
-    waiter.keyframe_insert("location", frame=f)
-waiter.keyframe_insert("rotation_euler", frame=0)
-for fc in waiter.animation_data.action.fcurves:
-    if fc.data_path in ("location", "rotation_euler"):
-        for k in fc.keyframe_points: k.interpolation = "LINEAR"
-# plateau porté à l'épaule : cible IK rattachée au thorax
-scn.frame_set(0); bpy.context.view_layer.update()
-def bone_world(arm, b): return arm.matrix_world @ arm.pose.bones[b].matrix
-chest = bone_world(waiter, "spine_03_05")
-fwd = (waiter.matrix_world.to_3x3() @ Vector((0, -1, 0))).normalized()
-right = (waiter.matrix_world.to_3x3() @ Vector((-1, 0, 0))).normalized()
-tray_c = chest.translation + right * 0.27 + fwd * 0.18 + Vector((0, 0, 0.02))
-tray_c.z = 1.36
-tray = bpy.data.objects.new("tray", None); COL.objects.link(tray)
-tray.location = tray_c - chest.translation  # décalage monde (le serveur garde le même cap)
-c = tray.constraints.new("COPY_LOCATION"); c.target = waiter; c.subtarget = "spine_03_05"; c.use_offset = True
-lathe("tray_disc", [(0.0, 0.0), (0.2, 0.0), (0.205, 0.012), (0.2, 0.016), (0.19, 0.006), (0.0, 0.006)], (0, 0, 0), M["brass"], parent=tray)
-A.place(AS["pasta"], (0.06, -0.04, 0.006), scale=0.8, name="tray_dish", parent=None).parent = tray
-A.place(AS["wineglass"], (-0.1, 0.09, 0.006), name="tray_glass").parent = tray
-A.place(AS["wineglass"], (-0.13, -0.08, 0.006), name="tray_glass").parent = tray
-for o in tray.children:
-    if o.name.startswith("I_") or o.name.startswith("tray_"): pass
 
 def hand_rest_frame(arm):
     """Repère de repos de la main droite (espace armature) : colonnes doigts F0, paume N0 (côté paume), pouce T0.
@@ -646,13 +627,166 @@ def add_ik(arm, target, influence_keys=None, pole=None):
             cr.influence = v; cr.keyframe_insert("influence", frame=f)
     return ik, cr
 
-# paume vers le haut sous le plateau, doigts vers l'avant
+# ============================================================ les serveurs (Eric + marche Renderpeople, tablier, plateau à l'épaule)
+V_WALK = 1.16 * 1.3   # serveur pressé : marche accélérée de 30 % (pied d'appui sans glissement)
+def bone_world(arm, b): return arm.matrix_world @ arm.pose.bones[b].matrix
+def make_waiter(name, act, x0, y):
+    w, wb = R.load_char("eric"); w.name = name + "_rig"; w.rotation_mode = "XYZ"
+    apron(w, wb); assign(w, ACT[act])
+    w.location = (0, 0, 0); w.rotation_euler = (0, 0, 0)
+    scn.frame_set(0); bpy.context.view_layer.update()
+    h0 = w.matrix_world @ w.pose.bones["hip_02"].head
+    for f in range(NF):
+        t = f / FPS
+        w.location = (x0 - V_WALK * t - h0.y, y + h0.x, 0)  # tourné de −90° : il marche vers −X
+        w.rotation_euler = (0, 0, -math.pi / 2)
+        w.keyframe_insert("location", frame=f)
+    w.keyframe_insert("rotation_euler", frame=0)
+    for fc in w.animation_data.action.fcurves:
+        if fc.data_path in ("location", "rotation_euler"):
+            for k in fc.keyframe_points: k.interpolation = "LINEAR"
+    scn.frame_set(0); bpy.context.view_layer.update()
+    chest = bone_world(w, "spine_03_05")
+    fwd = (w.matrix_world.to_3x3() @ Vector((0, -1, 0))).normalized()
+    right = (w.matrix_world.to_3x3() @ Vector((-1, 0, 0))).normalized()
+    tray_c = chest.translation + right * 0.27 + fwd * 0.18 + Vector((0, 0, 0.02)); tray_c.z = 1.36
+    tray = bpy.data.objects.new(name + "_tray", None); COL.objects.link(tray)
+    tray.location = tray_c - chest.translation  # décalage monde (le serveur garde le même cap)
+    c = tray.constraints.new("COPY_LOCATION"); c.target = w; c.subtarget = "spine_03_05"; c.use_offset = True
+    lathe("tray_disc", [(0.0, 0.0), (0.2, 0.0), (0.205, 0.012), (0.2, 0.016), (0.19, 0.006), (0.0, 0.006)], (0, 0, 0), M["brass"], parent=tray)
+    A.place(AS["pasta"], (0.06, -0.04, 0.006), scale=0.8, name="tray_dish").parent = tray
+    A.place(AS["wineglass"], (-0.1, 0.09, 0.006), name="tray_glass").parent = tray
+    A.place(AS["wineglass"], (-0.13, -0.08, 0.006), name="tray_glass").parent = tray
+    # main droite : paume vers le haut sous le plateau, doigts vers l'avant
+    wt = bpy.data.objects.new(name + "_hand_tgt", None); COL.objects.link(wt)
+    wt.matrix_world = hand_target(w, "w", tray_c - fwd * 0.05 - Vector((0, 0, 0.035)), fwd + right * 0.25, Vector((0, 0, 1)))
+    wt.parent = tray; wt.matrix_parent_inverse = Matrix.Translation(tray_c).inverted()
+    add_ik(w, wt)
+    return w
+waiter = make_waiter("waiter", "waiter_walk", 6.2, 0.05)
+
+def face_axis(arm, bone):
+    """Axe local de l'os le plus proche de la direction du regard au repos (−Y armature)."""
+    m = arm.data.bones[bone].matrix_local.to_3x3()
+    best = max(((abs(m.col[i].dot(Vector((0, -1, 0)))), i, m.col[i].dot(Vector((0, -1, 0))) > 0) for i in range(3)))
+    return ("TRACK_" if best[2] else "TRACK_NEGATIVE_") + "XYZ"[best[1]]
+
+# ---------- mains gauche / droite (généralisation des fonctions de la main droite)
+def hand_bones(side):
+    return ("hand_r_051", "lowerarm_r_050") if side == "r" else ("hand_l_026", "lowerarm_l_025")
+def hand_rot_s(arm, F, P, side):
+    bones = arm.data.bones; hb = hand_bones(side)[0]
+    h = bones[hb].head_local
+    mid = [b for b in bones if b.name.startswith(f"middle_01_{side}_")][0].head_local
+    idx = [b for b in bones if b.name.startswith(f"index_01_{side}_")][0].head_local
+    pin = [b for b in bones if b.name.startswith(f"pinky_01_{side}_")][0].head_local
+    F0 = (mid - h).normalized(); Aa = (idx - pin).normalized()
+    N0 = Aa.cross(F0).normalized() if side == "r" else F0.cross(Aa).normalized()   # côté paume
+    B0 = Matrix((F0, N0, F0.cross(N0))).transposed()
+    F = F.normalized(); P = (P - F * P.dot(F)).normalized()
+    armrot = arm.matrix_world.to_3x3().normalized()
+    Fa = armrot.inverted() @ F; Pa = armrot.inverted() @ P
+    Bt = Matrix((Fa, Pa, Fa.cross(Pa))).transposed()
+    return armrot @ (Bt @ B0.transposed()) @ bones[hb].matrix_local.to_3x3()
+def add_ik_s(arm, target, side, chain=2, keys=None):
+    hb, lb = hand_bones(side)
+    ik = arm.pose.bones[lb].constraints.new("IK"); ik.target = target; ik.chain_count = chain; ik.use_stretch = False
+    cr = arm.pose.bones[hb].constraints.new("COPY_ROTATION"); cr.target = target
+    cr.mix_mode = "REPLACE"; cr.target_space = "WORLD"; cr.owner_space = "WORLD"
+    for f, v in (keys or []):
+        ik.influence = v; ik.keyframe_insert("influence", frame=f); cr.influence = v; cr.keyframe_insert("influence", frame=f)
+    return ik, cr
+def keyed_target(name, fn):
+    """Empty animé image par image : fn(t) -> (position, F, P, arm, side) ; orientation de main calculée."""
+    e = bpy.data.objects.new(name, None); COL.objects.link(e); e.rotation_mode = "QUATERNION"
+    for f in range(NF):
+        pos, F, P, arm, side = fn(f / FPS)
+        e.location = pos; e.rotation_quaternion = hand_rot_s(arm, F, P, side).to_quaternion()
+        e.keyframe_insert("location", frame=f); e.keyframe_insert("rotation_quaternion", frame=f)
+    return e
+def infl(spans, ramp=0.3):
+    """Clés d'influence 0 -> 1 -> 0 pour une liste de (début, fin) en secondes."""
+    ks = [(0, 0.0)]
+    for a, b in spans:
+        ks += [(int(a * FPS), 0.0), (int((a + ramp) * FPS), 1.0), (int((b - ramp) * FPS), 1.0), (int(b * FPS), 0.0)]
+    return ks
+
+# ---------- second serveur : il sert la table 1 (deux assiettes posées depuis le plateau)
+sv, svb = R.load_char("eric"); sv.name = "server_rig"; sv.rotation_mode = "XYZ"
+apron(sv, svb); assign(sv, ACT["st_idle_eric"])
+SV_RZ = -math.pi / 2                         # tourné vers −X : face au bout droit de la table 1
+hs = STATS["st_idle_eric"][0]
+sv.rotation_euler = (0, 0, SV_RZ); sv.location = Vector((-2.47, 1.62, 0.0)) - Matrix.Rotation(SV_RZ, 3, "Z") @ Vector((hs[0], hs[1], 0))
 scn.frame_set(0); bpy.context.view_layer.update()
-# signe de la normale de paume : la paume (main droite au repos) regarde vers le corps (+X armature)
-wt = bpy.data.objects.new("waiter_hand_tgt", None); COL.objects.link(wt)
-wt.matrix_world = hand_target(waiter, "w", tray_c - fwd * 0.05 - Vector((0, 0, 0.035)) + right * 0.0, fwd + right * 0.25, Vector((0, 0, 1)))
-wt.parent = tray; wt.matrix_parent_inverse = Matrix.Translation(tray_c).inverted()
-add_ik(waiter, wt)
+SV_F = Vector((-1, 0, 0)); SV_L = Vector((0, -1, 0))   # avant, gauche du serveur
+ch0 = bone_world(sv, "spine_03_05").translation
+tray_c2 = Vector((ch0.x, ch0.y, 1.36)) + SV_L * 0.28 + SV_F * 0.12
+tray2 = bpy.data.objects.new("server_tray", None); COL.objects.link(tray2); tray2.location = tray_c2
+lathe("tray_disc", [(0.0, 0.0), (0.2, 0.0), (0.205, 0.012), (0.2, 0.016), (0.19, 0.006), (0.0, 0.006)], (0, 0, 0), M["brass"], parent=tray2)
+lt = bpy.data.objects.new("server_lhand_tgt", None); COL.objects.link(lt)
+lt.matrix_world = Matrix.Translation(tray_c2 + SV_F * 0.03 - Vector((0, 0, 0.035))) @ hand_rot_s(sv, SV_F - SV_L * 0.25, Vector((0, 0, 1)), "l").to_4x4()
+add_ik_s(sv, lt, "l", chain=3)
+# deux assiettes : sur le plateau, puis posées devant les clients de droite de la table 1
+T1x, T1y, _ = TABLES[0]
+SERVE = [  # (asset, position sur le plateau, place sur la table, prise, transport, lâcher)
+    ("pasta", tray_c2 + Vector((0.07, 0.05, 0.006)), Vector((T1x + 0.33, T1y + 0.2, TOP_Z)), 0.9, 1.35, 2.25, 2.6),
+    ("pizza", tray_c2 + Vector((-0.05, -0.06, 0.006)), Vector((T1x + 0.33, T1y - 0.2, TOP_Z)), 2.8, 3.25, 4.15, 4.5),
+]
+plates = []
+for k, (asset, p0, p1, t0, t1, t2, t3) in enumerate(SERVE):
+    o = A.place(AS[asset], p0, scale=0.75, name=f"served_{k}")
+    for f in range(NF):
+        t = f / FPS; u = ease(seg(t, t1, t2))
+        pos = p0.lerp(p1, u) + Vector((0, 0, 0.12 * math.sin(math.pi * u)))
+        o.location = pos; o.keyframe_insert("location", frame=f)
+    plates.append(o)
+def server_hand(t):
+    # la main droite suit l'assiette en cours (prise par le bord côté serveur, paume dessous) ; repos entre deux
+    for k, (asset, p0, p1, t0, t1, t2, t3) in enumerate(SERVE):
+        if t <= t3 + 0.2 or k == len(SERVE) - 1:
+            u = ease(seg(t, t1, t2)); pos = p0.lerp(p1, u) + Vector((0, 0, 0.12 * math.sin(math.pi * u)))
+            return pos + Vector((0.11, 0.0, -0.02)), SV_F.copy(), Vector((0, 0.15, 1.0)), sv, "r"
+rt = keyed_target("server_rhand_tgt", server_hand)
+add_ik_s(sv, rt, "r", chain=5, keys=infl([(0.9, 2.6), (2.8, 4.5)], 0.4))
+# le serveur regarde ce qu'il pose ; les deux clients servis se tournent vers lui
+def look_at(arm, bone, target, keys):
+    c = arm.pose.bones[bone].constraints.new("DAMPED_TRACK"); c.target = target; c.track_axis = face_axis(arm, bone)
+    for f, v in keys: c.influence = v; c.keyframe_insert("influence", frame=f)
+look_at(sv, "head_07", rt, [(f, v * 0.7) for f, v in infl([(0.9, 2.6), (2.8, 4.5)], 0.35)])
+svh = bpy.data.objects.new("server_head", None); COL.objects.link(svh)
+svh.location = bone_world(sv, "head_07").translation
+for act_, span in (("t1_br", (1.0, 3.0)), ("t1_fr", (2.9, 4.8))):
+    look_at(RIGS[act_], "head_07", svh, [(f, v * 0.7) for f, v in infl([span], 0.4)])
+
+# ---------- la salle déborde : trois clients lèvent la main pour appeler, le serveur pressé jette des coups d'œil
+CALLERS = [("t6_bl", (0.4, 2.1)), ("t3_fl", (1.0, 2.7)), ("t2_fr", (2.1, 3.8))]
+for act_, (a, b) in CALLERS:
+    r = RIGS[act_]
+    scn.frame_set(int(a * FPS)); bpy.context.view_layer.update()
+    shp = bone_world(r, "upperarm_r_049").translation
+    facing = (r.matrix_world.to_3x3() @ Vector((0, -1, 0))).normalized(); facing.z = 0; facing.normalize()
+    rightv = facing.cross(Vector((0, 0, 1))).normalized()
+    def caller(t, shp=shp, facing=facing, rightv=rightv, r=r):
+        wave = 0.055 * math.sin(2 * math.pi * 2.2 * t)
+        pos = shp + Vector((0, 0, 0.40)) + facing * 0.10 + rightv * (0.06 + wave)
+        return pos, Vector((0, 0, 1)) + rightv * wave * 2, facing, r, "r"
+    tg = keyed_target(f"{act_}_call_tgt", caller)
+    add_ik_s(r, tg, "r", 2, infl([(a, b)], 0.35))
+wh = bpy.data.objects.new("waiter_glance", None); COL.objects.link(wh)
+# coups d'œil : le regard du serveur passe d'un client qui appelle à l'autre (cible animée sur leurs têtes)
+GL = [("t6_bl", 0.9, 1.6), ("t3_fl", 1.75, 2.45), ("t2_fr", 2.65, 3.4)]
+heads = {}
+for act_, a, b in GL:
+    scn.frame_set(int((a + b) / 2 * FPS)); bpy.context.view_layer.update()
+    heads[act_] = bone_world(RIGS[act_], "head_07").translation.copy()
+for f in range(NF):
+    t = f / FPS; pos = None
+    for i, (act_, a, b) in enumerate(GL):
+        if t < b or i == len(GL) - 1:
+            prev = heads[GL[i - 1][0]] if i > 0 else heads[act_]
+            pos = prev.lerp(heads[act_], ease(seg(t, a - 0.15, a + 0.1))); break
+    wh.location = pos; wh.keyframe_insert("location", frame=f)
+look_at(waiter, "head_07", wh, [(0, 0.0), (int(0.8 * FPS), 0.0), (int(1.0 * FPS), 0.85), (int(3.4 * FPS), 0.85), (int(3.7 * FPS), 0.0)])
 
 # ============================================================ le téléphone du client
 ph = bpy.data.objects.new("phone", None); COL.objects.link(ph)
@@ -674,7 +808,7 @@ PH_KEYS = [
     (3.85, phone_mat((hero_pos.x - 0.06, hero_pos.y + 0.33, TOP_Z + PT / 2), (0, 0, 1), (0.25, 1, 0))),
     (4.55, phone_mat((hero_pos.x - 0.03, hero_pos.y + 0.24, 1.0), (0, -0.75, 0.66), (0.05, 0.66, 0.75))),
     (4.85, phone_mat((hero_pos.x - 0.035, hero_pos.y + 0.25, 1.005), (0, -0.73, 0.68), (0.05, 0.68, 0.73))),
-    (5.45, phone_mat((P4.x + 0.02, P4.y - 0.085, TOP_Z + 0.24), (0, -0.34, 0.94), (0, 0.94, 0.34))),
+    (5.45, phone_mat((P4.x + 0.015, P4.y - 0.105, TOP_Z + 0.235), (0, -0.34, 0.94), (0, 0.94, 0.34))),
 ]
 def phone_pose(t):
     if t <= PH_KEYS[0][0]: return PH_KEYS[0][1].copy()
@@ -699,13 +833,32 @@ PALM = (bh[[x.name for x in bh if x.name.startswith("middle_01_r_")][0]].head_lo
 def grip(F, P, mcp):
     F = Vector(F).normalized(); P = Vector(P).normalized(); mcp = Vector(mcp)
     return F, P, mcp - F * PALM
-G_PICK = grip((-1.0, 0.15, 0.0), (0, 0, -1), (-0.006, 0.004, PT / 2 + 0.03))
-G_HOLD = grip((-0.72, 0.69, 0.0), (0, 0, 1), (-0.004, -0.006, -(PT / 2 + 0.017)))
+# paramètres de prise optimisés par tools/optimize_grip.py sur le maillage déformé réel :
+# aucun sommet de la main dans le téléphone (ni sous la table), écran dégagé, doigts au contact des bords
+GP = json.load(open(B + "/grip_pick.json")); GH = json.load(open(B + "/grip_hold.json"))
+def fdir(a): return (-math.cos(math.radians(a)), math.sin(math.radians(a)), 0.0)
+G_PICK = grip(fdir(GP["ang"]), (0, 0, -1), (GP["mx"], GP["my"], GP["dz"]))
+G_HOLD = grip(fdir(GH["ang"]), (0, 0, 1), (GH["mx"], GH["my"], GH["dz"]))
+def _frame(F, P):
+    F = Vector(F).normalized(); P = Vector(P); P = (P - F * P.dot(F)).normalized()
+    return Matrix((F, P, F.cross(P))).transposed().to_quaternion()
+# changement de prise : la main « roule » autour du bord droit du téléphone, doigts parallèles au bord,
+# passe derrière l'appareil, puis pivote jusqu'à la tenue (aucun doigt ne traverse le téléphone)
+GRIP_KEYS = [
+    (0.00, G_PICK[2], _frame(G_PICK[0], G_PICK[1])),
+    (0.30, Vector((0.075, -0.01, 0.035)), _frame((0, -1, 0), (-0.7, 0, -0.7))),
+    (0.50, Vector((0.095, -0.01, 0.0)), _frame((0, -1, 0), (-1, 0, 0))),
+    (0.72, Vector((0.07, -0.01, -0.035)), _frame((-0.2, -1, 0), (-0.7, 0, 0.7))),
+    (1.00, G_HOLD[2], _frame(G_HOLD[0], G_HOLD[1])),
+]
 def grip_at(t):
-    k = ease(seg(t, 3.85, 4.4))
-    F = G_PICK[0].lerp(G_HOLD[0], k).normalized(); P = G_PICK[1].lerp(G_HOLD[1], k)
-    if P.length < 0.3: P = (G_PICK[1] + G_HOLD[1] + Vector((0, -1, 0))).normalized()
-    return F, P.normalized(), G_PICK[2].lerp(G_HOLD[2], k)
+    k = ease(seg(t, 3.85, 4.3))
+    for (ka, ma, qa), (kb, mb, qb) in zip(GRIP_KEYS, GRIP_KEYS[1:]):
+        if k <= kb:
+            u = (k - ka) / (kb - ka)
+            q = qa.slerp(qb, u); M3 = q.to_matrix()
+            return M3.col[0], M3.col[1], ma.lerp(mb, u)
+    M3 = GRIP_KEYS[-1][2].to_matrix(); return M3.col[0], M3.col[1], GRIP_KEYS[-1][1]
 ht = bpy.data.objects.new("hero_hand_tgt", None); COL.objects.link(ht); ht.rotation_mode = "QUATERNION"
 scn.frame_set(0); bpy.context.view_layer.update()
 for f in range(NF):
@@ -715,9 +868,10 @@ for f in range(NF):
     ht.location = m.translation; ht.rotation_quaternion = m.to_quaternion()
     ht.keyframe_insert("location", frame=f); ht.keyframe_insert("rotation_quaternion", frame=f)
 # doigts : animation jusqu'à 3,4 s, puis prise (pincée sur la table), puis enroulement du bord du téléphone
-CURL_PICK = {"index": (12, 30, 20), "middle": (14, 34, 22), "ring": (16, 38, 24), "pinky": (18, 40, 24)}
-CURL_HOLD = {"index": (16, 58, 30), "middle": (14, 66, 32), "ring": (18, 70, 32), "pinky": (22, 72, 30)}
-QP = finger_pose(hero, CURL_PICK, (10, 20, 15, 10)); QH = finger_pose(hero, CURL_HOLD, (24, 14, 12, 10))
+def curls_of(G): return {f: (G[f + "1"], G[f + "2"], G[f + "3"]) for f in ("index", "middle", "ring", "pinky")}
+QP = finger_pose(hero, curls_of(GP), (GP["t0"], GP["t1"], GP["t2"], GP["t3"]))
+QH = finger_pose(hero, curls_of(GH), (GH["t0"], GH["t1"], GH["t2"], GH["t3"]))
+QO = finger_pose(hero, {f: (2, 8, 4) for f in ("index", "middle", "ring", "pinky")}, (GH["t0"], 4, 0, 4))
 ha = ACT["hero"]
 for bn in QP:
     fcs = [ha.fcurves.find(f'pose.bones["{bn}"].rotation_quaternion', index=i) for i in range(4)]
@@ -726,7 +880,9 @@ for bn in QP:
         fr = fcs[0].keyframe_points[kp].co[0]; t = fr / FPS
         if t < 3.4: continue
         qa = Quaternion([fcs[i].keyframe_points[kp].co[1] for i in range(4)])
-        qg = QP[bn].slerp(QH[bn], ease(seg(t, 3.85, 4.4)))
+        # la main s'ouvre pendant qu'elle change de prise, puis les doigts se referment autour du bord
+        if t < 4.1: qg = QP[bn].slerp(QO[bn], ease(seg(t, 3.85, 3.98)))
+        else: qg = QO[bn].slerp(QH[bn], ease(seg(t, 4.25, 4.45)))
         q = qa.slerp(qg, ease(seg(t, 3.4, 3.85)))
         for i in range(4): fcs[i].keyframe_points[kp].co[1] = q[i]
     for fc in fcs: fc.update()
@@ -863,5 +1019,5 @@ tree.links.new(rgb.outputs[0], ao.inputs[1]); tree.links.new(rl.outputs["Image"]
 ao.use_premultiply = False
 
 bpy.ops.file.make_paths_relative() if False else None
-bpy.ops.wm.save_as_mainfile(filepath=B + "/salle.blend")
+bpy.ops.wm.save_as_mainfile(filepath=os.environ.get("OUT_BLEND", B + "/salle.blend"))
 print("BUILD OK")

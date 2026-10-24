@@ -16,11 +16,16 @@ scan validé (5,6 s ≈ 37,6 s) → la caméra entre dans l'écran (6,2–7,9 s)
 - Les 6 tables du plan 02c, plaques dorées au bout indiqué (table 4 devant à gauche), autocollant QR « TABLE n »,
   gravure « A T A B L E » ; suspensions laiton, appliques, bougies, plantes, comptoir vert à plateau de marbre,
   tireuses, étagère à bouteilles éclairée, tablette du personnel (écran « Salle » de l'application).
-- 17 personnages réalistes (scans Renderpeople) animés par capture de mouvement : convives (Mixamo « Sitting
-  Talking / Laughing / Drinking / Idle »), serveuse au comptoir et client debout (« Texting »), cliente debout
-  (attente Renderpeople), serveur en gilet et tablier qui traverse la salle plateau à l'épaule (marche
-  Renderpeople), le client de la table 4 (« Sitting Idle » + doigts de « Texting », bras droit en IK sur le
-  téléphone, tête qui suit l'écran) et son amie qui se tourne vers l'écran.
+- Salle comble : 33 personnages réalistes (scans Renderpeople) animés par capture de mouvement. Toutes les
+  chaises sont occupées (la table 4 reste à deux pour le gros plan) : convives (Mixamo « Sitting Talking /
+  Drinking / Idle »), serveuse au comptoir, trois clients au comptoir, un groupe qui attend debout près de
+  l'entrée et un duo au bout du bar (« Texting » Mixamo, attente Renderpeople).
+- Les serveurs sont débordés : l'un traverse la salle d'un pas pressé (marche Renderpeople accélérée de 30 %),
+  plateau à l'épaule, et jette des coups d'œil aux trois clients qui lèvent la main pour l'appeler ; l'autre fait
+  le service à la table 1 (il prend deux assiettes sur son plateau et les pose devant les clients, qui se
+  tournent vers lui ; bras droit en IK sur 5 os pour se pencher, main gauche sous le plateau).
+- Le client de la table 4 (« Sitting Idle », bras droit en IK sur le téléphone, tête qui suit l'écran) et son
+  amie qui se tourne vers l'écran.
 - Écran du téléphone : séquence d'images (`phone_screen.py`) — éteint, viseur sur la plaque, scan doré,
   cadre vert, pastille « atable · Table 4 » (mêmes temps que l'ancien plan).
 
@@ -47,6 +52,16 @@ python3 tools/gen_03a_html.py build/tag_t4.json compositions/frames/03a-la-salle
 `tools/` : `retarget.py` (rotations monde + correction de pose de repos, Mixamo → Renderpeople ou squelette à
 squelette), `assets.py` (import glTF normalisé + instances), `build_scene.py` (toute la scène, caméra comprise :
 même trajectoire Catmull-Rom centripète et même interpolation monotone que l'ancien three.js).
+
+## La main qui tient le téléphone
+
+La prise est réglée automatiquement, pas à l'œil : `tools/optimize_grip.py` (lancé dans `build/salle.blend`)
+ajuste la position de la paume et la flexion de chaque phalange en mesurant le maillage déformé réel :
+aucun sommet de la main dans le téléphone (marge 1,5 mm) ni sous la table, aucun doigt devant l'écran,
+doigts et pouce à moins de 5 mm des bords. Résultats : `grip_hold.json` et `grip_pick.json` (à copier dans
+`build/`, lus par `build_scene.py`). Contrôles : `tools/check_grip.py -- <images>` (pénétration image par
+image) et `tools/vis_hand.py -- <images>` (part de la main visible depuis la caméra). Entre la prise sur
+la table et la tenue, la main s'ouvre et roule autour du bord droit du téléphone avant de se refermer.
 
 ## Ancienne version
 

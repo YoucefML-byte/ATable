@@ -1,7 +1,7 @@
 {
   "version": 1,
   "historyId": "03da25b4-8b9a-4ef5-b16a-c25c1ecb9840",
-  "currentRevision": "555c580c-1457-4812-a20d-7082d8cbf48a",
+  "currentRevision": "36358f1b-d045-4ff3-8e53-5c0eef49215d",
   "pendingChanges": false,
   "files": {
     "AGENTS.md": {
@@ -137,8 +137,8 @@
       "content": "/root/.cache/hyperframes/history/03da25b4-8b9a-4ef5-b16a-c25c1ecb9840/blobs/07/07f611f00f69641e3d6a3598e6e0f8c548beb37c5d49ed40339c46eb9600a594"
     },
     "compositions/frames/03a-la-salle.html": {
-      "hash": "1a0c6fc08e7809051b10471f1bda49c9d889723e272b845a5980c910397811c7",
-      "content": "/root/.cache/hyperframes/history/03da25b4-8b9a-4ef5-b16a-c25c1ecb9840/blobs/1a/1a0c6fc08e7809051b10471f1bda49c9d889723e272b845a5980c910397811c7"
+      "hash": "4a77373856ad139ad83e1c65a077a488667a8b414fbf269ba8e38e1a12e32a98",
+      "content": "/root/.cache/hyperframes/history/03da25b4-8b9a-4ef5-b16a-c25c1ecb9840/blobs/4a/4a77373856ad139ad83e1c65a077a488667a8b414fbf269ba8e38e1a12e32a98"
     },
     "compositions/frames/04-il-compose.html": {
       "hash": "0e8fc609a4808d4cacd653f58587ffd4ec67ddbb8bac39b29a714bc6442baf41",
@@ -221,8 +221,8 @@
       "content": "/root/.cache/hyperframes/history/03da25b4-8b9a-4ef5-b16a-c25c1ecb9840/blobs/02/02c05d12d573a28db5c76c8ae644d38de9d45143c9f58e185a6856ad0a0e4601"
     },
     "assets/video/03a-la-salle.mp4": {
-      "hash": "f6932714a3aa6701a72a220097185bc0d8d9798473049729af7863fd2c9dc1e8",
-      "content": "/root/.cache/hyperframes/history/03da25b4-8b9a-4ef5-b16a-c25c1ecb9840/blobs/f6/f6932714a3aa6701a72a220097185bc0d8d9798473049729af7863fd2c9dc1e8"
+      "hash": "04cd0ff8a999dc8fe1c0c3198e46cb53b4cacee2131fe7b5e722a6b62562cd60",
+      "content": "/root/.cache/hyperframes/history/03da25b4-8b9a-4ef5-b16a-c25c1ecb9840/blobs/04/04cd0ff8a999dc8fe1c0c3198e46cb53b4cacee2131fe7b5e722a6b62562cd60"
     }
   },
   "revisions": {
@@ -263,6 +263,25 @@
           "after": "/root/.cache/hyperframes/history/03da25b4-8b9a-4ef5-b16a-c25c1ecb9840/blobs/f6/f6932714a3aa6701a72a220097185bc0d8d9798473049729af7863fd2c9dc1e8"
         }
       }
+    },
+    "36358f1b-d045-4ff3-8e53-5c0eef49215d": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1792854125174,
+      "endedAt": 1792854125198,
+      "files": {
+        "assets/video/03a-la-salle.mp4": {
+          "before": "/root/.cache/hyperframes/history/03da25b4-8b9a-4ef5-b16a-c25c1ecb9840/blobs/f6/f6932714a3aa6701a72a220097185bc0d8d9798473049729af7863fd2c9dc1e8",
+          "after": "/root/.cache/hyperframes/history/03da25b4-8b9a-4ef5-b16a-c25c1ecb9840/blobs/04/04cd0ff8a999dc8fe1c0c3198e46cb53b4cacee2131fe7b5e722a6b62562cd60"
+        },
+        "compositions/frames/03a-la-salle.html": {
+          "before": "/root/.cache/hyperframes/history/03da25b4-8b9a-4ef5-b16a-c25c1ecb9840/blobs/1a/1a0c6fc08e7809051b10471f1bda49c9d889723e272b845a5980c910397811c7",
+          "after": "/root/.cache/hyperframes/history/03da25b4-8b9a-4ef5-b16a-c25c1ecb9840/blobs/4a/4a77373856ad139ad83e1c65a077a488667a8b414fbf269ba8e38e1a12e32a98"
+        }
+      }
     }
   },
   "checks": {
@@ -270,9 +289,7 @@
       "revision": null,
       "id": "5fe2068b-edde-4b57-bf84-2fac7f284d0e"
     },
-    "revisions": {
-      "c23b8b69-781b-495e-8a37-5fd078ba24c1": []
-    },
+    "revisions": {},
     "unversioned": [
       {
         "id": "5fe2068b-edde-4b57-bf84-2fac7f284d0e",
@@ -476,15 +493,15 @@
   },
   "renders": {
     "latest": {
-      "id": "5944cd61-7000-4ec1-b9f3-196d0a6e9831",
-      "completedAt": 1792829355345,
+      "id": "251dd8fd-f182-493a-8478-73a457dd1a8a",
+      "completedAt": 1792854399365,
       "output": "/tmp/claude-0/-home-user-Rapport-de-stage-L3/df7de3ec-3050-540f-a974-e64a74d71e1e/scratchpad/proj/atable-promo/renders/atable-promo-96s-hf.mp4",
       "status": "completed",
-      "revision": "555c580c-1457-4812-a20d-7082d8cbf48a"
+      "revision": "36358f1b-d045-4ff3-8e53-5c0eef49215d"
     },
     "retainedRevisions": [
-      "555c580c-1457-4812-a20d-7082d8cbf48a",
-      "9c8f6845-fd31-4410-8c12-e3798e1a26bf"
+      "36358f1b-d045-4ff3-8e53-5c0eef49215d",
+      "555c580c-1457-4812-a20d-7082d8cbf48a"
     ]
   },
   "pendingArtifactCleanup": []

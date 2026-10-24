@@ -19,9 +19,10 @@ raconté par un ticket de cuisine « Table 4 ».
 
 ## Le plan 3D (32–40 s)
 
-Retour au vendredi soir dans un vrai restaurant en 3D : vue de dessus (le plan de salle des 6 tables),
-plongée dans la salle, puis la table 4, où un client prend son téléphone, vise la plaque dorée et scanne
-le QR code. La caméra entre ensuite dans l'écran. Rendu dans Blender 4.5 (Cycles) avec des personnages
+Retour au vendredi soir dans un vrai restaurant en 3D, complet : vue de dessus (le plan de salle des 6
+tables), plongée dans une salle pleine où les serveurs sont débordés (l'un traverse la salle au pas pressé
+pendant que des clients lèvent la main pour l'appeler, l'autre sert la table 1), puis la table 4, où un client
+prend son téléphone, vise la plaque dorée et scanne le QR code. La caméra entre ensuite dans l'écran. Rendu dans Blender 4.5 (Cycles) avec des personnages
 réalistes animés en capture de mouvement. Notice complète : `projet/.hyperframes/salle-3d/README.md`.
 
 La vidéo du plan est `projet/assets/video/03a-la-salle.mp4` ; la composition `projet/compositions/frames/03a-la-salle.html`

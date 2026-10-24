@@ -34,6 +34,9 @@ def load_char(name, cache={}):
     if name in cache:
         a0, b0 = cache[name]
         arm = a0.copy(); arm.animation_data_clear(); body = b0.copy()
+        for pb in arm.pose.bones:   # une copie ne doit pas hériter des contraintes (IK, regard) de l'original
+            for c in list(pb.constraints): pb.constraints.remove(c)
+        for c in list(arm.constraints): arm.constraints.remove(c)
         bpy.context.scene.collection.objects.link(arm); bpy.context.scene.collection.objects.link(body)
         body.parent = arm
         for m in body.modifiers:

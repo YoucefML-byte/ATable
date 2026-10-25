@@ -14,7 +14,7 @@ Instagram, Facebook et WhatsApp.
 | Chemin | Rôle |
 | --- | --- |
 | `avostables-promo-96s.mp4` | La vidéo finale, prête à publier (site, réseaux, présentation) — H.264 High 4.1, débit plafonné à ~6 Mbit/s, lecture progressive. |
-| `stories/` | Les 8 stories verticales et le Reel (vidéo complète en vertical), tous en 1080 × 1920, leurs couvertures et **`CONTENU-INSTAGRAM.md`** : quoi publier, dans quel ordre, quel sticker ajouter, et le texte du Reel prêt à copier. |
+| `stories/` | Les 8 stories verticales et le Reel (vidéo complète en vertical), tous en 1080 × 1920, la couverture du Reel, les **icônes des « À la une »** (`stories/icones/`) et **`CONTENU-INSTAGRAM.md`** : quoi publier, dans quel ordre, quel sticker ajouter, et le texte du Reel prêt à copier. |
 | `logo/` | Le logo « À. » vectorisé (SVG) : tuile arrondie, tuile carrée, marque seule crème ou verte, plus une version PNG 1024 px et l'image d'origine. |
 | `projet/` | Le projet [HyperFrames](https://hyperframes.heygen.com) qui fabrique la vidéo (HTML + GSAP). |
 | `projet/STORYBOARD.md` | Le découpage plan par plan, avec la voix off et les temps. |
@@ -23,7 +23,7 @@ Instagram, Facebook et WhatsApp.
 | `projet/assets/` | Captures d'écran de l'application, logo, polices, audio (FLAC) et vidéo du plan 3D. |
 | `projet/.hyperframes/installation-gen/` | Générateurs Python des plans 02a–02c et de la voix off. |
 | `projet/.hyperframes/salle-3d/` | Le plan 3D réaliste du restaurant (Blender) : scripts, notice et **crédits**. |
-| `projet/.hyperframes/stories/` | Les scripts qui fabriquent les stories à partir de la vidéo 96 s. |
+| `projet/.hyperframes/stories/` | Les scripts qui fabriquent les stories et le Reel à partir de la vidéo 96 s, et les icônes des « À la une » (`icones.cjs`). |
 
 ## Les stories
 
@@ -72,8 +72,9 @@ ffmpeg -i renders/avostables-promo-96s.mp4 -c:v libx264 -preset slow -crf 19 -ma
   -profile:v high -level 4.1 -pix_fmt yuv420p -c:a copy -movflags +faststart ../avostables-promo-96s.mp4
 # stories (Playwright + ffmpeg) :
 cd .hyperframes/stories
-node make_assets.js stories.json ../.. assets
+node make_assets.cjs stories.json ../.. assets
 python3 build_stories.py stories.json ../../../avostables-promo-96s.mp4 assets ../../../stories
+node icones.cjs ../.. ../../../stories/icones
 ```
 
 Ce dossier est indépendant de l'application Next.js : il n'ajoute aucune dépendance au projet principal

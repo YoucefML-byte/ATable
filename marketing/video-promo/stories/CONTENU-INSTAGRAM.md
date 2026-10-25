@@ -33,8 +33,12 @@ quiz, question ou lien), comme indiqué ci-dessous.
    de la bande verte.
 4. **Le lien de démo** : le sticker « Lien » doit pointer vers votre page de demande de démo.
    Adresse à compléter : **[adresse de votre page de démo]**.
-5. **À la une** : après publication, ajoutez les 8 stories à un « À la une » nommé **À vos tables**, avec
-   l'image `couverture-a-la-une.png` comme couverture. Elles resteront visibles sur votre profil après 24 h.
+5. **À la une** : pour que les stories restent visibles sur votre profil après 24 h, rangez-les dans des
+   « À la une », avec les icônes du dossier `icones/` (voir « Les icônes des À la une » plus bas). Deux façons
+   de faire :
+   - **un seul « À la une »** nommé « À vos tables », qui contient les 8 stories, avec l'icône
+     `icone-0-a-vos-tables.png` ;
+   - **un « À la une » par story**, chacun avec son icône (8 cercles sous votre profil).
 6. **Quand publier** : de préférence en semaine, entre 14 h 30 et 17 h, quand les restaurateurs sont entre
    deux services. Évitez les heures de rush (11 h 30 – 14 h et 19 h – 22 h 30).
 7. **Facebook et WhatsApp** : les mêmes fichiers fonctionnent tels quels en story Facebook et en statut
@@ -128,6 +132,31 @@ quiz, question ou lien), comme indiqué ci-dessous.
   - Texte du sticker : « Demander une démo »
   - Emplacement : juste sous la ligne dorée « ↓ DEMANDEZ VOTRE DÉMO ↓ », qui pointe vers lui.
 - **Hashtags** : #avostables #restaurant
+
+## Les icônes des « À la une »
+
+Les icônes sont dans le dossier `icones/`. Chacune est une image verticale 1080 × 1920 au fond vert de la
+marque, avec un pictogramme crème et une touche dorée au centre. Instagram n'en montre que le rond central :
+c'est là qu'est dessiné le pictogramme.
+
+| « À la une » (nom à taper) | Icône | Story à y mettre |
+| --- | --- | --- |
+| À vos tables | `icone-0-a-vos-tables.png` (le logo « À. ») | les 8 stories, ou la vidéo de présentation |
+| Le rush | `icone-1-le-rush.png` (horloge de 20 h 30) | story 1 |
+| Installation | `icone-2-installation.png` (la plaque et son QR code) | story 2 |
+| La tablette | `icone-3-la-tablette.png` (tablette et nouvelle commande) | story 3 |
+| Côté client | `icone-4-cote-client.png` (téléphone qui scanne) | story 4 |
+| Cuisine | `icone-5-cuisine.png` (cloche de service validée) | story 5 |
+| L'équipe | `icone-6-l-equipe.png` (réglages : vous pilotez) | story 6 |
+| Chiffres | `icone-7-chiffres.png` (graphique en hausse) | story 7 |
+| Démo | `icone-8-demo.png` (rendez-vous confirmé) | story 8 |
+
+`apercu-icones.png` montre le rendu sous votre profil.
+
+**Mettre une icône** : sur votre profil, touchez « Nouveau » (le « + » sous la bio), choisissez la ou les
+stories, tapez le nom, puis « Modifier la couverture » ; touchez l'icône en forme d'image pour choisir l'icône
+dans vos photos, centrez-la, puis « Terminé ». Pour un « À la une » qui existe déjà : appui long dessus →
+« Modifier l'À la une » → « Modifier la couverture ».
 
 ## Si vous ne voulez publier qu'une ou deux stories
 

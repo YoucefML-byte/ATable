@@ -1,37 +1,266 @@
 {
-  "source_note": "Temps en secondes dans la vidéo 96 s. Les sous-titres reprennent la voix off (pauses mesurées sur voiceover.wav).",
-  "stories": [
-    {"id": "01-le-rush", "start": 0, "end": 12, "freeze": 0,
-     "kicker": "01/08 · LE RUSH DU VENDREDI", "title": "Et si chaque table commandait <em>toute seule ?</em>",
-     "subs": [[0.17, 2.02, "Vendredi, vingt heures trente."], [2.44, 4.68, "Salle pleine. Tout le monde vous fait signe."],
-              [6.37, 8.34, "Et si chaque table pouvait commander toute seule ?"], [8.81, 9.68, "Voici À vos tables."]]},
-    {"id": "02-l-installation", "start": 12, "end": 26, "freeze": 0.5,
-     "kicker": "02/08 · L'INSTALLATION", "title": "Une plaque et un QR code <em>à chaque table.</em>",
-     "subs": [[12.17, 14.16, "L'installation ? On s'en charge."], [14.66, 17.46, "Chaque table reçoit sa plaque en métal, et son QR code."],
-              [18.17, 20.63, "Elle se place au bord de la table, à gauche ou à droite."], [21.10, 24.09, "Trois finitions au choix : rose, argenté ou doré."]]},
-    {"id": "03-la-tablette", "start": 26, "end": 40, "freeze": 0,
-     "kicker": "03/08 · LA TABLETTE", "title": "Les commandes arrivent <em>en direct.</em>",
-     "subs": [[26.17, 28.86, "Et on vous fournit la tablette, reliée à tous vos QR codes."], [29.42, 30.82, "Les commandes y arrivent en direct."],
-              [32.47, 33.75, "Retour au vendredi soir."], [34.26, 36.76, "À la table quatre, un client sort son téléphone,"], [37.00, 37.77, "et vise la plaque."]]},
-    {"id": "04-cote-client", "start": 40, "end": 54, "freeze": 0.5,
-     "kicker": "04/08 · CÔTÉ CLIENT", "title": "Pas d'appli. <em>Pas de compte.</em>",
-     "subs": [[40.37, 42.07, "Un scan, et la carte s'ouvre."], [42.61, 44.08, "Pas d'appli, pas de compte."],
-              [46.42, 47.98, "Votre client choisit ses options,"], [48.36, 50.56, "ajoute une précision pour la cuisine, et envoie."],
-              [51.10, 53.33, "Le paiement, lui, se fait au comptoir."]]},
-    {"id": "05-salle-et-cuisine", "start": 54, "end": 66, "freeze": 0.5,
-     "kicker": "05/08 · SALLE ET CUISINE", "title": "Validée d'un geste, <em>prête à temps.</em>",
-     "subs": [[54.71, 56.97, "En moins de trois secondes, la commande arrive en salle."], [57.50, 58.53, "Validée d'un geste."],
-              [60.42, 62.61, "En cuisine, chaque commande a son minuteur."], [63.11, 65.13, "Elle est prête ? La salle est prévenue."]]},
-    {"id": "06-l-equipe-et-vous", "start": 66, "end": 78, "freeze": 0.5,
-     "kicker": "06/08 · L'ÉQUIPE ET VOUS", "title": "Chacun son rôle. <em>Vous pilotez tout.</em>",
-     "subs": [[66.37, 68.61, "Chacun a son code, et chaque table son état."], [70.42, 71.64, "Et vous, vous pilotez tout :"],
-              [71.97, 74.21, "la carte, les horaires, les QR codes,"], [74.52, 75.82, "et les couleurs de votre établissement."]]},
-    {"id": "07-vos-chiffres", "start": 78, "end": 90, "freeze": 0.5,
-     "kicker": "07/08 · VOS CHIFFRES", "title": "L'essentiel, <em>en un coup d'œil.</em>",
-     "subs": [[78.42, 80.18, "Le tableau de bord vous montre l'essentiel :"], [80.58, 83.24, "montant commandé, panier moyen, heures de rush."],
-              [84.37, 85.31, "Plusieurs commerces ?"], [85.77, 87.69, "Un seul outil, et des données protégées."]]},
-    {"id": "08-demandez-une-demo", "start": 90, "end": 96, "freeze": 0.4,
-     "kicker": "08/08 · DEMANDEZ UNE DÉMO", "title": "Vos clients commandent. <em>Votre équipe sert.</em>", "cta": true,
-     "subs": [[90.87, 91.47, "À vos tables !"], [91.96, 93.92, "Vos clients commandent, votre équipe sert."], [94.45, 95.27, "Demandez une démo."]]}
-  ]
+ "source_note": "Temps en secondes dans la vidéo 96 s. Les sous-titres reprennent la voix off (pauses mesurées sur voiceover.wav).",
+ "stories": [
+  {
+   "id": "01-le-rush",
+   "start": 0,
+   "end": 12,
+   "freeze": 0,
+   "kicker": "01/08 · LE RUSH DU VENDREDI",
+   "title": "Et si chaque table commandait <em>toute seule ?</em>",
+   "subs": [
+    [
+     0.17,
+     2.02,
+     "Vendredi, vingt heures trente."
+    ],
+    [
+     2.44,
+     4.68,
+     "Salle pleine. Tout le monde vous fait signe."
+    ],
+    [
+     6.37,
+     8.34,
+     "Et si chaque table pouvait commander toute seule ?"
+    ],
+    [
+     8.81,
+     9.68,
+     "Voici À vos tables."
+    ]
+   ],
+   "reel_kicker": "LE RUSH DU VENDREDI"
+  },
+  {
+   "id": "02-l-installation",
+   "start": 12,
+   "end": 26,
+   "freeze": 0.5,
+   "kicker": "02/08 · L'INSTALLATION",
+   "title": "Une plaque et un QR code <em>à chaque table.</em>",
+   "subs": [
+    [
+     12.17,
+     14.16,
+     "L'installation ? On s'en charge."
+    ],
+    [
+     14.66,
+     17.46,
+     "Chaque table reçoit sa plaque en métal, et son QR code."
+    ],
+    [
+     18.17,
+     20.63,
+     "Elle se place au bord de la table, à gauche ou à droite."
+    ],
+    [
+     21.1,
+     24.09,
+     "Trois finitions au choix : rose, argenté ou doré."
+    ]
+   ],
+   "reel_kicker": "L'INSTALLATION"
+  },
+  {
+   "id": "03-la-tablette",
+   "start": 26,
+   "end": 40,
+   "freeze": 0,
+   "kicker": "03/08 · LA TABLETTE",
+   "title": "Les commandes arrivent <em>en direct.</em>",
+   "subs": [
+    [
+     26.17,
+     28.86,
+     "Et on vous fournit la tablette, reliée à tous vos QR codes."
+    ],
+    [
+     29.42,
+     30.82,
+     "Les commandes y arrivent en direct."
+    ],
+    [
+     32.47,
+     33.75,
+     "Retour au vendredi soir."
+    ],
+    [
+     34.26,
+     36.76,
+     "À la table quatre, un client sort son téléphone,"
+    ],
+    [
+     37.0,
+     37.77,
+     "et vise la plaque."
+    ]
+   ],
+   "credit": true,
+   "reel_kicker": "LA TABLETTE"
+  },
+  {
+   "id": "04-cote-client",
+   "start": 40,
+   "end": 54,
+   "freeze": 0.5,
+   "kicker": "04/08 · CÔTÉ CLIENT",
+   "title": "Pas d'appli. <em>Pas de compte.</em>",
+   "subs": [
+    [
+     40.37,
+     42.07,
+     "Un scan, et la carte s'ouvre."
+    ],
+    [
+     42.61,
+     44.08,
+     "Pas d'appli, pas de compte."
+    ],
+    [
+     46.42,
+     47.98,
+     "Votre client choisit ses options,"
+    ],
+    [
+     48.36,
+     50.56,
+     "ajoute une précision pour la cuisine, et envoie."
+    ],
+    [
+     51.1,
+     53.33,
+     "Le paiement, lui, se fait au comptoir."
+    ]
+   ],
+   "reel_kicker": "CÔTÉ CLIENT"
+  },
+  {
+   "id": "05-salle-et-cuisine",
+   "start": 54,
+   "end": 66,
+   "freeze": 0.5,
+   "kicker": "05/08 · SALLE ET CUISINE",
+   "title": "Validée d'un geste, <em>prête à temps.</em>",
+   "subs": [
+    [
+     54.71,
+     56.97,
+     "En moins de trois secondes, la commande arrive en salle."
+    ],
+    [
+     57.5,
+     58.53,
+     "Validée d'un geste."
+    ],
+    [
+     60.42,
+     62.61,
+     "En cuisine, chaque commande a son minuteur."
+    ],
+    [
+     63.11,
+     65.13,
+     "Elle est prête ? La salle est prévenue."
+    ]
+   ],
+   "reel_kicker": "SALLE ET CUISINE"
+  },
+  {
+   "id": "06-l-equipe-et-vous",
+   "start": 66,
+   "end": 78,
+   "freeze": 0.5,
+   "kicker": "06/08 · L'ÉQUIPE ET VOUS",
+   "title": "Chacun son rôle. <em>Vous pilotez tout.</em>",
+   "subs": [
+    [
+     66.37,
+     68.61,
+     "Chacun a son code, et chaque table son état."
+    ],
+    [
+     70.42,
+     71.64,
+     "Et vous, vous pilotez tout :"
+    ],
+    [
+     71.97,
+     74.21,
+     "la carte, les horaires, les QR codes,"
+    ],
+    [
+     74.52,
+     75.82,
+     "et les couleurs de votre établissement."
+    ]
+   ],
+   "reel_kicker": "L'ÉQUIPE ET VOUS"
+  },
+  {
+   "id": "07-vos-chiffres",
+   "start": 78,
+   "end": 90,
+   "freeze": 0.5,
+   "kicker": "07/08 · VOS CHIFFRES",
+   "title": "L'essentiel, <em>en un coup d'œil.</em>",
+   "subs": [
+    [
+     78.42,
+     80.18,
+     "Le tableau de bord vous montre l'essentiel :"
+    ],
+    [
+     80.58,
+     83.24,
+     "montant commandé, panier moyen, heures de rush."
+    ],
+    [
+     84.37,
+     85.31,
+     "Plusieurs commerces ?"
+    ],
+    [
+     85.77,
+     87.69,
+     "Un seul outil, et des données protégées."
+    ]
+   ],
+   "reel_kicker": "VOS CHIFFRES"
+  },
+  {
+   "id": "08-demandez-une-demo",
+   "start": 90,
+   "end": 96,
+   "freeze": 0.4,
+   "kicker": "08/08 · DEMANDEZ UNE DÉMO",
+   "title": "Vos clients commandent. <em>Votre équipe sert.</em>",
+   "cta": true,
+   "subs": [
+    [
+     90.87,
+     91.47,
+     "À vos tables !"
+    ],
+    [
+     91.96,
+     93.92,
+     "Vos clients commandent, votre équipe sert."
+    ],
+    [
+     94.45,
+     95.27,
+     "Demandez une démo."
+    ]
+   ],
+   "reel_kicker": "DEMANDEZ UNE DÉMO"
+  }
+ ],
+ "credit_3d": "Plan 3D : personnages Renderpeople ; mobilier et accessoires DELTAHEDRA, Mark Peters, Giora, AllQuad, Saandy, JoeDev, Rigsters, BrandXR, Fridge, plaggy (Sketchfab, CC BY 4.0) ; animations Adobe Mixamo.",
+ "reel": {
+  "id": "reel-96s",
+  "start": 0,
+  "end": 96
+ }
 }

@@ -1,5 +1,5 @@
-// Fonds 1080×1920 des stories, sous-titres (PNG transparents) et couverture « À la une ».
-//   node make_assets.js stories.json projet_hyperframes dossier_sortie
+// Fonds 1080×1920 des stories et du Reel, sous-titres (PNG transparents), couvertures « À la une » et Reel.
+//   node make_assets.cjs stories.json projet_hyperframes dossier_sortie
 const { chromium } = require('playwright');
 const fs = require('fs'), path = require('path');
 const [specPath, proj, out] = process.argv.slice(2);
@@ -30,12 +30,44 @@ body{height:1920px;background:radial-gradient(120% 70% at 50% 38%,#24573F 0%,#1F
 .frame{position:absolute;left:0;top:${VIDEO_TOP}px;width:1080px;height:${VIDEO_H}px;background:#0C1613}
 .m{position:absolute;left:0;right:0;top:1520px;text-align:center;font:700 22px/1 M;letter-spacing:.18em;opacity:.72}
 .cta{color:#E0A33A;opacity:1}
+.cr{position:absolute;left:90px;right:90px;top:1612px;text-align:center;font:500 17px/1.35 M;letter-spacing:.02em;opacity:.55}
 </style></head><body>
 <div class="brand"><img src="${logo}"><span>À vos tables</span></div>
 <div class="head"><div class="k">${s.kicker}</div><div class="t">${s.title}</div></div>
 <div class="frame"></div>
 ${s.cta ? '<div class="m cta">↓ DEMANDEZ VOTRE DÉMO ↓</div>' : '<div class="m">QR CODE · NFC · PAIEMENT AU COMPTOIR</div>'}
+${s.credit ? `<div class="cr">${spec.credit_3d}</div>` : ''}
 </body></html>`;
+}
+// Reel : l'interface d'Instagram couvre davantage le bas (légende, boutons à droite) ; tout le texte reste
+// entre 280 et 1420 px, sans rangée logo (le nom du compte s'affiche déjà).
+const R_VIDEO_TOP = 590;
+function reelBgHtml(s) {
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${CSS}
+body{height:1920px;background:radial-gradient(120% 70% at 50% 36%,#24573F 0%,#1F4D3A 55%,#173B2D 100%)}
+.head{position:absolute;left:80px;right:80px;top:280px;height:282px;display:flex;flex-direction:column;justify-content:flex-end}
+.k{font:700 24px/1 M;letter-spacing:.16em;color:#E0A33A;margin-bottom:22px}
+.t{font:600 68px/1.08 S;letter-spacing:-.015em}
+.frame{position:absolute;left:0;top:${R_VIDEO_TOP}px;width:1080px;height:${VIDEO_H}px;background:#0C1613}
+</style></head><body>
+<div class="head"><div class="k">${s.reel_kicker}</div><div class="t">${s.title}</div></div>
+<div class="frame"></div>
+</body></html>`;
+}
+function reelSubHtml(text) {
+  return subHtml(text).replace('width:920px', 'width:800px');
+}
+function reelCoverHtml() {
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${CSS}
+body{height:1920px;background:radial-gradient(110% 60% at 50% 45%,#24573F 0%,#1F4D3A 60%,#173B2D 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+img{width:300px;height:300px}
+.w{font:500 132px/1 S;letter-spacing:-.02em;margin-top:44px}
+.l{font:500 64px/1.15 S;margin-top:56px}.g{color:#E0A33A}
+.m{font:700 26px/1 M;letter-spacing:.18em;margin-top:56px;opacity:.8}
+</style></head><body><img src="${logo}"><div class="w">À vos tables</div>
+<div class="l">Vos clients commandent.<br><span class="g">Votre équipe sert.</span></div>
+<div class="m">QR CODE · NFC · PAIEMENT AU COMPTOIR</div></body></html>`;
 }
 function subHtml(text) {
   return `<!doctype html><html><head><meta charset="utf-8"><style>${CSS}
@@ -62,5 +94,10 @@ img{width:620px;height:620px}</style></head><body><img src="${logo}"></body></ht
     for (let i = 0; i < s.subs.length; i++) await shot(subHtml(s.subs[i][2]), path.join(out, `${s.id}-sub${i}.png`), 220, true);
   }
   await shot(coverHtml(), path.join(out, 'couverture-a-la-une.png'), 1920);
+  for (const s of spec.stories) {
+    await shot(reelBgHtml(s), path.join(out, `reel-${s.id}-bg.png`), 1920);
+    for (let i = 0; i < s.subs.length; i++) await shot(reelSubHtml(s.subs[i][2]), path.join(out, `reel-${s.id}-sub${i}.png`), 220, true);
+  }
+  await shot(reelCoverHtml(), path.join(out, 'couverture-reel.png'), 1920);
   await b.close(); console.log('ok');
 })();

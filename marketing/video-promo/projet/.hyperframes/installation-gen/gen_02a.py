@@ -104,7 +104,7 @@ html = f"""<template>
       <!-- planche d'autocollants -->
       <div id="{P}-liner">
         <div id="{P}-cut"></div>
-        <div id="{P}-linertxt">ATABLE · QR · TABLE 4</div>
+        <div id="{P}-linertxt">À VOS TABLES · QR · TABLE 4</div>
       </div>
       {sticker_html(P, "stk")}
       <div id="{P}-ripple"></div>

@@ -96,7 +96,7 @@ components:
 
 This is the **editorial-forest** preset remixed onto the captured brand. The YAML frontmatter above (colors · typography · components) is **normative and already correct — use it verbatim.** The prose below is the ORIGINAL preset's intent; read it THROUGH the frontmatter:
 
-- **Colors** — the token named `pink` is Atable gold (#E0A33A) and `pink-deep` a deeper gold; read every "pink" or "dusty rose" in the prose as Atable gold. Use the frontmatter hex; preset color NAMES in prose (e.g. "cobalt", "cream") mean the remapped brand values.
+- **Colors** — the token named `pink` is À vos tables gold (#E0A33A) and `pink-deep` a deeper gold; read every "pink" or "dusty rose" in the prose as À vos tables gold. Use the frontmatter hex; preset color NAMES in prose (e.g. "cobalt", "cream") mean the remapped brand values.
 
 
 ## Overview
@@ -271,7 +271,7 @@ supplies them. Issue numbers / counters are decorative chrome.
 - Bars, hairlines, tiles, and the monogram circle are CSS-only; no external imagery is required.
 - **Contrast:** green-on-pink / pink-on-green only at display scale (84px+); keep small text cream-on-green or ink-on-cream.
 
-## Atable film invariants (binding for every frame of this video)
+## À vos tables film invariants (binding for every frame of this video)
 
 These are the shared, film-wide elements. Every frame worker reproduces them EXACTLY so eleven
 independently built frames read as one film.
@@ -299,7 +299,7 @@ current dot: a 92×30 rectangle, fill cream-2 #E7DCC6, 2px ink border, 6px radiu
 (JetBrains Mono 700, 13px, ink), its bottom edge 8px above the dot (centre y = 31). At t = 0 the tag starts
 above the PREVIOUS station (frame 03 starts at x = 560, off the line's left end, at opacity 0) and slides to
 the current one between 0.0 and 0.6 s with power3.out; the current dot turns gold at 0.45 s. At the far left,
-x = 96 to 300, y = 64: the Atable logo (assets/atable-logo.svg, 40px) followed by « ATABLE » (JetBrains Mono 700,
+x = 96 to 300, y = 64: the À vos tables logo (assets/atable-logo.svg, 40px) followed by « ATABLE » (JetBrains Mono 700,
 18px, tracking 0.18em). Nothing else in the topbar.
 
 **Devices** (flat, no shadow). Phone: outer 440×748, 2px ink border, 56px radius, cream-2 #E7DCC6 bezel 10px,
@@ -307,7 +307,7 @@ screen 420×728 (a 1170×1992 screenshot at scale 0.359 covers 420×715; the scr
 image sits at the top). Tablet: outer 1060×690, 2px ink border, 34px radius, cream-2 bezel 18px, screen
 1024×640 (a 1920×1200 screenshot at scale 0.5333). Desktop window: outer 1120×740, 2px ink border, 12px radius,
 title bar 40px tall in cream-2 with three 10px ink-outlined dots and the address in JetBrains Mono 500 14px
-(e.g. « pro.atable.fr/bistrot/carte »), screen 1116×698 below it. Zooms happen inside the screen: the
+(e.g. « pro.avostables.fr/bistrot/carte »), screen 1116×698 below it. Zooms happen inside the screen: the
 screenshot scales and translates inside a fixed, overflow-hidden screen; the device frame never scales during
 a zoom. Highlight rings: 4px solid rounded rectangles (radius 10px) with 6px padding around the target region,
 in the colour stated by the storyboard (default gold #E0A33A), entering from scale 1.08 to 1 and opacity 0 to 1

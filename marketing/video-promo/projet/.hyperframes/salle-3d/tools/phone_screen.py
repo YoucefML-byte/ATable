@@ -2,7 +2,7 @@
 import os, sys, math
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from make_tex import QR, MONO7, S, INK, CREAM, CREAM2, GOLD
+from make_tex import QR, MONO7, S, INK, CREAM, CREAM2, GOLD, tracked, BRAND_ENG
 OUT = S + "/build/screen"; os.makedirs(OUT, exist_ok=True)
 W, H = 1080, 2320; K = W / 512.0
 OK_GREEN = "#047857"
@@ -31,7 +31,8 @@ def draw_plate(w, h):
         for c in range(29):
             if QR[r][c] == "1": d.rectangle([x0 + c * m, y0 + r * m, x0 + (c + 1) * m + 0.5, y0 + (r + 1) * m + 0.5], fill=INK)
     d.text((W2 / 2, sy + 222 * k), "TABLE 4", font=ImageFont.truetype(MONO7, int(20 * k)), fill=INK, anchor="mm")
-    d.text((W2 / 2, 312 * k), "A T A B L E", font=ImageFont.truetype(MONO7, int(15 * k)), fill="#584313", anchor="mm")
+    # espacement réduit sur l'écran : le nom tient entre les coins du viseur
+    tracked(d, (W2 / 2, 312 * k), BRAND_ENG, ImageFont.truetype(MONO7, int(15 * k)), 0.22 * 15 * k, "#584313")
     return im.resize((int(w), int(h)), Image.LANCZOS)
 
 WOOD = Image.open(S + "/tex/wood_table_001_diff.jpg").convert("RGB")
@@ -85,9 +86,9 @@ def frame(t):
     if t > 5.7:
         a = ease(seg(t, 5.7, 6.0)); dy = 20 * (1 - a) * K
         pill = Image.new("RGBA", (W, H), (0, 0, 0, 0)); pd = ImageDraw.Draw(pill)
-        pd.rounded_rectangle([76 * K, 800 * K + dy, 436 * K, 864 * K + dy], radius=32 * K, fill=CREAM, outline=INK, width=int(3 * K))
+        pd.rounded_rectangle([76 * K, 800 * K + dy, 470 * K, 864 * K + dy], radius=32 * K, fill=CREAM, outline=INK, width=int(3 * K))
         pd.ellipse([102 * K, 822 * K + dy, 122 * K, 842 * K + dy], fill=OK_GREEN)
-        pd.text((136 * K, 833 * K + dy), "atable · Table 4", font=ImageFont.truetype(MONO7, int(26 * K)), fill=INK, anchor="lm")
+        pd.text((136 * K, 833 * K + dy), "À vos tables · Table 4", font=ImageFont.truetype(MONO7, int(23 * K)), fill=INK, anchor="lm")
         al = pill.split()[3].point(lambda v: int(v * a)); pill.putalpha(al)
         im.paste(pill, (0, 0), pill)
     bar = Image.new("RGBA", (W, H), (0, 0, 0, 0)); bd = ImageDraw.Draw(bar)

@@ -72,8 +72,8 @@ def rail_html(P, cur, ground, line):
     tag_left = STATIONS[cur][0] - 68
     return f"""      <!-- rail d'installation : étape courante {STATIONS[cur][1]} -->
       <div id="{P}-rail">
-        <img id="{P}-logo" src="assets/atable-logo.svg" alt="" />
-        <div id="{P}-wordmark">ATABLE</div>
+        <img id="{P}-logo" src="assets/avostables-logo.svg" alt="" />
+        <div id="{P}-wordmark">À VOS TABLES</div>
         <div id="{P}-railline"></div>
         {chr(10).join('        ' + d for d in dots).strip()}
         {chr(10).join('        ' + l for l in lbls).strip()}
@@ -118,7 +118,7 @@ def finish_html(P, lid, fk, clipped=False):
             <div class="{P}-facet {P}-facet3" style="background: {f['shade']}"></div>
             <div class="{P}-screw" style="left: 26px; border-color: {f['eng']}; background: {f['mid']}"><div class="{P}-slot" style="background: {f['eng']}"></div></div>
             <div class="{P}-screw" style="left: 516px; border-color: {f['eng']}; background: {f['mid']}"><div class="{P}-slot" style="background: {f['eng']}"></div></div>
-            <div class="{P}-eng" style="color: {f['eng']}">ATABLE</div>
+            <div class="{P}-eng" style="color: {f['eng']}">À VOS TABLES</div>
           </div>"""
 
 
@@ -146,7 +146,7 @@ def sticker_html(P, sid, style=""):
     return f"""<div id="{P}-{sid}" class="{P}-stk" style="--f: 0px;{style}">
             <div class="{P}-stkface">
               <img class="{P}-stkqr" src="assets/table-qr.svg" alt="" />
-              <div class="{P}-stklbl"><img class="{P}-stklogo" src="assets/atable-logo.svg" alt="" />TABLE 4</div>
+              <div class="{P}-stklbl"><img class="{P}-stklogo" src="assets/avostables-logo.svg" alt="" />TABLE 4</div>
             </div>
             <div class="{P}-stkflap"></div>
           </div>"""

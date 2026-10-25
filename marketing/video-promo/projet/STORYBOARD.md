@@ -1,7 +1,7 @@
 ---
 format: 1920x1080
 duration: 96s
-message: "Avec Atable, vos clients commandent depuis leur table et votre équipe ne court plus après les commandes."
+message: "Avec À vos tables, vos clients commandent depuis leur table et votre équipe ne court plus après les commandes."
 arc: PAS (hook → promesse) → Installation (plaque, table, tablette) → La salle en 3D (le client scanne) → Demo Loop (le parcours d'une commande, station par station) → Feature-Benefit (le patron) → confiance → CTA
 audience: "Patrons de restaurants, bars, chichas et cafés ; décideurs qui choisissent un outil de commande"
 mode: autonomous
@@ -9,13 +9,17 @@ music: none
 tempo: 120 bpm (one beat = 0.5 s, one bar = 2 s); every frame starts on a bar line
 ---
 
-# Atable — « Le ticket » (publicité, 16:9, ~96 s, avec voix off)
+# À vos tables — « Le ticket » (publicité, 16:9, ~96 s, avec voix off)
 
-This video tells restaurant, bar, chicha and café owners that **with Atable their customers order from
+> Brand renamed on 2026-10-24: « Atable » became **« À vos tables »** (logo « À. » supplied by the owner,
+> vectorised in assets/avostables-logo.svg). Written wordmark « À vos tables », mono caps « À VOS TABLES »,
+> domains *.avostables.fr. The tagline « La commande à table. » is kept (it describes the service).
+
+This video tells restaurant, bar, chicha and café owners that **with À vos tables their customers order from
 the table and their team stops running after orders**. It follows ONE order, « Table 4 · N° 001 »,
 station by station along a kitchen ticket rail: client → salle → cuisine → équipe → patron → plateforme.
 Before the order journey, a three-frame installation sequence (02a–02c, 12–32 s, its own 3-station
-« INSTALLATION » rail: 01 PLAQUE · 02 TABLE · 03 TABLETTE) shows what Atable installs: a metal plate per
+« INSTALLATION » rail: 01 PLAQUE · 02 TABLE · 03 TABLETTE) shows what À vos tables installs: a metal plate per
 table with its QR sticker, placed at the left or right end of the table, in three finishes (rose, argenté,
 doré), and the provided tablet linked to every QR code. Then a photoreal 3D frame (03a, Blender/Cycles video, 32–40 s)
 returns to the Friday rush: the floor plan becomes a real restaurant and the customer at table 4 scans the plate.
@@ -31,7 +35,7 @@ effect are produced by the host and mounted at the root — frames never embed a
 
 - **Palette (frame.md tokens, by role).** Two surfaces per frame, never three. Default ground
   `cream` #F4EFE6 with `ink` #0C1613 text and `green` #1F4D3A headlines. Gravity frames (01 ends,
-  02, 06, 09, 11) use a `green` #1F4D3A ground with `cream` text and `pink` (= Atable gold #E0A33A)
+  02, 06, 09, 11) use a `green` #1F4D3A ground with `cream` text and `pink` (= À vos tables gold #E0A33A)
   accents. `cream-2` #E7DCC6 is the thermal-ticket paper and tile fill. `pink-deep` #B9822A for
   gold text on cream. Status colours taken from the app itself, used ONLY on its status rings and
   stamps: orange #B45309 « à valider », blue #1D4ED8 « en préparation », green #047857 « prête ».
@@ -44,12 +48,12 @@ effect are produced by the host and mounted at the root — frames never embed a
   The current station's dot is filled gold with an ink label; past stations are filled ink; future
   stations are hollow and muted. A small mono ticket tag « TABLE 4 » (cream-2 paper, 2px ink border,
   6px radius) sits on the rail above the current dot; at frame start it slides from the previous
-  station to the current one (0.0–0.6 s, power3). Left of the rail, at x≈96: the Atable logo mark
-  (40px) + « ATABLE » in mono. This exact rail is identical in every frame that carries it.
+  station to the current one (0.0–0.6 s, power3). Left of the rail, at x≈96: the À vos tables logo mark
+  (40px) + « À VOS TABLES » in mono. This exact rail is identical in every frame that carries it.
 - **Devices.** Flat, paper-like mockups: rounded rectangles with a 2px `ink` border and no shadow,
   screen corners 6–8px. Phone ≈ 430×735 (screenshots 1170×1992 fitted to the screen). Tablet
   ≈ 1040×650 (screenshots 1920×1200). Desktop window ≈ 1100×690 with a mono title bar showing the
-  address (pro.atable.fr/… or console.atable.fr). Zooms are done INSIDE the device screen (the
+  address (pro.avostables.fr/… or console.avostables.fr). Zooms are done INSIDE the device screen (the
   screenshot scales and pans under a fixed device frame) with coordinate-target-zoom; highlight
   rings are 4px rounded rectangles in the stated colour, entering with a smooth settle.
 - **Stamps.** The signature prop: a rotated (−8°) rectangular or round rubber stamp in mono caps
@@ -101,8 +105,8 @@ Scene 3 (3.5–6.0s): at 3.5 the ground flips to green in one hard cut; the tags
 
 ## Frame 2 — La promesse
 
-- scene: a kitchen ticket prints out of a slot and becomes the Atable lockup
-- voiceover: "Et si chaque table pouvait commander toute seule ? Voici À table."
+- scene: a kitchen ticket prints out of a slot and becomes the À vos tables lockup
+- voiceover: "Et si chaque table pouvait commander toute seule ? Voici À vos tables."
 - duration: 6s
 - transition_in: zoom-through
 - status: animated
@@ -111,19 +115,19 @@ Scene 3 (3.5–6.0s): at 3.5 the ground flips to green in one hard cut; the tags
 - persuasion: Future pacing
 - beat: curiosity → relief
 - blueprint: logo-assemble-lockup (Adapt)
-- asset_candidates: assets/atable-logo.svg — Atable app icon (green square, plate, fork, knife, gold centre)
-- focal: assets/atable-logo.svg
-- roles: atable-logo = cutout (printed at the top of the ticket, then grows into the lockup)
+- asset_candidates: assets/avostables-logo.svg — À vos tables app icon (green square, cream serif « À », gold full stop)
+- focal: assets/avostables-logo.svg
+- roles: avostables-logo = cutout (printed at the top of the ticket, then grows into the lockup)
 - sfx: thermal-printer burst 0.0–1.6 s; soft stamp at 3.0 s; riser 3.6–4.6 s
-- on_screen: ticket lines « ATABLE », « TABLE 4 », « COMMANDE N° 001 », « 1 × TACOS 2 VIANDES », « 1 × LIMONADE », « NOTE : SAUCE À PART SVP » / headline « Et si chaque table commandait toute seule ? » / lockup « Atable » + « La commande à table. » / mono « QR CODE · NFC · SANS APPLI · SANS COMPTE »
+- on_screen: ticket lines « À VOS TABLES », « TABLE 4 », « COMMANDE N° 001 », « 1 × TACOS 2 VIANDES », « 1 × LIMONADE », « NOTE : SAUCE À PART SVP » / headline « Et si chaque table commandait toute seule ? » / lockup « À vos tables » + « La commande à table. » / mono « QR CODE · NFC · SANS APPLI · SANS COMPTE »
 
 narrativeRole: land the promise in beat 2 and introduce the ticket that carries the whole film.
 keyMessage: every table can order by itself.
 
 Adapt: keep the lockup "comes to exist" signature, but the mark is PRINTED: a ticket feeds out of a printer slot and the logo on its header draws itself on, then the lockup settles beside it.
-Scene 1 (0.0–1.6s): green ground. A dark horizontal printer slot (ink, 420px wide) sits at the top centre-right (x≈1260); a cream-2 thermal ticket (360px wide, zigzag torn bottom edge) feeds DOWN out of it in short steps synced to the printer sound; mono lines print one per beat: « ATABLE » (0.2), « TABLE 4 » (0.6), « COMMANDE N° 001 » (1.0), « 1 × TACOS 2 VIANDES » (1.2), « 1 × LIMONADE » (1.4), « NOTE : SAUCE À PART SVP » (1.6).
+Scene 1 (0.0–1.6s): green ground. A dark horizontal printer slot (ink, 420px wide) sits at the top centre-right (x≈1260); a cream-2 thermal ticket (360px wide, zigzag torn bottom edge) feeds DOWN out of it in short steps synced to the printer sound; mono lines print one per beat: « À VOS TABLES » (0.2), « TABLE 4 » (0.6), « COMMANDE N° 001 » (1.0), « 1 × TACOS 2 VIANDES » (1.2), « 1 × LIMONADE » (1.4), « NOTE : SAUCE À PART SVP » (1.6).
 Scene 2 (1.6–3.0s): on the left (asymmetric 60/40) the cream headline « Et si chaque table commandait toute seule ? » reveals word by word (each word rises into place on its own beat), gold on « toute seule ».
-Scene 3 (3.0–4.6s): the Atable logo at the ticket header draws itself (svg-path-draw) and a gold stamp-ring pulses once around it at 3.0; the headline clears upward (velocity-matched) and the wordmark « Atable » lands on the left at display-hero size in cream with the line « La commande à table. » beneath (3.5).
+Scene 3 (3.0–4.6s): the À vos tables logo at the ticket header draws itself (svg-path-draw) and a gold stamp-ring pulses once around it at 3.0; the headline clears upward (velocity-matched) and the wordmark « À vos tables » lands on the left at display-hero size in cream with the line « La commande à table. » beneath (3.5).
 Scene 4 (4.6–6.0s): mono line « QR CODE · NFC · SANS APPLI · SANS COMPTE » types on under the tagline (discrete-text-sequence, type-on) and the frame holds; the ticket stays hanging under the slot.
 
 ## Frame 2a — La plaque
@@ -142,7 +146,7 @@ Scene 4 (4.6–6.0s): mono line « QR CODE · NFC · SANS APPLI · SANS COMPTE �
 - handoff_out: plate flat at (970, 360) 560×360, sticker pressed at plate (170, 34), copy and callouts gone
 - on_screen: installation rail 01 PLAQUE / « L'installation ? » / « On s'en charge. » / « Une plaque en métal par table, avec son QR code. » / callouts « PLAQUE MÉTAL », « AUTOCOLLANT QR · UNIQUE PAR TABLE »
 
-Scene 1 (0.0–1.4s): cream ground, installation rail (tag « INSTALLATION » slides to 01 PLAQUE). The plate (flat metal: bevel light top-left / dark bottom-right, two light facets, a shade facet, two screws, engraved « ATABLE ») tilts in from rotationX 68° / rotationZ −16° with a 12px stepped thickness and lands flat (power3); a sheen band sweeps it (1.05). Left: « L'installation ? » (0.12).
+Scene 1 (0.0–1.4s): cream ground, installation rail (tag « INSTALLATION » slides to 01 PLAQUE). The plate (flat metal: bevel light top-left / dark bottom-right, two light facets, a shade facet, two screws, engraved « À VOS TABLES ») tilts in from rotationX 68° / rotationZ −16° with a 12px stepped thickness and lands flat (power3); a sheen band sweeps it (1.05). Left: « L'installation ? » (0.12).
 Scene 2 (1.25–3.5s): « On s'en charge. » in gold-deep (1.25), rule (2.3). A sticker sheet (cream-2 liner, dashed die-cut) enters top-right (2.35); the sticker's corner curls back (3.0, CSS var --f), it lifts (3.25) and the liner leaves (3.45).
 Scene 3 (3.5–6.0s): « Une plaque en métal par table, » (3.5); the sticker flies over the plate tilted 22° (3.55–4.55), callout PLAQUE MÉTAL (3.75); press on « et son QR code » (4.6) with a squash and a light ripple; callout AUTOCOLLANT QR (4.95); second sheen + sparkle (5.1–5.95); copy and callouts exit (5.5) so only the plate remains for the cut.
 
@@ -200,13 +204,13 @@ Scene 3 (3.2–6.0s): « LES COMMANDES ARRIVENT EN DIRECT »; light pulses trave
 - beat: immersion → ease
 - focal: table 4's customer, his phone and the plate
 - sfx: restaurant murmur + cutlery clinks 32–40 s; whoosh 0.9 s (crane); tap 3.85 s (phone); scan beeps 5.05 s; shimmer + pop 5.6 s (QR recognised); whoosh 6.3 s (into the screen)
-- on_screen: tag « VENDREDI · 20:34 » (top left, HTML) / tag « TABLE 4 » pinned above table 4 (HTML, positioned per frame from the Blender camera) / in the phone: viewfinder on the plate, gold scan line, green brackets, pill « atable · Table 4 »
+- on_screen: tag « VENDREDI · 20:34 » (top left, HTML) / tag « TABLE 4 » pinned above table 4 (HTML, positioned per frame from the Blender camera) / in the phone: viewfinder on the plate, gold scan line, green brackets, pill « À vos tables · Table 4 »
 - credits: .hyperframes/salle-3d/CREDITS.md (Renderpeople characters and Sketchfab props, CC BY 4.0; Mixamo; Poly Haven CC0)
 
-Look: a warm, contrasted Parisian bistro at night — herringbone parquet, dark-green panelled wainscot, cream plaster, brick behind the bar, two windows on a night street, the Atable sign (enamel logo + brass letters), a gilded mirror, the « Ardoise du jour », brass pendants over every table, wall sconces, candles, plants, a green bar with marble top, beer taps, lit bottle shelf and the staff tablet. Same six tables and plate ends as the 02c floor plan (table 4 front left); each plate is gold metal with its cream QR sticker « TABLE n » and the engraved « A T A B L E ». A packed Friday night: thirty-three photoreal people (Renderpeople scans) driven by motion capture — every chair taken (table 4 keeps only the customer and his friend), customers waiting standing by the entrance and at the end of the bar, three at the counter. The staff is overwhelmed: one waiter in waistcoat and white apron hurries across the aisle with a tray on his shoulder (walk played 30 % faster) glancing at three diners who raise their hand to call him, while the second waiter serves table 1 (takes two plates from his tray and sets them down; the diners turn to him). The customer of table 4 (sitting idle, right arm in IK on the phone, head following the screen; grip solved against the deformed mesh, no finger through the phone) and his friend who turns to look. Front and right walls and the ceiling are invisible to the camera (cut-away seen from above on the brand-green ground).
+Look: a warm, contrasted Parisian bistro at night — herringbone parquet, dark-green panelled wainscot, cream plaster, brick behind the bar, two windows on a night street, the À vos tables sign (enamel logo + brass letters), a gilded mirror, the « Ardoise du jour », brass pendants over every table, wall sconces, candles, plants, a green bar with marble top, beer taps, lit bottle shelf and the staff tablet. Same six tables and plate ends as the 02c floor plan (table 4 front left); each plate is gold metal with its cream QR sticker « TABLE n » and the engraved « A T A B L E ». A packed Friday night: thirty-three photoreal people (Renderpeople scans) driven by motion capture — every chair taken (table 4 keeps only the customer and his friend), customers waiting standing by the entrance and at the end of the bar, three at the counter. The staff is overwhelmed: one waiter in waistcoat and white apron hurries across the aisle with a tray on his shoulder (walk played 30 % faster) glancing at three diners who raise their hand to call him, while the second waiter serves table 1 (takes two plates from his tray and sets them down; the diners turn to him). The customer of table 4 (sitting idle, right arm in IK on the phone, head following the screen; grip solved against the deformed mesh, no finger through the phone) and his friend who turns to look. Front and right walls and the ceiling are invisible to the camera (cut-away seen from above on the brand-green ground).
 Scene 1 (0.0–2.4s): top-down view = the floor plan; « VENDREDI · 20:34 » tag; the camera cranes down and orbits to a high 3/4 view; diners talk, laugh and drink, the waiter crosses the aisle with his tray.
 Scene 2 (2.2–5.0s): « TABLE 4 » tag pinned over the table; dolly to table 4 (2.4–3.7) then over the shoulder; the customer reaches for his phone lying on the table (3.35), lifts it to look at it (3.85–4.55) and holds it over the plate (4.85–5.45).
-Scene 3 (5.0–8.5s): on the screen the gold scan line sweeps the QR (5.05), the brackets turn green (5.6) and the pill « atable · Table 4 » appears (5.7); the camera pushes into the screen (6.2–7.9) until the plate's QR fills the frame, crossfade into frame 3.
+Scene 3 (5.0–8.5s): on the screen the gold scan line sweeps the QR (5.05), the brackets turn green (5.6) and the pill « À vos tables · Table 4 » appears (5.7); the camera pushes into the screen (6.2–7.9) until the plate's QR fills the frame, crossfade into frame 3.
 
 ## Frame 3 — Un scan
 
@@ -231,7 +235,7 @@ narrativeRole: show how simple the customer's first step is.
 keyMessage: one scan opens the right menu, no download, no account.
 
 Adapt: keep the stepwise cursorless flow inside the held phone (setup → result), bookended by copy on the left; the "setup" step is the scan of the physical gold plate (same plate as 02a–02c).
-Scene 1 (0.0–1.4s): cream ground, ticket rail (tag slides to « 01 CLIENT »). Right side: table 4's gold metal plate (560×360, flat bevel, facets, screws, engraved « ATABLE ») with its cream QR sticker « TABLE 4 » lies at x≈1250 (seen from above, no table line); the phone rises from below (0.3, power3) and settles in front of the tent at centre x 1250; inside the phone screen a camera view shows the gold plate and the QR sticker with four corner brackets; a gold scan line sweeps once (0.8–1.3). Left: « Un scan. » lands at display size (0.5).
+Scene 1 (0.0–1.4s): cream ground, ticket rail (tag slides to « 01 CLIENT »). Right side: table 4's gold metal plate (560×360, flat bevel, facets, screws, engraved « À VOS TABLES ») with its cream QR sticker « TABLE 4 » lies at x≈1250 (seen from above, no table line); the phone rises from below (0.3, power3) and settles in front of the tent at centre x 1250; inside the phone screen a camera view shows the gold plate and the QR sticker with four corner brackets; a gold scan line sweeps once (0.8–1.3). Left: « Un scan. » lands at display size (0.5).
 Scene 2 (1.4–3.0s): at 1.4 the brackets snap green and the screen wipes up into client-carte (Le Bistrot Démo · Table 4) — inverse zoom-through seam; the tent slides out of view behind the phone. Left: « Pas d'appli. Pas de compte. » reveals in body serif (2.0).
 Scene 3 (3.0–4.5s): coordinate-target-zoom inside the screen onto the first item card « Velouté du moment » (image region [30,800,1140,1130]); at 3.5 a ring lands on the price [45,980,210,1045] with a mono callout « PRIX » outside the phone (left of it, joined by a 2px hairline).
 Scene 4 (4.5–6.0s): a second ring lands on the allergen badges [960,820,1125,900] with the callout « ALLERGÈNES · LAIT, CÉLERI » (4.5); left copy adds « La carte du moment, prix et allergènes compris. » (5.0); the zoom eases back to the top of the menu by 5.8 so the phone matches the handoff (rings fade with it).
@@ -392,7 +396,7 @@ narrativeRole: show the owner gets clear numbers to decide, not a spreadsheet.
 keyMessage: montant commandé, panier moyen, rush hours — at a glance.
 
 Adapt: keep the push-THROUGH onto one hero metric with count-ups; the figures are the dashboard's own demo values (counted up as UI overlays), labelled as demo data.
-Scene 1 (0.0–1.0s): green ground, rail in cream. A desktop window (title bar « pro.atable.fr/bistrot/tableau-de-bord ») enters slightly tilted and flattens (power3) on the right; left headline « Les chiffres qui comptent. » in cream (0.3).
+Scene 1 (0.0–1.0s): green ground, rail in cream. A desktop window (title bar « pro.avostables.fr/bistrot/tableau-de-bord ») enters slightly tilted and flattens (power3) on the right; left headline « Les chiffres qui comptent. » in cream (0.3).
 Scene 2 (1.0–2.5s): the camera pushes THROUGH (coordinate-target-zoom) onto the KPI « Montant commandé validé » [321,336,672,503]; a large overlay figure counts up 0 → « 27 019,10 € » (counting-dynamic-scale) on the left in cream display, mono label « MONTANT COMMANDÉ · 30 JOURS » under it.
 Scene 3 (2.5–4.0s): pan to KPI « Panier moyen » [1058,336,1410,503]; the overlay swaps (velocity-matched) to « 30,05 € » counting up, label « PANIER MOYEN ».
 Scene 4 (4.0–6.0s): pull back and pan down to the rush heatmap [321,1190,1778,1546]; mono callout « VOS HEURES DE RUSH » with a gold ring on the darkest evening cells; mono small « EXEMPLE · DONNÉES DE DÉMONSTRATION » bottom-left; hold.
@@ -419,15 +423,15 @@ narrativeRole: remove the last objections (chains, security, payment) before the
 keyMessage: one platform for every venue, each with its own look and its own protected data.
 
 Adapt: keep the pinned anchor that never moves while the adjacent region cycles; the phone is pinned and its theme morphs once, while the trust lines cycle in one slot and resolve on an emphasis line.
-Scene 1 (0.0–1.0s): cream ground, rail (tag slides 05 → 06 PLATEFORME). The phone is pinned at x≈1250 showing client-carte; behind it, offset up-right and dimmed, a desktop card with console-commerces (title bar « console.atable.fr »). Left anchor « Un outil. Tous vos commerces. » (0.2, per-word).
+Scene 1 (0.0–1.0s): cream ground, rail (tag slides 05 → 06 PLATEFORME). The phone is pinned at x≈1250 showing client-carte; behind it, offset up-right and dimmed, a desktop card with console-commerces (title bar « console.avostables.fr »). Left anchor « Un outil. Tous vos commerces. » (0.2, per-word).
 Scene 2 (1.0–1.6s): theme-crossfade-morph: the phone screen morphs from client-carte to client-lounge (purple) while the phone itself never moves; mono label under the phone swaps « LE BISTROT DÉMO » → « LE LOUNGE DÉMO ».
 Scene 3 (2.0–5.0s): under the anchor, one slot cycles by hard-cut token swaps (discrete-text-sequence), each with a gold check: « Chaque commerce, ses données. » (2.0) → « Les prix calculés par le serveur. » (3.0) → « Double authentification pour les patrons. » (4.0) → « Paiement au comptoir. » (5.0 — briefly).
 Scene 4 (5.0–6.0s): at 5.5 the slot resolves on « Sécurisé par conception. » in green display weight with a gold rule; hold.
 
-## Frame 11 — Atable
+## Frame 11 — À vos tables
 
 - scene: the end card — logo lockup, the promise, the call to action
-- voiceover: "À table ! Vos clients commandent, votre équipe sert. Demandez une démo."
+- voiceover: "À vos tables ! Vos clients commandent, votre équipe sert. Demandez une démo."
 - duration: 6s
 - transition_in: zoom-through
 - status: animated
@@ -436,16 +440,16 @@ Scene 4 (5.0–6.0s): at 5.5 the slot resolves on « Sécurisé par conception. 
 - persuasion: Inevitability
 - beat: confidence + urgency-to-act
 - blueprint: logo-assemble-lockup (Adapt)
-- asset_candidates: assets/atable-logo.svg — Atable app icon
-- focal: assets/atable-logo.svg
-- roles: atable-logo = cutout (centre lockup)
+- asset_candidates: assets/avostables-logo.svg — À vos tables app icon
+- focal: assets/avostables-logo.svg
+- roles: avostables-logo = cutout (centre lockup)
 - sfx: swell 0.0–1.0 s; final hit at 1.0 s; soft pop at 2.5 s
-- on_screen: « Atable » / « Vos clients commandent. » / « Votre équipe sert. » / CTA pill « Demandez une démo » / mono « QR CODE · NFC · PAIEMENT AU COMPTOIR »
+- on_screen: « À vos tables » / « Vos clients commandent. » / « Votre équipe sert. » / CTA pill « Demandez une démo » / mono « QR CODE · NFC · PAIEMENT AU COMPTOIR »
 
 narrativeRole: close on the brand and one clear next step.
-keyMessage: Atable — customers order, the team serves; ask for a demo.
+keyMessage: À vos tables — customers order, the team serves; ask for a demo.
 
 Adapt: keep the lockup drawing itself in on a cleared stage, extended to an end card with the CTA.
-Scene 1 (0.0–1.0s): green ground, no rail. The logo mark draws itself centered (svg-path-draw: plate ring, then fork and knife, then the gold centre fills) and settles at ≈200px; at 1.0 the wordmark « Atable » lands below it at display-hero size in cream.
+Scene 1 (0.0–1.0s): green ground, no rail. The logo mark draws itself centered (the tile appears, the « À » outline draws then fills, the grave accent drops in, the gold full stop pops) and settles at ≈200px; at 1.0 the wordmark « À vos tables » lands below it at display-hero size in cream.
 Scene 2 (1.0–2.5s): « Vos clients commandent. » (1.5) and « Votre équipe sert. » in gold (2.0) reveal per-word under the wordmark.
 Scene 3 (2.5–6.0s): a gold pill « Demandez une démo » (ink text) spring-pops smoothly under the lines (2.5); mono « QR CODE · NFC · PAIEMENT AU COMPTOIR » types on below (3.0); hold still to the end; the whole card fades out over the last 0.4 s (final frame exit).

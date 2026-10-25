@@ -12,7 +12,7 @@ scan validé (5,6 s ≈ 37,6 s) → la caméra entre dans l'écran (6,2–7,9 s)
 - Salle 13,2 × 9,2 m (mêmes cotes que l'ancien plan three.js), murs du fond et de gauche visibles, mur de face,
   mur de droite et plafond invisibles pour la caméra mais présents pour la lumière (vue en coupe au début).
   Parquet à bâtons rompus, lambris vert à panneaux, plâtre crème, briques derrière le bar, corniche, deux fenêtres
-  sur une rue de nuit, enseigne Atable (logo émaillé, lettres laiton), miroir doré, ardoise du jour.
+  sur une rue de nuit, enseigne « À vos tables » (logo « À. » émaillé, nom en laiton), miroir doré, ardoise du jour.
 - Les 6 tables du plan 02c, plaques dorées au bout indiqué (table 4 devant à gauche), autocollant QR « TABLE n »,
   gravure « A T A B L E » ; suspensions laiton, appliques, bougies, plantes, comptoir vert à plateau de marbre,
   tireuses, étagère à bouteilles éclairée, tablette du personnel (écran « Salle » de l'application).
@@ -27,7 +27,7 @@ scan validé (5,6 s ≈ 37,6 s) → la caméra entre dans l'écran (6,2–7,9 s)
 - Le client de la table 4 (« Sitting Idle », bras droit en IK sur le téléphone, tête qui suit l'écran) et son
   amie qui se tourne vers l'écran.
 - Écran du téléphone : séquence d'images (`phone_screen.py`) — éteint, viseur sur la plaque, scan doré,
-  cadre vert, pastille « atable · Table 4 » (mêmes temps que l'ancien plan).
+  cadre vert, pastille « À vos tables · Table 4 » (mêmes temps que l'ancien plan).
 
 ## Refaire le rendu
 
@@ -67,3 +67,12 @@ la table et la tenue, la main s'ouvre et roule autour du bord droit du télépho
 
 `03a-la-salle.threejs.html` est l'ancien plan three.js cel-shadé (généré par `.hyperframes/installation-gen/gen_03a.py`),
 gardé pour référence. Ne relancez pas `gen_03a.py` : il écraserait le nouveau `compositions/frames/03a-la-salle.html`.
+
+## Changement de nom (24/10/2026) : « Atable » devient « À vos tables »
+
+La scène n'a pas été reconstruite : `tools/patch_brand.py` recharge les nouvelles textures (logo de l'enseigne,
+gravure « À VOS TABLES » des plaques, écran du téléphone) et remplace le nom en laiton de l'enseigne.
+`tools/render_patch.py` recalcule ensuite, image par image, uniquement les zones où ces éléments sont visibles
+(enseigne, miroir qui la reflète, plaques assez grandes pour être lisibles, téléphone), avec les mêmes réglages
+et la même graine que le rendu final ; `tools/composite_patch.py` les recolle dans les images d'origine avec un
+bord fondu. Un rendu complet de contrôle (image 85) n'a montré de différence qu'à ces endroits.

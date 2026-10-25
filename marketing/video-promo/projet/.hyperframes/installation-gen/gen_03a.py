@@ -163,7 +163,7 @@ JS = r"""
   wg.fillStyle = GOLD; lights.forEach(function (p) { wg.fillRect(p[0], p[1], 12, 14); });
   var winTex = tex(wc);
 
-  // enseigne (logo Atable)
+  // enseigne (logo À vos tables)
   var sc = canvas(512, 512), sg = sc.getContext("2d");
   rr(sg, 0, 0, 512, 512, 112); sg.fillStyle = GREEN; sg.fill();
   sg.lineWidth = 28; sg.strokeStyle = "#FFFFFF"; sg.beginPath(); sg.arc(256, 276, 132, 0, Math.PI * 2); sg.stroke();
@@ -228,7 +228,7 @@ JS = r"""
     box(0.05, 1.1, 0.03, flat(CREAM), x, 1.95, FZ0 + 0.075, null, false);
     box(1.4, 0.05, 0.03, flat(CREAM), x, 1.95, FZ0 + 0.075, null, false);
   });
-  // enseigne Atable
+  // enseigne À vos tables
   var sign = new THREE.Mesh(new THREE.PlaneGeometry(0.85, 0.85), new THREE.MeshBasicMaterial({ map: signTex, transparent: true }));
   sign.position.set(-0.35, 2.05, FZ0 + 0.04); scene.add(sign);
   var wm = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.28), new THREE.MeshBasicMaterial({ map: wmTex }));
@@ -557,7 +557,7 @@ JS = r"""
         rr(g, 76, 800 + 20 * (1 - a), 360, 64, 32); g.fillStyle = CREAM; g.fill(); g.lineWidth = 3; g.strokeStyle = INK; g.stroke();
         g.fillStyle = OK_GREEN; g.beginPath(); g.arc(112, 832 + 20 * (1 - a), 10, 0, Math.PI * 2); g.fill();
         g.fillStyle = INK; g.font = "700 26px " + MONO; g.textAlign = "left"; g.textBaseline = "middle";
-        g.fillText("atable · Table 4", 136, 833 + 20 * (1 - a));
+        g.fillText("À vos tables · Table 4", 136, 833 + 20 * (1 - a));
         g.globalAlpha = 1;
       }
       g.fillStyle = "rgba(12,22,19,0.85)"; g.fillRect(0, 0, 512, 70); g.fillRect(0, 1030, 512, 70);

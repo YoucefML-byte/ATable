@@ -11,7 +11,7 @@ SR, TOTAL, GAP = 48000, 96.0, 0.15
 # (repère à l'écran, limite de fin, texte) — un bloc par plan ; +20 s après 12 s (installation 12–32)
 SEGMENTS = [
     (0.15, 5.95, "Vendredi, vingt heures trente. Salle pleine. Tout le monde vous fait signe."),
-    (6.35, 11.8, "Et si chaque table pouvait commander toute seule ? Voici À table."),
+    (6.35, 11.8, "Et si chaque table pouvait commander toute seule ? Voici À vos tables."),
     (12.15, 17.9, "L'installation ? On s'en charge. Chaque table reçoit sa plaque en métal, et son QR code."),
     (18.15, 25.9, "Elle se place au bord de la table, à gauche ou à droite. Trois finitions au choix : rose, argenté ou doré."),
     (26.15, 31.9, "Et on vous fournit la tablette, reliée à tous vos QR codes. Les commandes y arrivent en direct."),
@@ -24,7 +24,7 @@ SEGMENTS = [
     (70.4, 77.8, "Et vous, vous pilotez tout : la carte, les horaires, les QR codes, et les couleurs de votre établissement."),
     (78.4, 83.8, "Le tableau de bord vous montre l'essentiel : montant commandé, panier moyen, heures de rush."),
     (84.35, 89.8, "Plusieurs commerces ? Un seul outil, et des données protégées."),
-    (90.85, 95.55, "À table ! Vos clients commandent, votre équipe sert. Demandez une démo."),
+    (90.85, 95.55, "À vos tables ! Vos clients commandent, votre équipe sert. Demandez une démo."),
 ]
 
 

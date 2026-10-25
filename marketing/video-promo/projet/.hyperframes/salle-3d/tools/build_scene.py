@@ -255,15 +255,15 @@ wn = w.node_tree.nodes; wl = w.node_tree.links
 we = wn.new("ShaderNodeTexEnvironment"); we.image = img(S + "/tex/cobblestone_street_night_2k.hdr")
 wl.new(we.outputs["Color"], wn["Background"].inputs["Color"]); wn["Background"].inputs["Strength"].default_value = 0.6
 
-# ============================================================ enseigne Atable
+# ============================================================ enseigne « À vos tables »
 m_logo, _ = mat_img("logo", B + "/tex/logo.png", rough=0.22, coat=0.6)
 SIGN_X = -0.35
 box("sign_frame", (0.86, 0.03, 0.86), (SIGN_X, FY1 - 0.015, 2.2), M["brass"], bevel=0.008)
 plane("sign_logo", 0.8, 0.8, (SIGN_X, FY1 - 0.0305, 2.2), m_logo, rot=(math.pi / 2, 0, 0))
-font = bpy.data.fonts.load(S + "/fonts/JetBrainsMono-700.ttf")
-cu = bpy.data.curves.new("wordmark", "FONT"); cu.body = "A T A B L E"; cu.font = font; cu.size = 0.2
+font = bpy.data.fonts.load(S + "/fonts/SourceSerif4-600.ttf")
+cu = bpy.data.curves.new("wordmark", "FONT"); cu.body = "À vos tables"; cu.font = font; cu.size = 0.27
 cu.align_x = "CENTER"; cu.align_y = "CENTER"; cu.extrude = 0.008; cu.bevel_depth = 0.0015
-wm = bpy.data.objects.new("wordmark", cu); wm.location = (SIGN_X, FY1 - 0.012, 1.48); wm.rotation_euler = (math.pi / 2, 0, 0)
+wm = bpy.data.objects.new("wordmark", cu); wm.location = (SIGN_X, FY1 - 0.012, 1.5); wm.rotation_euler = (math.pi / 2, 0, 0)
 COL.objects.link(wm); cu.materials.append(M["brass"])
 sp = bpy.data.lights.new("sign_spot", "SPOT"); sp.energy = 60; sp.color = WARM[:3]; sp.spot_size = math.radians(70); sp.spot_blend = 0.6; sp.shadow_soft_size = 0.05
 spo = bpy.data.objects.new("sign_spot", sp); spo.location = (SIGN_X, FY1 - 0.55, 2.95); COL.objects.link(spo)

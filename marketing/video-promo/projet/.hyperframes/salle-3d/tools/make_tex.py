@@ -1,4 +1,4 @@
-# Textures 2D : logo Atable, autocollants QR des plaques, gravure
+# Textures 2D : logo « À vos tables », autocollants QR des plaques, gravure
 import os, sys
 from PIL import Image, ImageDraw, ImageFont
 S = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -15,6 +15,10 @@ def stroke_path(d, pts, w, fill):
         d.ellipse([p[0] - r, p[1] - r, p[0] + r, p[1] + r], fill=fill)
 
 def logo(size=1024, bg=True):
+    """Tuile « À. » (logo/avostables-logo.png, rendu du SVG vectorisé)."""
+    return Image.open(S + "/logo/avostables-logo.png").convert("RGBA").resize((size, size), Image.LANCZOS)
+
+def logo_atable(size=1024, bg=True):
     k = 4; s = size * k / 512
     im = Image.new("RGBA", (size * k, size * k), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
     if bg: d.rounded_rectangle([0, 0, size * k - 1, size * k - 1], radius=112 * s, fill=GREEN)
@@ -45,13 +49,22 @@ def sticker(num, w=880, h=1000):
     d.text((w / 2, 222 * k), f"TABLE {num}", font=f, fill=INK, anchor="mm")
     return im
 
+def tracked(d, center, text, font, track, fill):
+    """Texte centré avec espacement des lettres (track en pixels)."""
+    ws = [d.textlength(c, font=font) for c in text]
+    x = center[0] - (sum(ws) + track * (len(text) - 1)) / 2
+    for c, w in zip(text, ws):
+        d.text((x, center[1]), c, font=font, fill=fill, anchor="lm"); x += w + track
+
+BRAND_ENG = "À VOS TABLES"
+
 def engraving(w=1120, h=720):
-    """Gravure « A T A B L E » + filet intérieur : masque (blanc = gravé) aux proportions de la plaque 560×360."""
+    """Gravure « À VOS TABLES » + filet intérieur : masque (blanc = gravé) aux proportions de la plaque 560×360."""
     k = w / 560
     im = Image.new("L", (w, h), 0); d = ImageDraw.Draw(im)
     d.rounded_rectangle([5 * k, 5 * k, w - 5 * k, h - 5 * k], radius=22 * k, outline=255, width=int(5 * k))
     f = ImageFont.truetype(MONO7, int(15 * k))
-    d.text((w / 2, 312 * k), "A T A B L E", font=f, fill=255, anchor="mm")
+    tracked(d, (w / 2, 312 * k), BRAND_ENG, f, 0.42 * 15 * k, 255)
     return im
 
 if __name__ == "__main__":

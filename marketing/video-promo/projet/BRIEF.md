@@ -83,3 +83,17 @@ scanne désormais la plaque dorée de la table 4 au lieu d'un chevalet en carton
 - Restaurant plus riche et plus contrasté (bistrot de nuit, lambris vert, laiton, bougies, bar, ardoise, miroir),
   vrais personnages (scans Renderpeople) animés en capture de mouvement (Mixamo), serveur en gilet et tablier
   avec plateau. Pipeline et crédits CC-BY : `.hyperframes/salle-3d/` (README.md, CREDITS.md).
+
+## Mise à jour — nouveau nom « À vos tables » et stories (24/10/2026)
+
+- L'application s'appelle désormais **« À vos tables »** (au lieu de « Atable ») et change de logo : un « À »
+  crème à empattements et un point doré sur fond vert (image fournie, vectorisée dans `assets/avostables-logo.svg`).
+- À l'écran : nom « À vos tables », capitales « À VOS TABLES » (bandeau, ticket, gravure des plaques), adresses
+  `pro.avostables.fr` et `console.avostables.fr`, en-tête de la console retouché sur la capture d'écran.
+  Le slogan « La commande à table. » est conservé.
+- Voix off : « Voici À vos tables. » (≈ 8,8 s) et « À vos tables ! Vos clients commandent… » (≈ 90,9 s),
+  même voix et même SSML fr-FR, recalées sur les anciennes phrases et au même volume.
+- Plan 3D : enseigne (logo et nom), gravure des plaques et écran du téléphone mis à jour ; seules les zones
+  concernées ont été recalculées (voir `.hyperframes/salle-3d/README.md`).
+- Nouvelles **stories verticales** 9:16 (8 × 6–14 s) découpées dans la vidéo, avec titre et sous-titres :
+  scripts dans `.hyperframes/stories/`, mode d'emploi dans `stories/CONTENU-STORIES.md`.

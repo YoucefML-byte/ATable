@@ -1,10 +1,12 @@
 # Instagram « À vos tables » — stories et Reel : quoi publier, et comment
 
-Deux formats sont prêts :
+Trois contenus sont prêts :
 
 - **8 stories** (`stories/story-01…08.mp4`) : la vidéo découpée en épisodes de 6 à 14 secondes ;
 - **1 Reel** (`stories/reel-avostables-96s.mp4`) : la vidéo complète (96 s) en vertical, à publier comme une
-  vidéo sur votre profil, avec sa couverture et son texte (voir la fin de ce document).
+  vidéo sur votre profil, avec sa couverture et son texte ;
+- **une grille de 9 publications** (`stories/grille-logo/`) : 9 images qui, côte à côte sur votre profil,
+  forment le grand logo « À. » (voir la fin de ce document).
 
 ## Les stories
 
@@ -198,3 +200,52 @@ La dernière ligne (crédits des modèles 3D) est **obligatoire** : la licence C
 est publiée. Elle peut rester en fin de légende.
 
 Pensez aussi à mettre le lien de votre page de démo dans votre **bio** Instagram, puisque la légende y renvoie.
+
+## La grille de 9 publications : le grand logo
+
+Le dossier `grille-logo/` contient 9 images de 1080 × 1440 px (format 3:4, celui des vignettes du profil).
+Publiées dans le bon ordre, elles forment le logo « À. » géant en haut de votre profil : voir
+`apercu-grille.png`.
+
+**L'ordre compte** : Instagram place toujours la publication la plus récente en haut à gauche. Il faut donc
+commencer par la case du bas à droite et finir par celle du haut à gauche. Les fichiers sont numérotés dans cet
+ordre (`publication-1-sur-9_bas-droite.jpg` en premier, … `publication-9-sur-9_haut-gauche.jpg` en dernier) ;
+`ordre-de-publication.png` le montre sur la grille.
+
+Avant de commencer :
+
+- **désépinglez** vos publications épinglées : elles s'affichent en premier et décaleraient la mosaïque ;
+- publiez le **Reel avant la grille**. Un Reel publié après prend une case et décale tout le logo, sauf si vous
+  décochez « Afficher dans la grille du profil » au moment de le publier.
+
+En publiant chaque image :
+
+- sur l'écran de recadrage, touchez l'icône aux **deux flèches** (en bas à gauche de la photo) pour garder
+  l'image entière, en vertical. Sinon Instagram la recoupe en carré et les morceaux ne se raccordent plus ;
+- publiez les 9 **à la suite**, le même jour, en quelques minutes.
+
+Les cases 4 (milieu à droite) et 7 (haut à droite) sont entièrement vertes : c'est le fond du logo, c'est normal.
+
+**Ensuite** : chaque nouvelle publication décale la mosaïque d'une case. Pour garder le logo intact, publiez
+ensuite **par 3** (une ligne entière à la fois). Les stories, elles, ne changent rien à la grille.
+
+### Légendes
+
+Publications 1 à 8 (courtes, pour intriguer) :
+
+```text
+Quelque chose se prépare… 👀 (1/9)
+```
+
+(en remplaçant 1/9 par 2/9, 3/9… jusqu'à 8/9)
+
+Publication 9 (la dernière, en haut à gauche, celle qui révèle le logo) :
+
+```text
+Voici À vos tables. 🍽️
+La commande à table pour les restaurants, bars, chichas et cafés : vos clients scannent le QR code de leur table, commandent sans appli ni compte, et votre équipe sert. Le paiement reste au comptoir.
+
+Demandez une démo 👉 lien en bio
+
+#avostables #restaurant #restaurateur #bar #chicha #cafe #QRcode
+```

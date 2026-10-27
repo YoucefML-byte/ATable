@@ -1,5 +1,7 @@
 Voix : edge-tts fr-FR-VivienneMultilingualNeural, SSML envoyé en fr-FR (comme la publicité).
-l1 (0,25 s)   Lever la main. Attendre. Recommencer.
+l1 (0,25 s)   Lever la main, attendre, recommencer.
+              (avec des points, « Recommencer. » seul était lu à l'anglaise : Whisper le perçoit en anglais à 96 % ;
+               en une seule phrase avec des virgules, il est perçu en français à 100 %)
 l2 (3,75 s)   Ça, c'est fini. Plus d'attente, plus d'allers-retours.
 l3 (7,65 s)   Maintenant, vos clients scannent, et commandent.
 l4 (10,85 s)  Trois, deux, un… la commande est déjà en salle.

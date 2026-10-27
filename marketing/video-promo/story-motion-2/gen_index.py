@@ -250,7 +250,7 @@ HTML = f"""<!doctype html>
           tl.fromTo(a, {{ strokeDashoffset: n + 60, opacity: 1 }}, {{ strokeDashoffset: 0, duration: 0.25, ease: "power2.out" }}, 0.7 + k * 0.08);
         }});
         tl.to(["#arc1", "#arc2"], {{ opacity: 0.25, duration: 0.25, yoyo: true, repeat: 7, ease: "none" }}, 1.0);
-        [["#st0", 0.36, -3], ["#st1", 1.44, 2], ["#st2", 2.47, -2]].forEach(function (s, k, all) {{
+        [["#st0", 0.38, -3], ["#st1", 1.4, 2], ["#st2", 2.16, -2]].forEach(function (s, k, all) {{
           tl.fromTo(s[0], {{ scale: 1.7, opacity: 0, rotation: s[2] * 2 }}, {{ scale: 1, opacity: 1, rotation: s[2], duration: 0.22, ease: "power4.in" }}, s[1]);
           tl.fromTo("#hand", {{ y: 0 }}, {{ y: 10, duration: 0.06, yoyo: true, repeat: 1, ease: "none", immediateRender: false }}, s[1] + 0.22);
           if (k > 0) tl.to(all[k - 1][0], {{ opacity: 0.32, duration: 0.25 }}, s[1] + 0.1);

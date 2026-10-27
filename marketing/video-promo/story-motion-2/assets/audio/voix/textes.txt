@@ -1,0 +1,7 @@
+Voix : edge-tts fr-FR-VivienneMultilingualNeural, SSML envoyé en fr-FR (comme la publicité).
+l1 (0,25 s)   Lever la main. Attendre. Recommencer.
+l2 (3,75 s)   Ça, c'est fini. Plus d'attente, plus d'allers-retours.
+l3 (7,65 s)   Maintenant, vos clients scannent, et commandent.
+l4 (10,85 s)  Trois, deux, un… la commande est déjà en salle.
+l5 (14,10 s)  Sans appli, sans compte. Et on installe tout.
+l6 (17,55 s)  À vos tables. Le service, sans courir.

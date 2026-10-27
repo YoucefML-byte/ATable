@@ -1,0 +1,9 @@
+{
+  "name": "avostables-story-motion-2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "npx --yes hyperframes@0.8.164 check",
+    "render": "npx --yes hyperframes@0.8.164 render"
+  }
+}

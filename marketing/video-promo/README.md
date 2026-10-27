@@ -16,6 +16,7 @@ Instagram, Facebook et WhatsApp.
 | `avostables-promo-96s.mp4` | La vidéo finale, prête à publier (site, réseaux, présentation) — H.264 High 4.1, débit plafonné à ~6 Mbit/s, lecture progressive. |
 | `stories/` | Les 8 stories verticales et le Reel (vidéo complète en vertical), tous en 1080 × 1920, la couverture du Reel, les **icônes des « À la une »** (`stories/icones/`), la **grille de 9 publications** qui forme le grand logo (`stories/grille-logo/`) et **`CONTENU-INSTAGRAM.md`** : quoi publier, dans quel ordre, quel sticker ajouter, et le texte du Reel prêt à copier. |
 | `story-motion/` | La **story animée** de 17 s (motion design vertical, même univers que la publicité) : sources HyperFrames, voix off et notice. La vidéo est `stories/story-motion-avostables.mp4`. |
+| `story-motion-2/` | La **story animée n° 2** « Lever la main, c'est fini » (21,5 s) : autre histoire, autre texte, autres animations. La vidéo est `stories/story-motion-2-lever-la-main.mp4`. |
 | `logo/` | Le logo « À. » vectorisé (SVG) : tuile arrondie, tuile carrée, marque seule crème ou verte, plus une version PNG 1024 px et l'image d'origine. |
 | `projet/` | Le projet [HyperFrames](https://hyperframes.heygen.com) qui fabrique la vidéo (HTML + GSAP). |
 | `projet/STORYBOARD.md` | Le découpage plan par plan, avec la voix off et les temps. |
@@ -40,6 +41,7 @@ Instagram, Facebook et WhatsApp.
 | 8 | `story-08-demandez-une-demo.mp4` | 90 – 96 s | 6 s |
 | Reel | `reel-avostables-96s.mp4` | 0 – 96 s (vidéo complète) | 1 min 36 |
 | Story animée | `story-motion-avostables.mp4` | création originale (voir `story-motion/`) | 17 s |
+| Story animée n° 2 | `story-motion-2-lever-la-main.mp4` | création originale (voir `story-motion-2/`) | 21,5 s |
 
 Chaque story porte le logo, un titre, la vidéo au centre et les sous-titres de la voix off ; le haut et le bas
 de l'écran sont laissés libres pour l'interface d'Instagram et les stickers. Le Reel reprend la même mise en

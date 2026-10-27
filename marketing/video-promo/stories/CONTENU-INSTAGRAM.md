@@ -147,6 +147,20 @@ quiz, question ou lien), comme indiqué ci-dessous.
 - **Hashtags** : #avostables #restaurant
 - Ajoutez-la ensuite à l'« À la une » **À vos tables**.
 
+## La story animée n° 2 « Lever la main, c'est fini » (21,5 s)
+
+- **Fichier** : `story-motion-2-lever-la-main.mp4`. Nouvelle histoire, nouveau texte, nouvelles animations :
+  une main qui s'agite et le compteur d'attente qui défile, une liste barrée (« Attendre la carte », « Chercher un
+  serveur », « Répéter sa commande »), un QR code qui se construit case par case sur fond doré, un compte à
+  rebours 3, 2, 1 jusqu'à « Déjà en salle. », des pastilles (« Sans appli », « Sans compte », « Installation
+  incluse »…), puis le logo qui s'assemble et le nouveau slogan « Le service, sans courir. ».
+- **Sticker à ajouter — Sondage** (au milieu, sur la scène dorée) : « Vos clients lèvent la main pour
+  commander ? » → « Tout le temps 🙋 » / « Rarement ».
+- **Sticker à ajouter — Lien** à la fin : « Demander une démo », sous « ↓ DEMANDEZ VOTRE DÉMO ↓ ».
+- **Hashtags** : #avostables #restaurant #bar
+- Elle marche aussi en **Reel** court ; dans ce cas, le texte « Le service, sans courir. » fait une bonne
+  première ligne de légende.
+
 ## Les icônes des « À la une »
 
 Les icônes sont dans le dossier `icones/`. Chacune est une image verticale 1080 × 1920 au fond vert de la

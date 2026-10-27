@@ -1,0 +1,3 @@
+assets/audio/**/*.wav
+assets/audio/*.wav
+renders/

@@ -1,0 +1,6 @@
+Voix : edge-tts fr-FR-VivienneMultilingualNeural, SSML envoyé en fr-FR (comme la publicité).
+l1 (0,24 s)  Vendredi soir. Tout le monde vous fait signe.
+l2 (3,52 s)  Et si un scan suffisait ?
+l3 (6,59 s)  La carte s'ouvre, votre client commande.
+l4 (9,61 s)  En salle, la commande arrive. Validée d'un geste.
+l5 (13,08 s) À vos tables. Vos clients commandent, votre équipe sert.

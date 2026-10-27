@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <style>
+      @font-face { font-family: "Source Serif 4"; src: url("assets/fonts/SourceSerif4-400.woff2") format("woff2"); font-weight: 400; font-display: block; }
+      @font-face { font-family: "Source Serif 4"; src: url("assets/fonts/SourceSerif4-500.woff2") format("woff2"); font-weight: 500; font-display: block; }
+      @font-face { font-family: "Source Serif 4"; src: url("assets/fonts/SourceSerif4-600.woff2") format("woff2"); font-weight: 600; font-display: block; }
+      @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2"); font-weight: 500; font-display: block; }
+      @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight: 700; font-display: block; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #F4EFE6; }
+      .scene { position: absolute; inset: 0; overflow: hidden; }
+      .cream { background: #F4EFE6; color: #1F4D3A; }
+      .green { background: radial-gradient(120% 75% at 50% 40%, #24573F 0%, #1F4D3A 55%, #173B2D 100%); color: #F4EFE6; }
+      .w { display: inline-block; }
+      .g { color: #E0A33A; }
+      .gd { color: #B9822A; }
+      .brand { position: absolute; left: 80px; top: 258px; display: flex; align-items: center; gap: 16px;
+        font: 700 22px/1 "JetBrains Mono"; letter-spacing: 0.18em; color: #0C1613; }
+      .brand img { width: 52px; height: 52px; display: block; }
+      .brand.on-dark { color: #F4EFE6; }
+      .title { position: absolute; left: 80px; right: 80px; font-family: "Source Serif 4"; font-weight: 500;
+        letter-spacing: -0.02em; line-height: 1.04; }
+      .line { display: block; white-space: nowrap; }
+
+      /* ---------- A : le rush ---------- */
+      #aLabel { position: absolute; left: 0; right: 0; top: 410px; text-align: center;
+        font: 700 26px/1 "JetBrains Mono"; letter-spacing: 0.22em; color: #1F4D3A; }
+      #aTitle { top: 462px; text-align: center; font-size: 128px; color: #1F4D3A; }
+      #aSub { top: 630px; text-align: center; font-weight: 400; font-size: 74px; line-height: 1.12; color: #0C1613; }
+      .tag { position: absolute; height: 64px; padding: 0 22px; display: flex; align-items: center; white-space: nowrap;
+        background: #E7DCC6; border: 3px solid #0C1613; border-radius: 10px;
+        font: 700 27px/1 "JetBrains Mono"; letter-spacing: 0.06em; color: #0C1613; }
+      .tag.gold { background: #E0A33A; }
+      #aWipe { position: absolute; inset: 0; background: radial-gradient(120% 75% at 50% 40%, #24573F 0%, #1F4D3A 55%, #173B2D 100%); clip-path: inset(100% 0 0 0); }
+
+      /* ---------- B : le scan ---------- */
+      #bTitle { top: 400px; font-size: 124px; }
+      #bPlateWrap { position: absolute; left: 106px; top: 770px; width: 868px; height: 558px; }
+      #bStage { position: absolute; inset: 0; transform-origin: 540px 1016px; }
+      .plate { position: absolute; left: 0; top: 0; width: 560px; height: 360px; transform-origin: 0 0; }
+      .pclip { position: absolute; inset: 0; border-radius: 26px; overflow: hidden; }
+      .fbase { position: absolute; inset: 0; border: 10px solid; border-color: #F2D893 #A9832F #A9832F #F2D893;
+        border-radius: 26px; background: #D6AE57; }
+      .facet { position: absolute; left: 10px; top: 10px; width: 540px; height: 340px; }
+      .f1 { clip-path: polygon(9% 0, 27% 0, 12% 100%, -6% 100%); background: #E4C373; }
+      .f2 { clip-path: polygon(31% 0, 34% 0, 19% 100%, 16% 100%); background: #F2D893; }
+      .f3 { clip-path: polygon(80% 0, 100% 0, 100% 100%, 66% 100%); background: #C79E48; }
+      .screw { position: absolute; top: 171px; width: 18px; height: 18px; border: 2px solid #584313; border-radius: 50%; background: #E4C373; }
+      .eng { position: absolute; left: 0; right: 0; top: 302px; height: 20px; line-height: 20px; text-align: center;
+        font: 700 14px/20px "JetBrains Mono"; letter-spacing: 0.42em; padding-left: 0.42em; color: #584313; }
+      .pol { position: absolute; inset: 0; border: 2px solid #0C1613; border-radius: 26px; }
+      .stk { position: absolute; left: 170px; top: 34px; width: 220px; height: 250px; background: #F4EFE6;
+        border: 2px solid #0C1613; border-radius: 14px; }
+      .stk img { position: absolute; left: 21px; top: 16px; width: 174px; height: 174px; display: block; }
+      .stk div { position: absolute; left: 0; right: 0; top: 200px; height: 30px; display: flex; align-items: center;
+        justify-content: center; font: 700 18px/1 "JetBrains Mono"; letter-spacing: 0.12em; color: #0C1613; }
+      #bSheen { position: absolute; left: -160px; top: -60px; width: 110px; height: 480px; background: #FFFDF6; opacity: 0.5; transform: rotate(18deg); }
+      .corner { position: absolute; width: 74px; height: 74px; border: 0 solid #F4EFE6; }
+      #c1 { left: -26px; top: -26px; border-width: 10px 0 0 10px; border-top-left-radius: 14px; }
+      #c2 { right: -26px; top: -26px; border-width: 10px 10px 0 0; border-top-right-radius: 14px; }
+      #c3 { left: -26px; bottom: -26px; border-width: 0 0 10px 10px; border-bottom-left-radius: 14px; }
+      #c4 { right: -26px; bottom: -26px; border-width: 0 10px 10px 0; border-bottom-right-radius: 14px; }
+      #bBrackets { position: absolute; left: 263px; top: 52px; width: 342px; height: 388px; }
+      #bScan { position: absolute; left: 18px; right: 18px; top: 0; height: 8px; border-radius: 4px; background: #E0A33A;
+        box-shadow: 0 0 24px 6px rgba(224, 163, 58, 0.55); opacity: 0; }
+      #bPill { position: absolute; left: 0; right: 0; top: 1392px; display: flex; justify-content: center; }
+      #bPill div { height: 76px; padding: 0 34px 0 28px; display: flex; align-items: center; gap: 16px; background: #F4EFE6;
+        border: 3px solid #0C1613; border-radius: 38px; font: 700 28px/1 "JetBrains Mono"; color: #0C1613; }
+      #bPill i { width: 22px; height: 22px; border-radius: 50%; background: #2E9E6A; display: block; }
+
+      /* ---------- C : le téléphone ---------- */
+      #cTitle { top: 384px; font-size: 84px; color: #1F4D3A; }
+      #cPhone { position: absolute; left: 256px; top: 604px; width: 568px; height: 950px; background: #0C1613;
+        border-radius: 70px; padding: 22px 20px; box-shadow: 0 30px 60px rgba(12, 22, 19, 0.25); }
+      #cScreen { position: relative; width: 528px; height: 906px; border-radius: 50px; overflow: hidden; background: #fff; }
+      #cScreen img { position: absolute; left: 0; top: 0; width: 528px; height: 899px; display: block; }
+      #cNotch { position: absolute; left: 50%; top: 34px; width: 150px; height: 34px; margin-left: -75px; border-radius: 17px; background: #0C1613; }
+      .tap { position: absolute; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%;
+        border: 6px solid #E0A33A; background: rgba(224, 163, 58, 0.25); opacity: 0; }
+
+      /* ---------- D : le ticket ---------- */
+      #dTitle { top: 384px; font-size: 92px; }
+      #dSlot { position: absolute; left: 230px; top: 742px; width: 620px; height: 30px; border-radius: 15px; background: #0C1613; z-index: 3; }
+      #dMask { position: absolute; left: 270px; top: 756px; width: 540px; height: 680px; overflow: hidden; }
+      #dTicket { position: absolute; left: 10px; top: 0; width: 520px; height: 640px; }
+      #dPaper { position: absolute; inset: 0 0 14px 0; background: #E7DCC6; padding: 52px 44px 0; color: #0C1613;
+        font-family: "JetBrains Mono"; }
+      #dEdge { position: absolute; left: 0; bottom: 0; width: 520px; height: 14px; }
+      .tk1 { font: 700 30px/1 "JetBrains Mono"; letter-spacing: 0.2em; text-align: center; }
+      .tkr { border-top: 3px dashed #8C7A57; margin: 26px 0; }
+      .tk2 { font: 700 58px/1 "JetBrains Mono"; letter-spacing: 0.06em; text-align: center; }
+      .tk3 { font: 500 24px/1 "JetBrains Mono"; letter-spacing: 0.12em; text-align: center; margin-top: 14px; }
+      .tk4 { font: 500 27px/1.55 "JetBrains Mono"; letter-spacing: 0.04em; }
+      #dStamp { position: absolute; left: 330px; top: 1200px; width: 420px; height: 116px; border: 8px solid #E0A33A;
+        border-radius: 18px; display: flex; align-items: center; justify-content: center; gap: 14px;
+        font: 700 52px/1 "JetBrains Mono"; letter-spacing: 0.12em; color: #E0A33A; background: rgba(23, 59, 45, 0.92);
+        transform: rotate(-9deg); opacity: 0; z-index: 4; }
+      #dRing { position: absolute; left: 540px; top: 1258px; width: 40px; height: 40px; margin: -20px 0 0 -20px;
+        border: 6px solid #F4EFE6; border-radius: 50%; opacity: 0; z-index: 4; }
+
+      /* ---------- E : fin ---------- */
+      #eMark { position: absolute; left: 390px; top: 470px; width: 300px; height: 300px; }
+      #eMark svg { display: block; width: 100%; height: 100%; overflow: visible; }
+      #eWord { position: absolute; left: 0; right: 0; top: 820px; text-align: center; font: 500 132px/1 "Source Serif 4";
+        letter-spacing: -0.02em; color: #F4EFE6; }
+      .eLine { position: absolute; left: 0; right: 0; text-align: center; font: 500 72px/1.1 "Source Serif 4"; letter-spacing: -0.015em; }
+      #eL1 { top: 1030px; color: #F4EFE6; }
+      #eL2 { top: 1114px; color: #E0A33A; }
+      #eMono { position: absolute; left: 0; right: 0; top: 1262px; text-align: center; font: 500 24px/1 "JetBrains Mono";
+        letter-spacing: 0.16em; color: #F4EFE6; opacity: 0.85; }
+      #eCta { position: absolute; left: 0; right: 0; top: 1470px; text-align: center; font: 700 28px/1 "JetBrains Mono";
+        letter-spacing: 0.18em; color: #E0A33A; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="17" data-width="1080" data-height="1920">
+
+      <!-- A · le rush -->
+      <div id="sA" class="scene cream clip" data-start="0" data-duration="3.9" data-track-index="0">
+        <div class="brand"><img src="assets/avostables-logo.svg" alt=""><span>À VOS TABLES</span></div>
+        <div id="aLabel">VENDREDI · 20:30</div>
+        <div id="aTitle" class="title"><span class="line"><span class="w">Vendredi</span> <span class="w">soir.</span></span></div>
+        <div id="aSub" class="title"><span class="line"><span class="w">Tout</span> <span class="w">le</span> <span class="w">monde</span></span><span class="line"><span class="w">vous</span> <span class="w">fait</span> <span class="w">signe.</span></span></div>
+        <div id="aTags"><div class="tag" id="tag0" data-r="-6" style="left:90px;top:930px">TABLE 7 — ATTEND 12 MIN</div>
+<div class="tag" id="tag1" data-r="4" style="left:430px;top:1040px">TERRASSE 2 — ATTEND 9 MIN</div>
+<div class="tag" id="tag2" data-r="3" style="left:120px;top:1150px">BAR — ATTEND 6 MIN</div>
+<div class="tag gold" id="tag3" data-r="-3" style="left:160px;top:1270px">TABLE 3 — « ON PEUT COMMANDER ? »</div>
+<div class="tag" id="tag4" data-r="-5" style="left:470px;top:1390px">TABLE 12 — ATTEND 15 MIN</div>
+<div class="tag" id="tag5" data-r="5" style="left:100px;top:1480px">TABLE 5 — « L'ADDITION ? »</div></div>
+        <div id="aWipe"></div>
+      </div>
+
+      <!-- B · un scan -->
+      <div id="sB" class="scene green clip" data-start="3.45" data-duration="3.5" data-track-index="1">
+        <div id="bStage">
+          <div class="brand on-dark"><img src="assets/avostables-logo.svg" alt=""><span>À VOS TABLES</span></div>
+          <div id="bTitle" class="title"><span class="line"><span class="w">Et</span> <span class="w">si</span> <span class="w g">un</span> <span class="w g">scan</span></span><span class="line"><span class="w">suffisait</span> <span class="w">?</span></span></div>
+          <div id="bPlateWrap">
+            <div class="plate" style="transform: scale(1.55)">
+              <div class="pclip"><div class="fbase"></div><div class="facet f1"></div><div class="facet f2"></div><div class="facet f3"></div>
+                <div class="screw" style="left: 26px"></div><div class="screw" style="left: 516px"></div>
+                <div class="eng">À VOS TABLES</div><div id="bSheen"></div></div>
+              <div class="pol"></div>
+              <div class="stk"><img src="assets/table-qr.svg" alt=""><div>TABLE 4</div></div>
+            </div>
+            <div id="bBrackets"><div class="corner" id="c1"></div><div class="corner" id="c2"></div><div class="corner" id="c3"></div><div class="corner" id="c4"></div><div id="bScan"></div></div>
+          </div>
+          <div id="bPill"><div><i></i>À vos tables · Table 4</div></div>
+        </div>
+      </div>
+
+      <!-- C · la commande -->
+      <div id="sC" class="scene cream clip" data-start="6.45" data-duration="3.6" data-track-index="2">
+        <div class="brand"><img src="assets/avostables-logo.svg" alt=""><span>À VOS TABLES</span></div>
+        <div id="cTitle" class="title"><span class="line"><span class="w">La</span> <span class="w">carte</span> <span class="w">s'ouvre,</span></span><span class="line"><span class="w">votre</span> <span class="w">client</span> <span class="w gd">commande.</span></span></div>
+        <div id="cPhone"><div id="cScreen">
+          <img id="cImg0" src="assets/client-carte.png" alt="">
+          <img id="cImg1" src="assets/client-produit.png" alt="">
+          <img id="cImg2" src="assets/client-panier.png" alt="">
+          <img id="cImg3" src="assets/client-confirmation.png" alt="">
+          <div class="tap" id="tap0" style="left: 475px; top: 470px"></div>
+          <div class="tap" id="tap1" style="left: 352px; top: 844px"></div>
+          <div class="tap" id="tap2" style="left: 264px; top: 844px"></div>
+          <div id="cNotch"></div>
+        </div></div>
+      </div>
+
+      <!-- D · le ticket -->
+      <div id="sD" class="scene green clip" data-start="9.55" data-duration="3.75" data-track-index="3">
+        <div id="dHead"><div class="brand on-dark"><img src="assets/avostables-logo.svg" alt=""><span>À VOS TABLES</span></div>
+          <div id="dTitle" class="title"><span class="line"><span class="w">En</span> <span class="w">salle,</span></span><span class="line"><span class="w">la</span> <span class="w">commande</span> <span class="w">arrive.</span></span><span class="line g"><span class="w">Validée</span> <span class="w">d'un</span> <span class="w">geste.</span></span></div></div>
+        <div id="dSlot"></div>
+        <div id="dMask"><div id="dTicket">
+          <div id="dPaper">
+            <div class="tk1">À VOS TABLES</div><div class="tkr"></div>
+            <div class="tk2">TABLE 4</div><div class="tk3">COMMANDE N° 001</div><div class="tkr"></div>
+            <div class="tk4">1 × TACOS 2 VIANDES<br>1 × LIMONADE<br>NOTE : SAUCE À PART SVP</div>
+          </div>
+          <svg id="dEdge" viewBox="0 0 520 14" preserveAspectRatio="none" aria-hidden="true"><path fill="#E7DCC6" d="M0 0H520V2L515 14L510 2L505 14L500 2L495 14L490 2L485 14L480 2L475 14L470 2L465 14L460 2L455 14L450 2L445 14L440 2L435 14L430 2L425 14L420 2L415 14L410 2L405 14L400 2L395 14L390 2L385 14L380 2L375 14L370 2L365 14L360 2L355 14L350 2L345 14L340 2L335 14L330 2L325 14L320 2L315 14L310 2L305 14L300 2L295 14L290 2L285 14L280 2L275 14L270 2L265 14L260 2L255 14L250 2L245 14L240 2L235 14L230 2L225 14L220 2L215 14L210 2L205 14L200 2L195 14L190 2L185 14L180 2L175 14L170 2L165 14L160 2L155 14L150 2L145 14L140 2L135 14L130 2L125 14L120 2L115 14L110 2L105 14L100 2L95 14L90 2L85 14L80 2L75 14L70 2L65 14L60 2L55 14L50 2L45 14L40 2L35 14L30 2L25 14L20 2L15 14L10 2L5 14L0 2Z"/></svg>
+        </div></div>
+        <div id="dStamp">VALIDÉE ✓</div>
+        <div id="dRing"></div>
+      </div>
+
+      <!-- E · fin -->
+      <div id="sE" class="scene green clip" data-start="12.95" data-duration="4.05" data-track-index="4">
+        <div id="eMark"><svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-label="À vos tables">
+          <rect id="eTile" width="512" height="512" rx="112" fill="#3D5742" />
+          <path id="eLetter" d="M100.7 419.7C95.8 419.7 91.6 419.6 91.6 419.6C91.4 419.5 91.4 417.2 91.4 409.0L91.4 398.4L91.7 398.3C92.0 398.2 95.2 397.9 97.9 397.7C98.6 397.7 99.7 397.6 100.4 397.5C101.1 397.5 102.6 397.3 103.8 397.3C105.0 397.2 107.0 397.0 108.2 396.9C110.2 396.8 112.3 396.6 117.4 396.2C120.4 396.0 120.6 395.9 120.9 395.5C121.0 395.4 121.4 394.5 121.7 393.8C121.9 393.0 122.4 391.7 122.7 390.9C122.9 390.1 123.5 388.6 123.9 387.5C124.2 386.3 124.9 384.5 125.3 383.3C125.7 382.1 126.2 380.7 126.4 380.2C126.6 379.7 127.0 378.3 127.4 377.2C127.8 376.1 128.7 373.8 129.3 371.9C129.9 370.1 130.7 367.8 131.1 366.8C131.5 365.8 131.9 364.4 132.1 363.8C132.3 363.2 132.9 361.7 133.3 360.6C133.7 359.4 134.1 358.1 134.2 357.7C134.5 356.8 136.1 352.5 136.7 350.7C136.9 350.0 137.4 348.6 137.8 347.5C138.2 346.4 138.8 344.7 139.1 343.8C139.4 342.9 140.0 341.3 140.4 340.1C140.8 339.0 141.4 337.1 141.9 336.0C142.3 334.8 142.9 332.9 143.3 331.8C144.3 328.8 145.7 324.8 146.6 322.3C147.0 321.2 147.4 320.0 147.5 319.7C147.6 319.4 148.2 317.8 148.7 316.2C149.3 314.6 150.0 312.5 150.4 311.5C150.7 310.5 151.4 308.5 151.9 307.1C152.4 305.7 153.2 303.4 153.7 302.0C154.2 300.5 154.8 298.9 154.9 298.5C155.1 298.0 155.7 296.3 156.3 294.7C156.8 293.1 157.6 290.9 157.9 289.9C159.1 286.7 160.2 283.5 160.6 282.3C160.8 281.7 161.2 280.6 161.4 279.9C161.7 279.1 162.2 277.7 162.6 276.6C162.9 275.6 163.9 272.9 164.6 270.7C165.4 268.6 166.2 266.2 166.5 265.5C166.7 264.7 167.0 263.8 167.2 263.5C167.3 263.1 167.6 262.4 167.8 261.8C167.9 261.3 168.4 259.9 168.8 258.7C169.2 257.5 169.7 256.3 169.8 255.9C170.0 255.5 170.4 254.2 170.8 253.0C171.2 251.9 171.7 250.6 171.8 250.2C171.9 249.8 172.4 248.6 172.7 247.5C173.1 246.5 173.6 245.2 173.8 244.6C174.4 242.9 175.8 238.8 176.9 235.5C177.6 233.7 178.4 231.3 178.8 230.1C179.2 228.9 179.8 227.3 180.1 226.5C180.3 225.7 180.9 224.3 181.2 223.3C181.6 222.2 182.2 220.4 182.7 219.1C183.1 217.8 184.0 215.4 184.6 213.6C185.2 211.9 185.8 210.0 186.0 209.5C186.2 209.0 186.7 207.6 187.1 206.4C187.5 205.2 188.0 203.9 188.1 203.6C188.2 203.2 188.8 201.5 189.4 199.9C190.0 198.2 190.7 195.9 191.1 194.9C191.5 193.8 191.9 192.7 192.0 192.4C192.1 192.0 193.6 187.7 194.6 184.8C194.9 184.1 195.6 182.0 196.3 180.1C197.6 176.1 198.8 172.8 199.0 172.3C199.4 171.4 197.9 171.5 219.0 171.5C229.5 171.5 238.3 171.5 238.5 171.6C238.8 171.7 239.2 172.4 239.9 174.5C240.9 177.5 241.5 179.3 241.9 180.1C242.0 180.7 242.6 182.3 243.1 183.7C243.6 185.2 244.2 186.9 244.5 187.6C244.7 188.3 245.3 189.8 245.7 190.9C246.1 192.1 246.7 193.8 247.1 194.9C247.4 195.9 248.2 198.0 248.7 199.4C249.2 200.8 249.9 202.9 250.3 204.0C251.1 206.2 252.0 208.8 253.2 212.3C253.6 213.5 254.4 215.6 254.9 217.0C255.4 218.4 256.1 220.3 256.4 221.3C256.7 222.2 257.4 224.1 257.8 225.4C258.3 226.7 259.0 228.7 259.4 229.9C259.9 231.0 260.5 232.9 260.9 234.0C261.3 235.2 261.8 236.6 262.0 237.2C262.3 237.8 262.5 238.6 262.6 238.9C262.7 239.2 263.2 240.7 263.8 242.2C264.4 243.8 265.1 246.0 265.5 247.1C265.9 248.2 266.7 250.3 267.2 251.9C267.8 253.5 268.5 255.6 268.9 256.6C269.2 257.6 269.8 259.1 270.0 259.8C270.3 260.6 270.6 261.5 270.8 261.9C270.9 262.3 271.3 263.4 271.7 264.5C272.9 267.9 275.3 274.5 275.6 275.5C275.7 275.8 276.2 277.3 276.8 278.9C278.7 284.4 279.4 286.2 279.7 287.3C279.9 287.9 280.5 289.4 280.9 290.6C282.8 295.8 284.9 301.8 285.7 304.1C286.2 305.7 287.3 308.5 288.3 311.6C288.7 312.6 289.2 314.0 289.5 314.7C289.7 315.4 290.2 316.9 290.7 318.1C292.4 323.0 292.9 324.3 293.0 324.8C293.3 325.6 294.5 329.1 295.3 331.4C295.7 332.4 296.4 334.3 296.8 335.5C298.6 340.6 299.5 343.1 300.4 345.8C301.0 347.4 301.5 348.8 301.6 349.0C301.6 349.2 301.9 350.0 302.2 350.8C303.2 353.4 304.2 356.4 304.4 357.0C304.5 357.3 304.9 358.4 305.3 359.4C305.6 360.5 306.2 362.0 306.5 362.8C306.7 363.6 307.3 365.2 307.7 366.3C308.1 367.5 308.8 369.4 309.2 370.5C309.6 371.7 310.2 373.5 310.6 374.6C311.0 375.7 311.5 376.9 311.6 377.4C311.8 377.8 312.0 378.3 312.0 378.5C312.2 379.1 314.0 384.1 314.6 385.8C315.2 387.6 316.6 391.4 317.3 393.5C318.1 395.8 318.4 396.5 318.6 396.6C318.8 396.7 319.2 396.7 325.2 397.1C345.5 398.1 345.9 398.2 346.1 398.4C346.3 398.6 346.3 399.9 346.3 409.0C346.3 418.2 346.3 419.4 346.1 419.5C346.0 419.7 340.2 419.8 288.8 419.8C248.7 419.8 231.6 419.7 231.5 419.6C231.3 419.4 231.3 398.7 231.5 398.4C231.6 398.3 232.1 398.2 234.3 398.1C235.8 398.0 239.1 397.8 241.7 397.7C244.2 397.5 248.0 397.3 250.0 397.2C260.8 396.6 264.8 396.4 265.1 396.3C265.3 396.2 265.3 396.1 265.3 395.7C265.2 395.4 264.0 391.7 262.6 387.5C261.2 383.2 259.8 379.2 259.6 378.5C259.4 377.9 258.2 374.1 256.9 370.2C255.5 366.3 254.3 362.4 254.0 361.7C253.8 360.9 253.2 359.2 252.7 357.8C252.2 356.4 251.2 353.2 250.4 350.7C249.5 348.2 248.8 346.0 248.6 345.8L248.4 345.4L243.9 345.4C241.4 345.4 222.0 345.4 200.7 345.4C169.1 345.4 162.1 345.4 161.9 345.6C161.9 345.7 161.3 347.2 160.7 348.9C160.1 350.7 159.6 352.3 159.5 352.5C159.4 352.7 158.0 357.1 156.3 362.3C154.6 367.4 153.1 371.8 153.0 372.1C152.8 372.8 146.0 393.1 145.7 394.1C145.3 395.2 145.3 395.6 145.5 395.7C145.7 395.8 150.8 396.3 159.1 396.8C160.6 396.9 162.2 397.0 162.5 397.1C162.9 397.1 164.1 397.2 165.2 397.3C172.7 397.7 177.7 398.2 177.9 398.4C178.0 398.5 178.0 402.2 178.0 409.0C178.0 417.7 178.0 419.4 177.9 419.6C177.7 419.7 172.5 419.8 143.7 419.8C125.0 419.8 105.7 419.8 100.7 419.7ZM240.7 323.2C240.9 323.2 241.0 323.1 241.0 322.9C241.0 322.7 239.7 318.5 237.8 313.1C237.1 310.9 236.9 310.4 228.7 285.9C225.3 275.6 222.3 266.6 222.1 266.0C221.9 265.3 219.7 258.6 217.2 251.1C214.6 243.6 212.5 237.2 212.4 237.0C212.4 236.7 211.8 235.1 211.3 233.4C210.7 231.7 210.1 230.0 210.0 229.7C207.9 223.2 203.8 211.1 203.5 210.3C202.9 208.8 202.8 208.9 202.2 211.5C202.1 212.2 201.9 213.1 201.8 213.4C201.7 213.7 201.5 214.9 201.3 215.9C201.0 217.7 200.4 220.5 199.7 223.7C199.6 224.3 199.2 225.9 199.0 227.1C198.7 228.3 198.3 230.4 198.1 231.6C196.7 238.1 196.2 240.4 195.8 242.6C195.3 245.0 194.7 246.8 192.6 253.0C192.1 254.4 191.6 256.0 191.4 256.6C191.2 257.2 190.1 260.7 188.8 264.3C187.6 268.0 186.5 271.2 186.5 271.5C186.3 272.0 176.0 303.0 175.8 303.7C175.7 303.9 174.7 306.8 173.6 310.1C172.5 313.4 171.5 316.6 171.3 317.2C169.9 321.2 169.4 322.9 169.5 323.1C169.6 323.2 173.0 323.3 203.5 323.3C236.1 323.4 240.0 323.4 240.7 323.2Z" fill="#EFEBE4" fill-rule="evenodd" stroke="#EFEBE4" stroke-width="7" stroke-linejoin="round" />
+          <path id="eAccent" d="M231.5 153.3C225.8 150.5 223.8 149.5 217.8 146.6C216.7 146.1 213.3 144.4 210.3 143.0C207.3 141.5 204.8 140.3 204.8 140.3C204.6 140.3 185.5 130.7 183.8 129.8C181.2 128.3 177.7 126.0 176.0 124.5C171.3 120.6 168.5 115.9 167.8 110.9C167.2 105.5 168.7 100.7 172.3 97.1C174.9 94.5 178.3 92.8 182.0 92.4C184.6 92.1 188.7 92.3 190.9 92.9C192.7 93.4 193.2 93.5 194.6 94.1C198.5 95.8 202.9 99.0 209.2 104.8C213.1 108.3 215.9 110.9 216.8 111.6C217.9 112.6 220.2 114.7 221.8 116.3C222.6 117.0 224.6 118.9 226.3 120.5C228.0 122.1 230.5 124.5 231.9 125.8C233.3 127.2 235.2 129.1 236.2 130.0C240.0 133.6 248.1 141.8 248.2 142.0C248.3 142.3 247.3 143.9 246.2 145.2C246.0 145.5 245.6 146.1 245.3 146.4C245.1 146.8 244.0 148.3 243.0 149.7C241.9 151.2 240.6 153.1 240.0 154.0C238.7 155.8 238.1 156.4 237.8 156.4C237.7 156.4 234.8 155.0 231.5 153.3Z" fill="#EFEBE4" />
+          <circle id="eDot" cx="392.8" cy="391.8" r="27.8" fill="#D5B162" />
+        </svg></div>
+        <div id="eWord">À vos tables</div>
+        <div id="eL1" class="eLine"><span class="w">Vos</span> <span class="w">clients</span> <span class="w">commandent.</span></div>
+        <div id="eL2" class="eLine"><span class="w">Votre</span> <span class="w">équipe</span> <span class="w">sert.</span></div>
+        <div id="eMono">QR CODE · NFC · PAIEMENT AU COMPTOIR</div>
+        <div id="eCta">↓ DEMANDEZ VOTRE DÉMO ↓</div>
+      </div>
+
+      <audio id="el-audio" src="assets/audio/story-mix.wav" data-start="0" data-duration="17" data-track-index="10" data-volume="1"></audio>
+    </div>
+
+    <script>
+      (function () {
+        var tl = gsap.timeline({ paused: true });
+        var $ = function (s) { return document.querySelector(s); };
+        var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+        function rise(sel, t, step) {
+          $$(sel).forEach(function (el, k) {
+            tl.fromTo(el, { y: 44, opacity: 0 }, { y: 0, opacity: 1, duration: 0.42, ease: "power3.out" }, t + k * (step || 0.07));
+          });
+        }
+
+        // ---------- A · le rush (voix : « Vendredi soir. » 0,40 · « Tout le monde vous fait signe. » 1,76)
+        tl.fromTo("#sA .brand", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.05);
+        tl.fromTo("#aLabel", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.12);
+        rise("#aTitle .w", 0.36, 0.1);
+        rise("#aSub .w", 1.72, 0.07);
+        $$(".tag").forEach(function (el, k) {
+          var r = +el.dataset.r;
+          tl.fromTo(el, { y: -260, opacity: 0, rotation: r - 12 }, { y: 0, opacity: 1, rotation: r, duration: 0.5, ease: "back.out(1.7)" }, 0.95 + k * 0.24);
+        });
+        // l'équipe est débordée : les étiquettes s'agitent
+        tl.to(".tag", { x: 7, duration: 0.05, yoyo: true, repeat: 9, ease: "none", stagger: 0.02 }, 2.62);
+        tl.fromTo("#aWipe", { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.42, ease: "power3.inOut" }, 3.05);
+
+        // ---------- B · le scan (voix : « Et si un scan suffisait ? » 3,70)
+        tl.fromTo("#sB .brand", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 3.5);
+        rise("#bTitle .w", 3.62, 0.09);
+        tl.fromTo("#bPlateWrap", { y: 520, rotation: -9, scale: 0.84, opacity: 0 }, { y: 0, rotation: 0, scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.25)" }, 3.86);
+        tl.fromTo("#bBrackets", { scale: 1.18, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "power3.out" }, 4.6);
+        tl.fromTo("#bScan", { opacity: 0, y: 6 }, { opacity: 1, duration: 0.08 }, 4.78);
+        tl.fromTo("#bScan", { y: 6 }, { y: 372, duration: 0.6, ease: "power1.inOut", immediateRender: false }, 4.8);
+        tl.to("#bScan", { opacity: 0, duration: 0.1 }, 5.4);
+        tl.to(".corner", { borderColor: "#E0A33A", duration: 0.12 }, 5.42);
+        tl.fromTo("#bBrackets", { scale: 1 }, { scale: 0.94, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, 5.42);
+        tl.fromTo("#bSheen", { x: 0 }, { x: 1100, duration: 0.6, ease: "power2.inOut" }, 5.45);
+        tl.fromTo("#bPill div", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.42, ease: "back.out(2)" }, 5.55);
+        // on « entre » dans le QR code : le décor s'agrandit vers l'autocollant, la scène suivante apparaît
+        tl.to("#bStage", { scale: 3.4, opacity: 0, duration: 0.45, ease: "power3.in" }, 6.42);
+
+        // ---------- C · la commande (voix : « La carte s'ouvre, » 6,75 · « votre client commande. » 7,94)
+        tl.fromTo("#sC", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 6.5);
+        tl.fromTo("#sC .brand", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 6.6);
+        rise("#cTitle .line:nth-child(1) .w", 6.7, 0.08);
+        rise("#cTitle .line:nth-child(2) .w", 7.9, 0.09);
+        tl.fromTo("#cPhone", { y: 520, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 6.62);
+        tl.fromTo("#cImg0", { y: 40 }, { y: 0, duration: 0.6, ease: "power2.out" }, 6.7);
+        function tap(sel, t) {
+          tl.fromTo(sel, { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.14, ease: "power2.out" }, t);
+          tl.to(sel, { scale: 1.5, opacity: 0, duration: 0.3, ease: "power1.out" }, t + 0.16);
+        }
+        function slideIn(sel, t) { tl.fromTo(sel, { x: 528 }, { x: 0, duration: 0.32, ease: "power3.out" }, t); }
+        tap("#tap0", 7.5); slideIn("#cImg1", 7.72);
+        tap("#tap1", 8.22); slideIn("#cImg2", 8.42);
+        tap("#tap2", 8.86); slideIn("#cImg3", 9.04);
+        tl.to("#sC", { x: -1080, duration: 0.45, ease: "power3.inOut" }, 9.55);
+
+        // ---------- D · le ticket (voix : « En salle, » 9,75 · « la commande arrive. » 10,49 · « Validée d'un geste. » 11,82)
+        tl.fromTo("#sD", { x: 1080 }, { x: 0, duration: 0.45, ease: "power3.inOut" }, 9.55);
+        rise("#dTitle .line:nth-child(1) .w", 9.72, 0.08);
+        rise("#dTitle .line:nth-child(2) .w", 10.45, 0.08);
+        rise("#dTitle .line:nth-child(3) .w", 11.78, 0.08);
+        // le ticket sort de l'imprimante par à-coups
+        var FEED = [[10.05, 130], [10.3, 300], [10.55, 430], [10.8, 560], [11.0, 640]];
+        var prev = 0;
+        FEED.forEach(function (f, i) {
+          tl.fromTo("#dTicket", { y: prev - 640 }, { y: f[1] - 640, duration: 0.16, ease: "power2.out", immediateRender: i === 0 }, f[0]);
+          prev = f[1];
+        });
+        tl.fromTo("#dStamp", { scale: 2.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.2, ease: "power4.in" }, 11.84);
+        tl.fromTo("#dTicket", { x: 0 }, { x: 8, duration: 0.05, yoyo: true, repeat: 3, ease: "none", immediateRender: false }, 12.04);
+        tl.fromTo("#dRing", { scale: 1, opacity: 0.9 }, { scale: 9, opacity: 0, duration: 0.6, ease: "power2.out", immediateRender: false }, 12.04);
+        tl.to(["#dMask", "#dStamp", "#dSlot"], { y: "-=1300", rotation: 5, duration: 0.5, ease: "power3.in" }, 12.62);
+        tl.to("#dHead", { opacity: 0, y: -40, duration: 0.35, ease: "power2.in" }, 12.7);
+
+        // ---------- E · fin (voix : « À vos tables. » 13,25 · « Vos clients commandent, » 14,38 · « votre équipe sert. » 15,56)
+        tl.fromTo("#sE", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 12.95);
+        var letter = $("#eLetter"), len = letter.getTotalLength();
+        letter.style.strokeDasharray = len + " " + (len + 80);
+        tl.fromTo("#eTile", { scale: 0.84, opacity: 0, svgOrigin: "256 256" }, { scale: 1, opacity: 1, svgOrigin: "256 256", duration: 0.32, ease: "power3.out" }, 13.05);
+        tl.fromTo(letter, { strokeDashoffset: len + 40, fillOpacity: 0 }, { strokeDashoffset: 0, duration: 0.36, ease: "power2.out" }, 13.1);
+        tl.fromTo(letter, { fillOpacity: 0, strokeOpacity: 1 }, { fillOpacity: 1, strokeOpacity: 0, duration: 0.2, ease: "power1.out", immediateRender: false }, 13.34);
+        tl.fromTo("#eAccent", { y: -70, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power3.out" }, 13.42);
+        tl.fromTo("#eDot", { scale: 0, svgOrigin: "392.8 391.8" }, { scale: 1, svgOrigin: "392.8 391.8", duration: 0.34, ease: "back.out(2)" }, 13.5);
+        tl.fromTo("#eWord", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 13.3);
+        rise("#eL1 .w", 14.34, 0.08);
+        rise("#eL2 .w", 15.52, 0.08);
+        tl.fromTo("#eMono", { opacity: 0 }, { opacity: 0.85, duration: 0.4 }, 15.95);
+        tl.fromTo("#eCta", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 16.2);
+        tl.to({}, { duration: 17 }, 0);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

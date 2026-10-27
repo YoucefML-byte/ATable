@@ -135,6 +135,18 @@ quiz, question ou lien), comme indiqué ci-dessous.
   - Emplacement : juste sous la ligne dorée « ↓ DEMANDEZ VOTRE DÉMO ↓ », qui pointe vers lui.
 - **Hashtags** : #avostables #restaurant
 
+## La story animée (17 s)
+
+- **Fichier** : `story-motion-avostables.mp4`. C'est une création à part, pas un extrait de la vidéo : en
+  17 secondes, le rush du vendredi, le scan de la plaque, la commande sur le téléphone, le ticket « VALIDÉE », puis
+  le logo et « Demandez une démo ». Voix off et musique incluses.
+- **Quand la publier** : seule, pour relancer votre audience après la série des 8 stories (par exemple quelques
+  jours plus tard), ou en tête de série.
+- **Sticker à ajouter — Lien** : « Demander une démo », placé juste sous la ligne dorée
+  « ↓ DEMANDEZ VOTRE DÉMO ↓ », qui pointe vers lui.
+- **Hashtags** : #avostables #restaurant
+- Ajoutez-la ensuite à l'« À la une » **À vos tables**.
+
 ## Les icônes des « À la une »
 
 Les icônes sont dans le dossier `icones/`. Chacune est une image verticale 1080 × 1920 au fond vert de la

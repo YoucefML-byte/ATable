@@ -161,6 +161,22 @@ quiz, question ou lien), comme indiqué ci-dessous.
 - Elle marche aussi en **Reel** court ; dans ce cas, le texte « Le service, sans courir. » fait une bonne
   première ligne de légende.
 
+## Les stories « styles » : néon, éditorial, pop
+
+Trois stories courtes en musique seule, chacune avec son propre style visuel. Elles sont à publier une par une,
+à quelques jours d'intervalle, pour varier votre fil.
+
+- **`story-style-neon.mp4`** (15 s), pour les bars, chichas et lieux de nuit. À publier le soir (vers 21 h).
+  Sticker : **Sondage** « Le soir, vos clients attendent pour commander ? » → « Souvent » / « Jamais ».
+  Hashtags : #bar #chicha #nightlife
+- **`story-style-editorial.mp4`** (15 s), le style « magazine » avec les chiffres clés. Sticker : **Quiz**
+  « Combien d'applis vos clients doivent-ils télécharger ? » → « 0 ✅ » / « 1 » / « 2 ».
+  Hashtags : #restaurant #restaurateur
+- **`story-style-pop.mp4`** (13 s), rapide et coloré, idéale pour un **Reel**. Sticker : **Curseur emoji** 🔥
+  « Scan, choix, envoi, servi : ça vous parle ? ». Hashtags : #commandeatable #QRcode
+
+Sur les trois : un sticker **Lien** « Demander une démo » sous « ↓ DEMANDEZ VOTRE DÉMO ».
+
 ## Les icônes des « À la une »
 
 Les icônes sont dans le dossier `icones/`. Chacune est une image verticale 1080 × 1920 au fond vert de la

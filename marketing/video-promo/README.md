@@ -17,7 +17,7 @@ Instagram, Facebook et WhatsApp.
 | `stories/` | Les 8 stories verticales et le Reel (vidéo complète en vertical), tous en 1080 × 1920, la couverture du Reel, les **icônes des « À la une »** (`stories/icones/`), la **grille de 9 publications** qui forme le grand logo (`stories/grille-logo/`) et **`CONTENU-INSTAGRAM.md`** : quoi publier, dans quel ordre, quel sticker ajouter, et le texte du Reel prêt à copier. |
 | `story-motion/` | La **story animée** de 17 s (motion design vertical, même univers que la publicité) : sources HyperFrames, voix off et notice. La vidéo est `stories/story-motion-avostables.mp4`. |
 | `story-motion-2/` | La **story animée n° 2** « Lever la main, c'est fini » (21,5 s) : autre histoire, autre texte, autres animations. La vidéo est `stories/story-motion-2-lever-la-main.mp4`. |
-| `story-styles/` | **Trois stories animées dans trois styles** (néon, éditorial, pop), en musique seule. Vidéos : `stories/story-style-*.mp4`. |
+| `story-styles/` | **Trois stories animées dans trois styles** (néon, éditorial, pop), avec musique et voix off. Vidéos : `stories/story-style-*.mp4`. |
 | `logo/` | Le logo « À. » vectorisé (SVG) : tuile arrondie, tuile carrée, marque seule crème ou verte, plus une version PNG 1024 px et l'image d'origine. |
 | `projet/` | Le projet [HyperFrames](https://hyperframes.heygen.com) qui fabrique la vidéo (HTML + GSAP). |
 | `projet/STORYBOARD.md` | Le découpage plan par plan, avec la voix off et les temps. |

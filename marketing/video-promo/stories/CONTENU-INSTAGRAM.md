@@ -163,13 +163,13 @@ quiz, question ou lien), comme indiqué ci-dessous.
 
 ## Les stories « styles » : néon, éditorial, pop
 
-Trois stories courtes en musique seule, chacune avec son propre style visuel. Elles sont à publier une par une,
+Trois stories courtes avec musique et voix off, chacune avec son propre style visuel. Elles sont à publier une par une,
 à quelques jours d'intervalle, pour varier votre fil.
 
-- **`story-style-neon.mp4`** (15 s), pour les bars, chichas et lieux de nuit. À publier le soir (vers 21 h).
+- **`story-style-neon.mp4`** (16 s), pour les bars, chichas et lieux de nuit. À publier le soir (vers 21 h).
   Sticker : **Sondage** « Le soir, vos clients attendent pour commander ? » → « Souvent » / « Jamais ».
   Hashtags : #bar #chicha #nightlife
-- **`story-style-editorial.mp4`** (15 s), le style « magazine » avec les chiffres clés. Sticker : **Quiz**
+- **`story-style-editorial.mp4`** (16 s), le style « magazine » avec les chiffres clés. Sticker : **Quiz**
   « Combien d'applis vos clients doivent-ils télécharger ? » → « 0 ✅ » / « 1 » / « 2 ».
   Hashtags : #restaurant #restaurateur
 - **`story-style-pop.mp4`** (13 s), rapide et coloré, idéale pour un **Reel**. Sticker : **Curseur emoji** 🔥

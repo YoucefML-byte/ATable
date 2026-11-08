@@ -1,5 +1,5 @@
 # Trois stories motion design « À vos tables » (1080 × 1920), trois styles : néon, éditorial, pop.
-# Écrit <style>/index.html pour chacun. Musique seule (assets/audio/music.wav), texte à l'écran.
+# Écrit <style>/index.html pour chacun. Bande-son : musique + voix off (assets/audio/music.wav, voir mix_voix.py et voix.json).
 # Zones sûres Instagram : rien d'important au-dessus de 250 px ni sous 1560 px.
 #   python3 gen_styles.py chemin/vers/logo512.py
 import importlib.util, os, re, sys
@@ -144,7 +144,7 @@ neon_body = f"""
   <div id="sign" class="center mono ng">COMMANDE<br>ENVOYÉE ✓</div>
   <div id="nT3" class="center serif nc">Le comptoir la reçoit en direct.</div>
 </div>
-<div id="n5" class="scene clip" data-start="12.55" data-duration="2.45" data-track-index="4">
+<div id="n5" class="scene clip" data-start="12.55" data-duration="3.45" data-track-index="4">
   <div id="nMark">{logo_svg("nm", "transparent", G, stroke=CR)}</div>
   <div id="nWord" class="center serif nc">À vos tables</div>
   <div id="nTag" class="center mono ng">BARS · CHICHAS · CAFÉS</div>
@@ -240,7 +240,7 @@ ed_body = f"""
   <div class="folio">N° 01 · P. 1</div>
 </div>
 {"".join(ed_page(*p, k) for k, p in enumerate(PAGES))}
-<div id="p5" class="scene pg clip" data-start="12.2" data-duration="2.8" data-track-index="6">
+<div id="p5" class="scene pg clip" data-start="12.2" data-duration="3.8" data-track-index="6">
   <div class="kick" style="top:300px">LE MOT DE LA FIN</div><div class="rule" style="top:340px"></div>
   <div id="eMark">{logo_svg("em", "#EFEBE4", "#D5B162", tile="#3D5742")}</div>
   <div id="eEnd"><span class="w">Moins</span> <span class="w">de</span> <span class="w">courses,</span><br><span class="w"><em>plus</em></span> <span class="w"><em>de</em></span> <span class="w"><em>service.</em></span></div>
@@ -363,7 +363,7 @@ tl.fromTo("#pCta span", { scale: 0 }, { scale: 1, duration: 0.5, ease: "elastic.
 tl.to("#pCta span", { scale: 1.06, duration: 0.25, yoyo: true, repeat: 3, ease: "sine.inOut" }, 11.8);
 """
 
-for name, dur, css, body, js in [("neon", 15, neon_css, neon_body, neon_js), ("editorial", 15, ed_css, ed_body, ed_js),
+for name, dur, css, body, js in [("neon", 16, neon_css, neon_body, neon_js), ("editorial", 16, ed_css, ed_body, ed_js),
                                  ("pop", 13, pop_css, pop_body, pop_js)]:
     js = js.replace("%DOT%", f"{DX:.1f} {DY:.1f}").replace("%LC%", f"{LCX:.0f} {LCY:.0f}")
     open(os.path.join(HERE, name, "index.html"), "w").write(page(dur, css, body, js))

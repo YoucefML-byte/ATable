@@ -5,7 +5,8 @@ dès la première image, puis une étiquette « à l'écran » par plan (PAS D'A
 salle, logo, plaque en métal, scan, carte dans le navigateur, commande, cuisine, serveur, et la bulle du début qui
 revient et se barre pour que la vidéo boucle.
 
-Vidéo : `../reel1-une-appli-non-merci.mp4` · couverture : `../reel1-couverture.png`.
+Vidéos : `../reel1-une-appli-non-merci.mp4` (voix de femme, 28,5 s) et `../reel1-une-appli-non-merci-voix-homme.mp4`
+(voix d'homme, 32 s) · couverture : `../reel1-couverture.png`.
 
 ## Voix off
 
@@ -27,3 +28,15 @@ npx --yes hyperframes@0.8.164 render --quality high -o renders/reel1-hf.mp4
 ```
 
 Bande-son : `python3 ../../story-styles/mix_voix.py <soundtrack.wav> .` (musique de la publicité 44–72,5 s).
+
+## Version voix d'homme
+
+Voix « Rémy » (edge-tts fr-FR-RemyMultilingualNeural, SSML fr-FR), même texte. Rémy parle plus posément : le Reel
+dure 32 s, et toutes les scènes suivent ses repères (`timeline-homme.json`). Les 11 phrases sont perçues en
+français (0,98 à 1,00) dans la vidéo finale.
+
+```bash
+python3 gen_reel1.py ../../projet/.hyperframes/logo/logo512.py homme   # index.html pour la voix d'homme
+npx --yes hyperframes@0.8.164 render --quality high -o renders/reel1-homme-hf.mp4
+python3 gen_reel1.py ../../projet/.hyperframes/logo/logo512.py         # revient à la voix de femme
+```

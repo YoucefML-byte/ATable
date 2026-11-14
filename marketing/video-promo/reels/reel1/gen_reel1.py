@@ -1,7 +1,7 @@
 # Reel 1 « Une appli ? Non merci » (1080 × 1920, 28,5 s) : écrit index.html à partir du script plan par plan.
 # Les repères suivent la voix off (timeline.json : début de chaque phrase).
 # Zones sûres Reels : texte important entre 250 et 1450 px (la légende et les boutons couvrent le bas).
-#   python3 gen_reel1.py chemin/vers/logo512.py
+#   python3 gen_reel1.py chemin/vers/logo512.py [homme]   (« homme » : voix off de Rémy, timeline-homme.json, music-homme.wav)
 import importlib.util, json, os, re, sys
 
 spec = importlib.util.spec_from_file_location("logo512", sys.argv[1])
@@ -10,8 +10,17 @@ DX, DY, DR = L.DOT
 _n = [float(v) for v in re.findall(r"-?\d+\.?\d*", L.LETTER)]
 LCX, LCY = (min(_n[0::2]) + max(_n[0::2])) / 2, (min(_n[1::2]) + max(_n[1::2])) / 2
 HERE = os.path.dirname(os.path.abspath(__file__))
-B = [o["on"] for o in json.load(open(os.path.join(HERE, "timeline.json")))]   # 11 repères
-DUR = 28.5
+VARIANT = sys.argv[2] if len(sys.argv) > 2 else ""
+SUF = "-" + VARIANT if VARIANT else ""
+B = [o["on"] for o in json.load(open(os.path.join(HERE, f"timeline{SUF}.json")))]   # 11 repères
+_tl = json.load(open(os.path.join(HERE, f"timeline{SUF}.json")))
+DUR = round(_tl[-1]["off"] + 2.0, 1) if VARIANT else 28.5
+# fenêtres des scènes, calées sur les repères de la voix
+def win(a, b): return f'data-start="{a:.2f}" data-duration="{b - a:.2f}"'
+W_LOGO = win(B[2] - 0.35, B[3] + 0.1)
+W_CLOSE = win(B[3] - 0.4, B[8] + 0.3)
+W_PHONE = win(B[5] - 0.4, B[8] + 0.3)
+W_KIT = win(B[8] - 0.35, B[9] + 0.05)
 
 LABELS = ["PAS D'APPLI, MERCI", "ILS ONT RAISON", "RIEN À TÉLÉCHARGER", "1 PLAQUE EN MÉTAL", "QR CODE", "IL SCANNE",
           "DANS LE NAVIGATEUR", "IL COMMANDE", "DIRECT EN CUISINE", "IL PAIE COMME D'HABITUDE", "COMMENTEZ DEMO"]
@@ -149,7 +158,7 @@ html, body {{ width: 1080px; height: 1920px; overflow: hidden; background: #000;
       <div id="server"><div class="tray"></div><div class="bd"></div></div>
     </div>
   </div>
-  <div id="logoL" class="layer clip" data-start="5.4" data-duration="3.2" data-track-index="1">
+  <div id="logoL" class="layer clip" {W_LOGO} data-track-index="1">
     <div id="lgMark"><svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
       <rect id="lgTile" width="512" height="512" rx="112" fill="{L.GREEN}"/>
       <path id="lgLetter" d="{L.LETTER}" fill="{L.CREAM}" fill-rule="evenodd"/><path id="lgAccent" d="{L.ACCENT}" fill="{L.CREAM}"/>
@@ -157,13 +166,13 @@ html, body {{ width: 1080px; height: 1920px; overflow: hidden; background: #000;
     <div id="lgWord">À vos tables</div>
     <div id="lgTag">Rien à télécharger</div>
   </div>
-  <div id="closeL" class="layer clip" data-start="7.9" data-duration="12.1" data-track-index="2">
+  <div id="closeL" class="layer clip" {W_CLOSE} data-track-index="2">
     <div id="wood"></div>
     <div id="plate"><div class="pclip"><div class="fbase"></div><div class="facet f1"></div><div class="facet f2"></div><div class="facet f3"></div>
       <div class="screw" style="left:36px"></div><div class="screw" style="left:719px"></div><div class="eng">À VOS TABLES</div></div><div class="pol"></div>
       <div id="stk"><img src="assets/table-qr.svg" alt=""><div>TABLE 4</div></div><div id="glow"></div></div>
   </div>
-  <div id="phoneL" class="layer clip" data-start="11.6" data-duration="8.4" data-track-index="3">
+  <div id="phoneL" class="layer clip" {W_PHONE} data-track-index="3">
     <div id="phone"><div id="scr">
       <div id="cam"><div id="camPlate"><i></i><img src="assets/table-qr.svg" alt=""></div>
         <div class="bk" id="bk1"></div><div class="bk" id="bk2"></div><div class="bk" id="bk3"></div><div class="bk" id="bk4"></div><div id="scanL"></div></div>
@@ -172,14 +181,14 @@ html, body {{ width: 1080px; height: 1920px; overflow: hidden; background: #000;
         <div id="tap"></div><div id="okb"><svg viewBox="0 0 200 200"><path id="okp" d="M55 104L88 137L148 72" stroke="#F4EFE6" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
       </div></div></div>
   </div>
-  <div id="kitL" class="layer clip" data-start="19.4" data-duration="2.75" data-track-index="4">
+  <div id="kitL" class="layer clip" {W_KIT} data-track-index="4">
     <div id="tab"><img src="assets/pro-cuisine.png" alt=""></div>
     <div id="kitT">Table 4 · <em>en cuisine</em></div>
     <div id="tick"><b>TABLE 4</b>1 × TACOS 2 VIANDES<br>1 × LIMONADE</div>
   </div>
   <div id="hook"><span>UNE APPLI ? NON MERCI.</span></div>
   {pills}
-  <audio id="el-audio" src="assets/audio/music.wav" data-start="0" data-duration="{DUR}" data-track-index="10" data-volume="1"></audio>
+  <audio id="el-audio" src="assets/audio/music{SUF}.wav" data-start="0" data-duration="{DUR}" data-track-index="10" data-volume="1"></audio>
 </div>
 <script>
 (function () {{

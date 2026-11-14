@@ -1,0 +1,52 @@
+[
+ {
+  "word": "Avec",
+  "start": 0.1,
+  "end": 0.375
+ },
+ {
+  "word": "À",
+  "start": 0.375,
+  "end": 0.412
+ },
+ {
+  "word": "vos",
+  "start": 0.412,
+  "end": 0.55
+ },
+ {
+  "word": "tables",
+  "start": 0.55,
+  "end": 0.95
+ },
+ {
+  "word": "il",
+  "start": 1.325,
+  "end": 1.412
+ },
+ {
+  "word": "n'y",
+  "start": 1.413,
+  "end": 1.538
+ },
+ {
+  "word": "a",
+  "start": 1.538,
+  "end": 1.588
+ },
+ {
+  "word": "rien",
+  "start": 1.587,
+  "end": 1.812
+ },
+ {
+  "word": "à",
+  "start": 1.812,
+  "end": 1.913
+ },
+ {
+  "word": "télécharger",
+  "start": 1.913,
+  "end": 2.7
+ }
+]

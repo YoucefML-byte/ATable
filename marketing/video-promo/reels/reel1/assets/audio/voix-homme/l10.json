@@ -1,0 +1,27 @@
+[
+ {
+  "word": "Et",
+  "start": 0.05,
+  "end": 0.225
+ },
+ {
+  "word": "il",
+  "start": 0.225,
+  "end": 0.388
+ },
+ {
+  "word": "paie",
+  "start": 0.388,
+  "end": 0.575
+ },
+ {
+  "word": "comme",
+  "start": 0.575,
+  "end": 0.775
+ },
+ {
+  "word": "d'habitude",
+  "start": 0.775,
+  "end": 1.587
+ }
+]

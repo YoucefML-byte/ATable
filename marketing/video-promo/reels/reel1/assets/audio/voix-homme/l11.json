@@ -1,0 +1,42 @@
+[
+ {
+  "word": "Commentez",
+  "start": 0.075,
+  "end": 0.537
+ },
+ {
+  "word": "le",
+  "start": 0.537,
+  "end": 0.675
+ },
+ {
+  "word": "mot",
+  "start": 0.675,
+  "end": 0.825
+ },
+ {
+  "word": "démo",
+  "start": 0.825,
+  "end": 1.35
+ },
+ {
+  "word": "Rien",
+  "start": 1.725,
+  "end": 2.025
+ },
+ {
+  "word": "à",
+  "start": 2.025,
+  "end": 2.137
+ },
+ {
+  "word": "télécharger",
+  "start": 2.138,
+  "end": 2.925
+ },
+ {
+  "word": "promis",
+  "start": 3.237,
+  "end": 3.75
+ }
+]

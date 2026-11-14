@@ -1,0 +1,42 @@
+[
+ {
+  "word": "Le",
+  "start": 0.1,
+  "end": 0.275
+ },
+ {
+  "word": "client",
+  "start": 0.275,
+  "end": 0.65
+ },
+ {
+  "word": "scanne",
+  "start": 0.65,
+  "end": 0.975
+ },
+ {
+  "word": "la",
+  "start": 0.975,
+  "end": 1.087
+ },
+ {
+  "word": "plaque",
+  "start": 1.087,
+  "end": 1.462
+ },
+ {
+  "word": "avec",
+  "start": 1.475,
+  "end": 1.663
+ },
+ {
+  "word": "son",
+  "start": 1.663,
+  "end": 1.788
+ },
+ {
+  "word": "téléphone",
+  "start": 1.788,
+  "end": 2.575
+ }
+]

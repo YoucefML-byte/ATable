@@ -1,0 +1,42 @@
+[
+ {
+  "word": "La",
+  "start": 0.1,
+  "end": 0.25
+ },
+ {
+  "word": "carte",
+  "start": 0.25,
+  "end": 0.562
+ },
+ {
+  "word": "complète",
+  "start": 0.562,
+  "end": 1.137
+ },
+ {
+  "word": "s'ouvre",
+  "start": 1.15,
+  "end": 1.55
+ },
+ {
+  "word": "directement",
+  "start": 1.55,
+  "end": 2.175
+ },
+ {
+  "word": "dans",
+  "start": 2.175,
+  "end": 2.287
+ },
+ {
+  "word": "son",
+  "start": 2.288,
+  "end": 2.425
+ },
+ {
+  "word": "navigateur",
+  "start": 2.425,
+  "end": 3.312
+ }
+]

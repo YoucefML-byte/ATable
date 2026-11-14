@@ -1,0 +1,32 @@
+[
+ {
+  "word": "Une",
+  "start": 0.05,
+  "end": 0.263
+ },
+ {
+  "word": "appli",
+  "start": 0.263,
+  "end": 0.575
+ },
+ {
+  "word": "à",
+  "start": 0.588,
+  "end": 0.638
+ },
+ {
+  "word": "télécharger",
+  "start": 0.637,
+  "end": 1.4
+ },
+ {
+  "word": "Non",
+  "start": 1.788,
+  "end": 1.913
+ },
+ {
+  "word": "merci",
+  "start": 1.913,
+  "end": 2.438
+ }
+]

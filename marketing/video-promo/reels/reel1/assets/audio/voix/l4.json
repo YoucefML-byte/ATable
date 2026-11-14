@@ -1,0 +1,37 @@
+[
+ {
+  "word": "Sur",
+  "start": 0.05,
+  "end": 0.312
+ },
+ {
+  "word": "la",
+  "start": 0.312,
+  "end": 0.425
+ },
+ {
+  "word": "table",
+  "start": 0.425,
+  "end": 0.812
+ },
+ {
+  "word": "une",
+  "start": 1.188,
+  "end": 1.275
+ },
+ {
+  "word": "plaque",
+  "start": 1.275,
+  "end": 1.525
+ },
+ {
+  "word": "en",
+  "start": 1.525,
+  "end": 1.587
+ },
+ {
+  "word": "métal",
+  "start": 1.587,
+  "end": 2.162
+ }
+]

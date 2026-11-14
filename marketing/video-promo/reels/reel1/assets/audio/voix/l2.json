@@ -1,0 +1,42 @@
+[
+ {
+  "word": "Vos",
+  "start": 0.05,
+  "end": 0.237
+ },
+ {
+  "word": "clients",
+  "start": 0.237,
+  "end": 0.525
+ },
+ {
+  "word": "pensent",
+  "start": 0.525,
+  "end": 0.8
+ },
+ {
+  "word": "peut-être",
+  "start": 0.8,
+  "end": 1.212
+ },
+ {
+  "word": "ça",
+  "start": 1.212,
+  "end": 1.487
+ },
+ {
+  "word": "Ils",
+  "start": 1.825,
+  "end": 2.013
+ },
+ {
+  "word": "ont",
+  "start": 2.013,
+  "end": 2.138
+ },
+ {
+  "word": "raison",
+  "start": 2.138,
+  "end": 2.6
+ }
+]

@@ -1,0 +1,37 @@
+[
+ {
+  "word": "Il",
+  "start": 0.05,
+  "end": 0.25
+ },
+ {
+  "word": "choisit",
+  "start": 0.25,
+  "end": 0.7
+ },
+ {
+  "word": "et",
+  "start": 0.7,
+  "end": 0.812
+ },
+ {
+  "word": "commande",
+  "start": 0.812,
+  "end": 1.188
+ },
+ {
+  "word": "depuis",
+  "start": 1.188,
+  "end": 1.425
+ },
+ {
+  "word": "son",
+  "start": 1.425,
+  "end": 1.55
+ },
+ {
+  "word": "téléphone",
+  "start": 1.55,
+  "end": 2.188
+ }
+]

@@ -1,0 +1,32 @@
+[
+ {
+  "word": "La",
+  "start": 0.05,
+  "end": 0.237
+ },
+ {
+  "word": "commande",
+  "start": 0.237,
+  "end": 0.625
+ },
+ {
+  "word": "part",
+  "start": 0.625,
+  "end": 0.775
+ },
+ {
+  "word": "directement",
+  "start": 0.775,
+  "end": 1.275
+ },
+ {
+  "word": "en",
+  "start": 1.275,
+  "end": 1.312
+ },
+ {
+  "word": "cuisine",
+  "start": 1.312,
+  "end": 1.925
+ }
+]
